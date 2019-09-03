@@ -148,9 +148,9 @@ i32Not = do
         add (helper i) 1
         while (body i) $ do
             sub (body i) 1
-            sub (body i) 1
+            sub (helper i) 1
     forM_ [0 .. 31] $ \i ->
-        while (body i) $ do
+        while (helper i) $ do
             sub (helper i) 1
             add (body i) 1
     enter 33
