@@ -143,7 +143,7 @@ i32Not :: Operation
 i32Not = do
     let body = (1 +)  -- [1 .. 32]
     let helper = (2 +)  -- [2 .. 33]
-    enter 33
+    exit 33
     forM_ [31, 30 .. 0] $ \i -> do
         add (helper i) 1
         while (body i) $ do
@@ -153,4 +153,4 @@ i32Not = do
         while (body i) $ do
             sub (helper i) 1
             add (body i) 1
-    exit 33
+    enter 33
