@@ -154,3 +154,53 @@ i32Not = do
             sub (helper i) 1
             add (body i) 1
     enter 33
+
+i32And :: Operation
+i32And = do
+    let aBody = (1 +)  -- [1 .. 32]
+    let bHead = 33
+    let bBody = (34 +)  -- [34 .. 65]
+    exit 66
+    forM_ [31, 30 .. 0] $ \i -> do
+        sub (bBody i) 1
+        while (bBody i) $ do
+            add (bBody i) 1
+            set (aBody i) 0
+    sub bHead 1
+    enter 33
+
+i32Or :: Operation
+i32Or = do
+    let aBody = (1 +)  -- [1 .. 32]
+    let bHead = 33
+    let bBody = (34 +)  -- [34 .. 65]
+    exit 66
+    forM_ [31, 30 .. 0] $ \i ->
+        while (bBody i) $ do
+            sub (bBody i) 1
+            set (aBody i) 1
+    sub bHead 1
+    enter 33
+
+i32Xor :: Operation
+i32Xor = do
+    let aHead = 0
+    let aBody = (1 +)  -- [1 .. 32]
+    let bHead = 33
+    let bBody = (34 +)  -- [34 .. 65]
+    exit 66
+    -- 降順の方が若干短い。
+    forM_ [31, 30 .. 0] $ \i ->
+        while (bBody i) $ do
+            sub (bBody i) 1
+            -- i < 13 で分けると生成コードが一番短くなる。
+            let temp = if i < 13 then aHead else bHead
+            while (aBody i) $ do
+                sub (aBody i) 1
+                sub temp 1
+            while temp $ do
+                sub temp 1
+                add (bBody i) 1
+            add temp 1
+    sub bHead 1
+    enter 33
