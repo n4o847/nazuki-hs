@@ -135,9 +135,22 @@ incs p = at p $ raw "[>]+<[-<]>"
 decs :: Int -> Operation
 decs p = at p $ raw "-[++>-]<[<]>"
 
-generate :: () -> [BfCmd]
+main :: Operation
+main = i32Not
+
+generate :: () -> String
 generate _ =
-    execState i32Not []
+    let cmds = execState main [] in
+        foldl (\code cmd -> toChar cmd:code) "" cmds
+    where
+        toChar Inc = '+'
+        toChar Dec = '-'
+        toChar Fwd = '>'
+        toChar Bwd = '<'
+        toChar Opn = '['
+        toChar Cls = ']'
+        toChar Get = ','
+        toChar Put = '.'
 
 i32Not :: Operation
 i32Not = do
