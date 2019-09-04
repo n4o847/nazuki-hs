@@ -3,6 +3,8 @@
 module Nazuki.Generator (generate) where
 
 import           Control.Monad.State
+import           Data.Bits
+import           Data.Int
 import qualified Data.Text as T
 
 data BfCmd
@@ -152,6 +154,18 @@ generate _ =
         toChar Get = ','
         toChar Put = '.'
 
+i32Const :: Int32 -> Operation
+i32Const a = do
+    let head = 0
+    let body = (1 +)
+    exit 0
+    add head 1
+    forM_ [0 .. 31] $ \i ->
+        if testBit a i
+        then add (body i) 1
+        else nop
+    enter 33
+
 i32Not :: Operation
 i32Not = do
     let body = (1 +)  -- [1 .. 32]
@@ -216,4 +230,38 @@ i32Xor = do
                 add (bBody i) 1
             add temp 1
     sub bHead 1
+    enter 33
+
+i32Shl :: Operation
+i32Shl = do
+    let aBody = (1 +)
+    let bHead = 33
+    let bBody = (34 +)
+    exit 66
+    forM_ [31, 30 .. 5] $ \i ->
+        set (bBody i) 0
+    forM_ [4, 3 .. 1] $ \i ->
+        while (bBody i) $ do
+            sub (bBody i) 1
+            add (bBody 0) (bit i)
+    while (bBody 0) $ do
+        sub (bBody 0) 1
+        set (bBody 31) 0
+        forM_ [31, 30 .. 0] $ \i ->
+            while (aBody i) $ do
+                sub (aBody i) 1
+                add (aBody $ i + 1) 1
+    sub bHead 1
+    enter 33
+
+i32Inc :: Operation
+i32Inc = do
+    let head = 0
+    let body = (1 +)
+    let carry = 33
+    exit 33
+    sub head 1
+    incs $ body 0
+    add head 1
+    set carry 0
     enter 33
