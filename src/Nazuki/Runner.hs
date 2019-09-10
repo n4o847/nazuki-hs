@@ -1,6 +1,5 @@
 module Nazuki.Runner (parse) where
 
-import           Control.Arrow
 import           Control.Monad.State
 import           Data.Word                      ( Word8 )
 import           Data.Maybe
@@ -17,26 +16,25 @@ data Cmd
 
 parse :: String -> Either String [Cmd]
 parse code = do
-    (cmds, rest) <- parse' code
-    if isNothing rest then
-        Right cmds
-    else
-        Left "unmatched ]"
+    (rest, cmds) <- parse' code
+    case rest of
+        Nothing -> Right cmds
+        _       -> Left "unmatched ]"
     where
         parse' code =
             case code of
-                ""     -> Right ([], Nothing)
-                '+':xs -> cont Inc xs
-                '-':xs -> cont Dec xs
-                '>':xs -> cont Fwd xs
-                '<':xs -> cont Bwd xs
-                ',':xs -> cont Get xs
-                '.':xs -> cont Put xs
+                ""     -> Right (Nothing, [])
+                '+':xs -> Inc <:> parse' xs
+                '-':xs -> Dec <:> parse' xs
+                '>':xs -> Fwd <:> parse' xs
+                '<':xs -> Bwd <:> parse' xs
+                ',':xs -> Get <:> parse' xs
+                '.':xs -> Put <:> parse' xs
                 '[':xs -> do
-                    (block, rest) <- parse' xs
+                    (rest, block) <- parse' xs
                     case rest of
+                        Just xs -> While block <:> parse' xs
                         Nothing -> Left "unmatched ["
-                        Just xs -> cont (While block) xs
-                ']':xs -> Right ([], Just xs)
+                ']':xs -> Right (Just xs, [])
                 _:xs   -> parse' xs
-        cont cmd xs = first (cmd:) <$> parse' xs
+        (<:>) = fmap . fmap . (:)
