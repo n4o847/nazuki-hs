@@ -1,6 +1,7 @@
 module Main where
 
 import           Nazuki.Generator
+import           Nazuki.Runner
 
 main :: IO ()
-main = print $ generate ()
+main = either putStr putStr $ run $ generate ()

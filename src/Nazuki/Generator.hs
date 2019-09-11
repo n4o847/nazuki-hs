@@ -5,6 +5,7 @@ module Nazuki.Generator (generate) where
 import           Control.Monad.State
 import           Data.Bits
 import           Data.Int
+import           Data.Word
 import qualified Data.Text as T
 
 data BfCmd
@@ -107,6 +108,9 @@ sub p x = add p $ negate x
 getc :: Int -> Operation
 getc p = at p bfGet
 
+putc :: Int -> Operation
+putc p = at p bfPut
+
 while :: Int -> Operation -> Operation
 while p block = do
     at p bfOpn
@@ -138,7 +142,12 @@ decs :: Int -> Operation
 decs p = at p $ raw "-[++>-]<[<]>"
 
 main :: Operation
-main = i32Not
+main = do
+    i32Const 1
+    i32Const 31
+    i32Shl
+    i32Not
+    i32Print
 
 generate :: () -> String
 generate _ =
@@ -265,3 +274,81 @@ i32Inc = do
     add head 1
     set carry 0
     enter 33
+
+i32Print :: Operation
+i32Print = do
+    let head = 0
+    let body = (1 +)
+    let temp = 33
+    let temp0 = 34
+    exit 33
+    -- 負数用の処理 ここから
+    while (body 31) $ do
+        add temp 45
+        putc temp
+        set temp 0
+        enter 33
+        i32Not
+        exit 33
+        sub head 1
+        incs (body 0)
+        add head 1
+        while (body 31) $ do
+            sub (body 31) 1
+            add temp0 1
+    while temp0 $ do
+        sub temp0 1
+        add (body 31) 1
+    -- 負数用の処理 ここまで
+    -- 2 ** 31 に注意
+    forM_ [0 .. 31] $ \i -> do
+        let digits = toDigits (bit i :: Word32)
+        while (body i) $ do
+            sub (body i) 1
+            foldM_ (\j d -> do
+                add (temp + 3 * j) (fromIntegral d)
+                return $ j + 1
+                ) 0 digits
+    forM_ [0 .. 8] $ \j -> do
+        let dividend  = temp + 3 * j
+        let divisor   = temp + 3 * j + 1
+        let remainder = temp + 3 * j + 2
+        let quotient  = temp + 3 * j + 3
+        add divisor 10
+        at dividend $
+            -- https://esolangs.org/wiki/Brainfuck_algorithms#Divmod_algorithm
+            -- >n d
+            raw "[->-[>+>>]>[+[-<+>]>+>>]<<<<<]"
+            -- >0 d-n%d n%d n/d
+        set divisor 0
+        while remainder $ do
+            sub remainder 1
+            add dividend 1
+    forM_ [9, 8 .. 1] $ \j -> do
+        let s1 = temp + 3 * j - 2
+        let t0 = temp + 3 * j
+        let t1 = temp + 3 * j + 1
+        let t2 = temp + 3 * j + 2
+        while t0 $ do
+            sub t0 1
+            add t1 1
+            add t2 1
+        while t1 $ do
+            while t1 $ do
+                set t1 0
+                add s1 1
+            add t2 48
+            putc t2
+            set t2 0
+    do
+        let t0 = temp
+        let t1 = temp + 1
+        set t1 0
+        add t0 48
+        putc t0
+        set t0 0
+    sub head 1
+    enter 0
+    where
+        toDigits 0 = []
+        toDigits n = let (q, r) = n `quotRem` 10 in r:toDigits q
