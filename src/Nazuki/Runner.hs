@@ -1,13 +1,17 @@
-module Nazuki.Runner (run) where
+module Nazuki.Runner
+    ( debug
+    , run
+    )
+where
 
 import           Control.Monad.State
 import           Control.Monad.Except
-import           Data.Maybe
+import           Data.Functor                   ( (<&>) )
 import           Data.Word                      ( Word8 )
-import           Data.Char                      ( ord
-                                                , chr
-                                                )
 import           Text.Printf
+import           Codec.Binary.UTF8.String       ( encode
+                                                , decode
+                                                )
 
 data Cmd
     = Inc
@@ -64,9 +68,9 @@ emptyBFState = BFState
     , output = []
     }
 
-exec :: [Cmd] -> Either String BFState
-exec cmds =
-    execStateT (exec' cmds) emptyBFState
+exec :: [Cmd] -> [Word8] -> Either String BFState
+exec cmds inputData =
+    execStateT (exec' cmds) emptyBFState { input = inputData }
     where
         exec' :: [Cmd] -> StateT BFState (Either String) ()
         exec' cmds =
@@ -155,7 +159,10 @@ inspect state =
           ++ "ptr: " ++ show (ptr state) ++ "\n"
           ++ "cnt: " ++ show (cnt state) ++ "\n"
           ++ "out: " ++ unwords (map hex out) ++ "\n"
-          ++ "out: " ++ map (chr . fromIntegral) out ++ "\n"
+          ++ "out: " ++ decode out ++ "\n"
 
-run :: String -> Either String String
-run = parse >=> exec >=> inspect
+debug :: String -> [Word8] -> Either String String
+debug program input = parse program >>= flip exec input >>= inspect
+
+run :: String -> String -> Either String String
+run program input = parse program >>= flip exec (encode input) <&> decode . output

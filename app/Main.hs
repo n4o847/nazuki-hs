@@ -4,4 +4,4 @@ import           Nazuki.Generator
 import           Nazuki.Runner
 
 main :: IO ()
-main = either putStr putStr $ run $ generate ()
+main = either putStrLn putStrLn $ debug (generate ()) []
