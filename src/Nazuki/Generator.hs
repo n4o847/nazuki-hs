@@ -21,12 +21,12 @@ data BfCmd
     | Put
     deriving Show
 
-type Operation = State [BfCmd] ()
+type Oper = State [BfCmd] ()
 
-nop :: Operation
+nop :: Oper
 nop = return ()
 
-raw :: String -> Operation
+raw :: String -> Oper
 raw =
     mapM_ \case
         '+' -> bfInc
@@ -39,85 +39,85 @@ raw =
         '.' -> bfPut
         _ -> nop
 
-bfInc :: Operation
+bfInc :: Oper
 bfInc =
     modify \case
         Dec:xs -> xs
         xs     -> Inc:xs
 
-bfDec :: Operation
+bfDec :: Oper
 bfDec =
     modify \case
         Inc:xs -> xs
         xs     -> Dec:xs
 
-bfFwd :: Operation
+bfFwd :: Oper
 bfFwd =
     modify \case
         Bwd:xs -> xs
         xs     -> Fwd:xs
 
-bfBwd :: Operation
+bfBwd :: Oper
 bfBwd =
     modify \case
         Fwd:xs -> xs
         xs     -> Bwd:xs
 
-bfOpn :: Operation
+bfOpn :: Oper
 bfOpn = modify (Opn:)
 
-bfCls :: Operation
+bfCls :: Oper
 bfCls = modify (Cls:)
 
-bfGet :: Operation
+bfGet :: Oper
 bfGet = modify (Get:)
 
-bfPut :: Operation
+bfPut :: Oper
 bfPut = modify (Put:)
 
-enter :: Int -> Operation
+enter :: Int -> Oper
 enter p =
     if p >= 0
     then replicateM_ p bfFwd
     else replicateM_ (negate p) bfBwd
 
-exit :: Int -> Operation
+exit :: Int -> Oper
 exit p = enter $ negate p
 
-at :: Int -> Operation -> Operation
+at :: Int -> Oper -> Oper
 at p oper = do
     enter p
     oper
     exit p
 
-add :: Int -> Int -> Operation
+add :: Int -> Int -> Oper
 add p x =
     at p $
         if x >= 0
         then replicateM_ x bfInc
         else replicateM_ (negate x) bfDec
 
-sub :: Int -> Int -> Operation
+sub :: Int -> Int -> Oper
 sub p x = add p $ negate x
 
-getc :: Int -> Operation
+getc :: Int -> Oper
 getc p = at p bfGet
 
-putc :: Int -> Operation
+putc :: Int -> Oper
 putc p = at p bfPut
 
-while :: Int -> Operation -> Operation
+while :: Int -> Oper -> Oper
 while p block = do
     at p bfOpn
     block
     at p bfCls
 
-set :: Int -> Int -> Operation
+set :: Int -> Int -> Oper
 set p x = do
     while p $ sub p 1
     add p x
 
-ifElse :: Int -> Int -> Operation -> Operation -> Operation
+ifElse :: Int -> Int -> Oper -> Oper -> Oper
 ifElse flg tmp cons alt = do
     while flg do
         cons
@@ -130,13 +130,13 @@ ifElse flg tmp cons alt = do
         sub flg 1
         alt
 
-incs :: Int -> Operation
+incs :: Int -> Oper
 incs p = at p $ raw "[>]+<[-<]>"
 
-decs :: Int -> Operation
+decs :: Int -> Oper
 decs p = at p $ raw "-[++>-]<[<]>"
 
-main :: Operation
+main :: Oper
 main = do
     i32Const 1
     i32Const 31
@@ -158,7 +158,7 @@ generate _ =
         toChar Get = ','
         toChar Put = '.'
 
-i32Const :: Int32 -> Operation
+i32Const :: Int32 -> Oper
 i32Const a = do
     let head = 0
     let body = (1 +)
@@ -170,7 +170,7 @@ i32Const a = do
         else nop
     enter 33
 
-i32Not :: Operation
+i32Not :: Oper
 i32Not = do
     let body = (1 +)  -- [1 .. 32]
     let helper = (2 +)  -- [2 .. 33]
@@ -186,7 +186,7 @@ i32Not = do
             add (body i) 1
     enter 33
 
-i32And :: Operation
+i32And :: Oper
 i32And = do
     let aBody = (1 +)  -- [1 .. 32]
     let bHead = 33
@@ -200,7 +200,7 @@ i32And = do
     sub bHead 1
     enter 33
 
-i32Or :: Operation
+i32Or :: Oper
 i32Or = do
     let aBody = (1 +)  -- [1 .. 32]
     let bHead = 33
@@ -213,7 +213,7 @@ i32Or = do
     sub bHead 1
     enter 33
 
-i32Xor :: Operation
+i32Xor :: Oper
 i32Xor = do
     let aHead = 0
     let aBody = (1 +)  -- [1 .. 32]
@@ -236,7 +236,7 @@ i32Xor = do
     sub bHead 1
     enter 33
 
-i32Shl :: Operation
+i32Shl :: Oper
 i32Shl = do
     let aBody = (1 +)
     let bHead = 33
@@ -258,7 +258,7 @@ i32Shl = do
     sub bHead 1
     enter 33
 
-i32Inc :: Operation
+i32Inc :: Oper
 i32Inc = do
     let head = 0
     let body = (1 +)
@@ -270,7 +270,7 @@ i32Inc = do
     set carry 0
     enter 33
 
-i32Print :: Operation
+i32Print :: Oper
 i32Print = do
     let head = 0
     let body = (1 +)
