@@ -9,22 +9,7 @@ import           Data.Bits
 import           Data.Int
 import           Data.Word
 import qualified Data.Text as T
-
-data BfCmd
-    = Inc
-    | Dec
-    | Fwd
-    | Bwd
-    | Opn
-    | Cls
-    | Get
-    | Put
-    deriving Show
-
-type Oper = State [BfCmd] ()
-
-nop :: Oper
-nop = return ()
+import           Nazuki.Generator.Core
 
 raw :: String -> Oper
 raw =
@@ -38,42 +23,6 @@ raw =
         ',' -> bfGet
         '.' -> bfPut
         _ -> nop
-
-bfInc :: Oper
-bfInc =
-    modify \case
-        Dec:xs -> xs
-        xs     -> Inc:xs
-
-bfDec :: Oper
-bfDec =
-    modify \case
-        Inc:xs -> xs
-        xs     -> Dec:xs
-
-bfFwd :: Oper
-bfFwd =
-    modify \case
-        Bwd:xs -> xs
-        xs     -> Fwd:xs
-
-bfBwd :: Oper
-bfBwd =
-    modify \case
-        Fwd:xs -> xs
-        xs     -> Bwd:xs
-
-bfOpn :: Oper
-bfOpn = modify (Opn:)
-
-bfCls :: Oper
-bfCls = modify (Cls:)
-
-bfGet :: Oper
-bfGet = modify (Get:)
-
-bfPut :: Oper
-bfPut = modify (Put:)
 
 enter :: Int -> Oper
 enter p =
