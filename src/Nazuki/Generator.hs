@@ -1,4 +1,5 @@
 {-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Nazuki.Generator (generate) where
@@ -27,47 +28,40 @@ nop = return ()
 
 raw :: String -> Operation
 raw =
-    foldM_
-    (\_ c ->
-        case c of
-            '+' -> bfInc
-            '-' -> bfDec
-            '>' -> bfFwd
-            '<' -> bfBwd
-            '[' -> bfOpn
-            ']' -> bfCls
-            ',' -> bfGet
-            '.' -> bfPut
-            _ -> nop)
-    ()
+    mapM_ \case
+        '+' -> bfInc
+        '-' -> bfDec
+        '>' -> bfFwd
+        '<' -> bfBwd
+        '[' -> bfOpn
+        ']' -> bfCls
+        ',' -> bfGet
+        '.' -> bfPut
+        _ -> nop
 
 bfInc :: Operation
 bfInc =
-    modify \cmds ->
-        case cmds of
-            Dec:xs -> xs
-            _      -> Inc:cmds
+    modify \case
+        Dec:xs -> xs
+        xs     -> Inc:xs
 
 bfDec :: Operation
 bfDec =
-    modify \cmds ->
-        case cmds of
-            Inc:xs -> xs
-            _      -> Dec:cmds
+    modify \case
+        Inc:xs -> xs
+        xs     -> Dec:xs
 
 bfFwd :: Operation
 bfFwd =
-    modify \cmds ->
-        case cmds of
-            Bwd:xs -> xs
-            _      -> Fwd:cmds
+    modify \case
+        Bwd:xs -> xs
+        xs     -> Fwd:xs
 
 bfBwd :: Operation
 bfBwd =
-    modify \cmds ->
-        case cmds of
-            Fwd:xs -> xs
-            _      -> Bwd:cmds
+    modify \case
+        Fwd:xs -> xs
+        xs     -> Bwd:xs
 
 bfOpn :: Operation
 bfOpn = modify (Opn:)
