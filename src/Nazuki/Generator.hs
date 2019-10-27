@@ -1,3 +1,4 @@
+{-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Nazuki.Generator (generate) where
@@ -42,28 +43,28 @@ raw =
 
 bfInc :: Operation
 bfInc =
-    modify $ \cmds ->
+    modify \cmds ->
         case cmds of
             Dec:xs -> xs
             _      -> Inc:cmds
 
 bfDec :: Operation
 bfDec =
-    modify $ \cmds ->
+    modify \cmds ->
         case cmds of
             Inc:xs -> xs
             _      -> Dec:cmds
 
 bfFwd :: Operation
 bfFwd =
-    modify $ \cmds ->
+    modify \cmds ->
         case cmds of
             Bwd:xs -> xs
             _      -> Fwd:cmds
 
 bfBwd :: Operation
 bfBwd =
-    modify $ \cmds ->
+    modify \cmds ->
         case cmds of
             Fwd:xs -> xs
             _      -> Bwd:cmds
@@ -124,13 +125,13 @@ set p x = do
 
 ifElse :: Int -> Int -> Operation -> Operation -> Operation
 ifElse flg tmp cons alt = do
-    while flg $ do
+    while flg do
         cons
         sub tmp 1
         sub flg 1
     add flg 1
     add tmp 1
-    while tmp $ do
+    while tmp do
         sub tmp 1
         sub flg 1
         alt
@@ -169,7 +170,7 @@ i32Const a = do
     let body = (1 +)
     exit 0
     add head 1
-    forM_ [0 .. 31] $ \i ->
+    forM_ [0 .. 31] \i ->
         if testBit a i
         then add (body i) 1
         else nop
@@ -180,13 +181,13 @@ i32Not = do
     let body = (1 +)  -- [1 .. 32]
     let helper = (2 +)  -- [2 .. 33]
     exit 33
-    forM_ [31, 30 .. 0] $ \i -> do
+    forM_ [31, 30 .. 0] \i -> do
         add (helper i) 1
-        while (body i) $ do
+        while (body i) do
             sub (body i) 1
             sub (helper i) 1
-    forM_ [0 .. 31] $ \i ->
-        while (helper i) $ do
+    forM_ [0 .. 31] \i ->
+        while (helper i) do
             sub (helper i) 1
             add (body i) 1
     enter 33
@@ -197,9 +198,9 @@ i32And = do
     let bHead = 33
     let bBody = (34 +)  -- [34 .. 65]
     exit 66
-    forM_ [31, 30 .. 0] $ \i -> do
+    forM_ [31, 30 .. 0] \i -> do
         sub (bBody i) 1
-        while (bBody i) $ do
+        while (bBody i) do
             add (bBody i) 1
             set (aBody i) 0
     sub bHead 1
@@ -211,8 +212,8 @@ i32Or = do
     let bHead = 33
     let bBody = (34 +)  -- [34 .. 65]
     exit 66
-    forM_ [31, 30 .. 0] $ \i ->
-        while (bBody i) $ do
+    forM_ [31, 30 .. 0] \i ->
+        while (bBody i) do
             sub (bBody i) 1
             set (aBody i) 1
     sub bHead 1
@@ -226,15 +227,15 @@ i32Xor = do
     let bBody = (34 +)  -- [34 .. 65]
     exit 66
     -- 降順の方が若干短い。
-    forM_ [31, 30 .. 0] $ \i ->
-        while (bBody i) $ do
+    forM_ [31, 30 .. 0] \i ->
+        while (bBody i) do
             sub (bBody i) 1
             -- i < 13 で分けると生成コードが一番短くなる。
             let temp = if i < 13 then aHead else bHead
-            while (aBody i) $ do
+            while (aBody i) do
                 sub (aBody i) 1
                 sub temp 1
-            while temp $ do
+            while temp do
                 sub temp 1
                 add (bBody i) 1
             add temp 1
@@ -247,17 +248,17 @@ i32Shl = do
     let bHead = 33
     let bBody = (34 +)
     exit 66
-    forM_ [31, 30 .. 5] $ \i ->
+    forM_ [31, 30 .. 5] \i ->
         set (bBody i) 0
-    forM_ [4, 3 .. 1] $ \i ->
-        while (bBody i) $ do
+    forM_ [4, 3 .. 1] \i ->
+        while (bBody i) do
             sub (bBody i) 1
             add (bBody 0) (bit i)
-    while (bBody 0) $ do
+    while (bBody 0) do
         sub (bBody 0) 1
         set (bBody 31) 0
-        forM_ [31, 30 .. 0] $ \i ->
-            while (aBody i) $ do
+        forM_ [31, 30 .. 0] \i ->
+            while (aBody i) do
                 sub (aBody i) 1
                 add (aBody $ i + 1) 1
     sub bHead 1
@@ -283,7 +284,7 @@ i32Print = do
     let temp0 = 34
     exit 33
     -- 負数用の処理 ここから
-    while (body 31) $ do
+    while (body 31) do
         add temp 45
         putc temp
         set temp 0
@@ -293,23 +294,23 @@ i32Print = do
         sub head 1
         incs (body 0)
         add head 1
-        while (body 31) $ do
+        while (body 31) do
             sub (body 31) 1
             add temp0 1
-    while temp0 $ do
+    while temp0 do
         sub temp0 1
         add (body 31) 1
     -- 負数用の処理 ここまで
     -- 2 ** 31 に注意
-    forM_ [0 .. 31] $ \i -> do
+    forM_ [0 .. 31] \i -> do
         let digits = toDigits (bit i :: Word32)
-        while (body i) $ do
+        while (body i) do
             sub (body i) 1
             foldM_ (\j d -> do
                 add (temp + 3 * j) (fromIntegral d)
                 return $ j + 1
                 ) 0 digits
-    forM_ [0 .. 8] $ \j -> do
+    forM_ [0 .. 8] \j -> do
         let dividend  = temp + 3 * j
         let divisor   = temp + 3 * j + 1
         let remainder = temp + 3 * j + 2
@@ -321,20 +322,20 @@ i32Print = do
             raw "[->-[>+>>]>[+[-<+>]>+>>]<<<<<]"
             -- >0 d-n%d n%d n/d
         set divisor 0
-        while remainder $ do
+        while remainder do
             sub remainder 1
             add dividend 1
-    forM_ [9, 8 .. 1] $ \j -> do
+    forM_ [9, 8 .. 1] \j -> do
         let s1 = temp + 3 * j - 2
         let t0 = temp + 3 * j
         let t1 = temp + 3 * j + 1
         let t2 = temp + 3 * j + 2
-        while t0 $ do
+        while t0 do
             sub t0 1
             add t1 1
             add t2 1
-        while t1 $ do
-            while t1 $ do
+        while t1 do
+            while t1 do
                 set t1 0
                 add s1 1
             add t2 48
