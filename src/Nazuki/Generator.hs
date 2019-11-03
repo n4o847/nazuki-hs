@@ -14,6 +14,7 @@ import           Data.Word
 import qualified Data.Text as T
 import           Nazuki.Generator.Core
 import           Nazuki.Generator.Util
+import           Nazuki.Generator.IntOf2To32
 
 main :: Oper
 main = do
@@ -28,32 +29,10 @@ generate' _ =
     generate main
 
 i32Const :: Int32 -> Oper
-i32Const a = do
-    let head = 0
-    let body = (1 +)
-    exit 0
-    add head 1
-    forM_ [0 .. 31] \i ->
-        if testBit a i
-        then add (body i) 1
-        else bfNop
-    enter 33
+i32Const = intOf2To32Const
 
 i32Not :: Oper
-i32Not = do
-    let body = (1 +)  -- [1 .. 32]
-    let helper = (2 +)  -- [2 .. 33]
-    exit 33
-    forM_ [31, 30 .. 0] \i -> do
-        add (helper i) 1
-        while (body i) do
-            sub (body i) 1
-            sub (helper i) 1
-    forM_ [0 .. 31] \i ->
-        while (helper i) do
-            sub (helper i) 1
-            add (body i) 1
-    enter 33
+i32Not = intOf2To32Not
 
 i32And :: Oper
 i32And = do
