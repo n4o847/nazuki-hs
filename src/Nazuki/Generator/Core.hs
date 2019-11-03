@@ -2,9 +2,8 @@
 {-# LANGUAGE LambdaCase #-}
 
 module Nazuki.Generator.Core
-    ( BfCmd(..)
-    , Oper
-    , nop
+    ( Oper
+    , bfNop
     , bfInc
     , bfDec
     , bfFwd
@@ -13,7 +12,6 @@ module Nazuki.Generator.Core
     , bfCls
     , bfGet
     , bfPut
-    , raw
     , generate
     )
 where
@@ -33,8 +31,9 @@ data BfCmd
 
 type Oper = State [BfCmd] ()
 
-nop :: Oper
-nop = pure ()
+bfNop :: Oper
+bfNop =
+    pure ()
 
 bfInc :: Oper
 bfInc =
@@ -61,31 +60,23 @@ bfBwd =
         xs     -> Bwd:xs
 
 bfOpn :: Oper
-bfOpn = modify (Opn:)
+bfOpn =
+    modify (Opn:)
 
 bfCls :: Oper
-bfCls = modify (Cls:)
+bfCls =
+    modify (Cls:)
 
 bfGet :: Oper
-bfGet = modify (Get:)
+bfGet =
+    modify (Get:)
 
 bfPut :: Oper
-bfPut = modify (Put:)
+bfPut =
+    modify (Put:)
 
-charToOper :: Char -> Oper
-charToOper = \case
-    '+' -> bfInc
-    '-' -> bfDec
-    '>' -> bfFwd
-    '<' -> bfBwd
-    '[' -> bfOpn
-    ']' -> bfCls
-    ',' -> bfGet
-    '.' -> bfPut
-    _ -> nop
-
-cmdToChar :: BfCmd -> Char
-cmdToChar = \case
+toChar :: BfCmd -> Char
+toChar = \case
     Inc -> '+'
     Dec -> '-'
     Fwd -> '>'
@@ -95,10 +86,6 @@ cmdToChar = \case
     Get -> ','
     Put -> '.'
 
-raw :: String -> Oper
-raw =
-    mapM_ charToOper
-
 generate :: Oper -> String
 generate oper =
-    map cmdToChar $ reverse $ execState oper []
+    map toChar $ reverse $ execState oper []

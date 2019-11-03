@@ -4,75 +4,16 @@
 
 module Nazuki.Generator
     ( generate'
-    ) where
+    )
+where
 
-import           Control.Monad.State
+import           Control.Monad
 import           Data.Bits
 import           Data.Int
 import           Data.Word
 import qualified Data.Text as T
 import           Nazuki.Generator.Core
-
-enter :: Int -> Oper
-enter p =
-    if p >= 0
-    then replicateM_ p bfFwd
-    else replicateM_ (negate p) bfBwd
-
-exit :: Int -> Oper
-exit p = enter $ negate p
-
-at :: Int -> Oper -> Oper
-at p oper = do
-    enter p
-    oper
-    exit p
-
-add :: Int -> Int -> Oper
-add p x =
-    at p $
-        if x >= 0
-        then replicateM_ x bfInc
-        else replicateM_ (negate x) bfDec
-
-sub :: Int -> Int -> Oper
-sub p x = add p $ negate x
-
-getc :: Int -> Oper
-getc p = at p bfGet
-
-putc :: Int -> Oper
-putc p = at p bfPut
-
-while :: Int -> Oper -> Oper
-while p block = do
-    at p bfOpn
-    block
-    at p bfCls
-
-set :: Int -> Int -> Oper
-set p x = do
-    while p $ sub p 1
-    add p x
-
-ifElse :: Int -> Int -> Oper -> Oper -> Oper
-ifElse flg tmp cons alt = do
-    while flg do
-        cons
-        sub tmp 1
-        sub flg 1
-    add flg 1
-    add tmp 1
-    while tmp do
-        sub tmp 1
-        sub flg 1
-        alt
-
-incs :: Int -> Oper
-incs p = at p $ raw "[>]+<[-<]>"
-
-decs :: Int -> Oper
-decs p = at p $ raw "-[++>-]<[<]>"
+import           Nazuki.Generator.Util
 
 main :: Oper
 main = do
@@ -95,7 +36,7 @@ i32Const a = do
     forM_ [0 .. 31] \i ->
         if testBit a i
         then add (body i) 1
-        else nop
+        else bfNop
     enter 33
 
 i32Not :: Oper
