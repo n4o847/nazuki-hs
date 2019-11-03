@@ -2,7 +2,9 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Nazuki.Generator (generate) where
+module Nazuki.Generator
+    ( generate'
+    ) where
 
 import           Control.Monad.State
 import           Data.Bits
@@ -10,19 +12,6 @@ import           Data.Int
 import           Data.Word
 import qualified Data.Text as T
 import           Nazuki.Generator.Core
-
-raw :: String -> Oper
-raw =
-    mapM_ \case
-        '+' -> bfInc
-        '-' -> bfDec
-        '>' -> bfFwd
-        '<' -> bfBwd
-        '[' -> bfOpn
-        ']' -> bfCls
-        ',' -> bfGet
-        '.' -> bfPut
-        _ -> nop
 
 enter :: Int -> Oper
 enter p =
@@ -93,19 +82,9 @@ main = do
     i32Not
     i32Print
 
-generate :: () -> String
-generate _ =
-    let cmds = execState main [] in
-        foldl (\code cmd -> toChar cmd:code) "" cmds
-    where
-        toChar Inc = '+'
-        toChar Dec = '-'
-        toChar Fwd = '>'
-        toChar Bwd = '<'
-        toChar Opn = '['
-        toChar Cls = ']'
-        toChar Get = ','
-        toChar Put = '.'
+generate' :: () -> String
+generate' _ =
+    generate main
 
 i32Const :: Int32 -> Oper
 i32Const a = do

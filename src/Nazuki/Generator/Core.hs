@@ -13,6 +13,8 @@ module Nazuki.Generator.Core
     , bfCls
     , bfGet
     , bfPut
+    , raw
+    , generate
     )
 where
 
@@ -69,3 +71,34 @@ bfGet = modify (Get:)
 
 bfPut :: Oper
 bfPut = modify (Put:)
+
+charToOper :: Char -> Oper
+charToOper = \case
+    '+' -> bfInc
+    '-' -> bfDec
+    '>' -> bfFwd
+    '<' -> bfBwd
+    '[' -> bfOpn
+    ']' -> bfCls
+    ',' -> bfGet
+    '.' -> bfPut
+    _ -> nop
+
+cmdToChar :: BfCmd -> Char
+cmdToChar = \case
+    Inc -> '+'
+    Dec -> '-'
+    Fwd -> '>'
+    Bwd -> '<'
+    Opn -> '['
+    Cls -> ']'
+    Get -> ','
+    Put -> '.'
+
+raw :: String -> Oper
+raw =
+    mapM_ charToOper
+
+generate :: Oper -> String
+generate oper =
+    map cmdToChar $ reverse $ execState oper []
