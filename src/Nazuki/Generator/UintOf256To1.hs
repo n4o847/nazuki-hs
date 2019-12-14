@@ -4,6 +4,8 @@
 module Nazuki.Generator.UintOf256To1
     ( uintOf256To1Const
     , uintOf256To1Dup
+    , uintOf256To1Drop
+    , uintOf256To1Swap
     , uintOf256To1Not
     , uintOf256To1Add
     , uintOf256To1Sub
@@ -47,6 +49,35 @@ uintOf256To1Dup = do
     while bHead do
         sub bHead 1
         add aBody 1
+    add bHead 1
+    produce 2
+
+uintOf256To1Drop :: Oper
+uintOf256To1Drop = do
+    let head = 0
+    let body = 1
+    consume 1
+    set body 0
+    sub head 1
+    produce 0
+
+uintOf256To1Swap :: Oper
+uintOf256To1Swap = do
+    let aHead = 0
+    let aBody = 1
+    let bHead = 2
+    let bBody = 3
+    consume 2
+    sub bHead 1
+    while aBody do
+        sub aBody 1
+        add bHead 1
+    while bBody do
+        sub bBody 1
+        add aBody 1
+    while bHead do
+        sub bHead 1
+        add bBody 1
     add bHead 1
     produce 2
 
