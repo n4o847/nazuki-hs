@@ -15,10 +15,12 @@ module Nazuki.Generator.Util
     , ifElse
     , incs
     , decs
+    , puts
     )
 where
 
 import           Control.Monad
+import           Data.Char                      ( ord )
 import           Nazuki.Generator.Core
 
 raw :: String -> Oper
@@ -105,3 +107,10 @@ decs :: Int -> Oper
 decs p =
     at p $
         raw "-[++>-]<[<]>"
+
+puts :: Int -> String -> Oper
+puts p s =
+    forM_ s \c -> do
+        add p (ord c)
+        putc p
+        sub p (ord c)

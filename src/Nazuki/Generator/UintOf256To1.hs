@@ -10,6 +10,7 @@ module Nazuki.Generator.UintOf256To1
     , uintOf256To1Add
     , uintOf256To1Sub
     , uintOf256To1Scan
+    , uintOf256To1PutsIfElse
     )
 where
 
@@ -120,6 +121,20 @@ uintOf256To1Sub = do
         sub aBody 1
     sub bHead 1
     produce 1
+
+uintOf256To1PutsIfElse :: String -> String -> Oper
+uintOf256To1PutsIfElse st sf = do
+    let head = 0
+    let body = 1
+    consume 1
+    while body do
+        set body 0
+        sub head 1
+        puts body st
+    while head do
+        sub head 1
+        puts head sf
+    produce 0
 
 uintOf256To1Scan :: Oper
 uintOf256To1Scan = do
