@@ -13,4 +13,4 @@ main = either putStrLn putStrLn $ debug (generate do
     intOf2To32Shl
     intOf2To32Not
     intOf2To32Print
-    ) []
+    ) ""

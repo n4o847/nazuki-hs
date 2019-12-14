@@ -161,8 +161,8 @@ inspect state =
           ++ "out: " ++ unwords (map hex out) ++ "\n"
           ++ "out: " ++ decode out ++ "\n"
 
-debug :: String -> [Word8] -> Either String String
-debug program input = parse program >>= flip exec input >>= inspect
+debug :: String -> String -> Either String String
+debug program input = parse program >>= flip exec (encode input) >>= inspect
 
 run :: String -> String -> Either String String
 run program input = parse program >>= flip exec (encode input) <&> decode . output
