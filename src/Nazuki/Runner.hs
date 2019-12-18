@@ -165,4 +165,4 @@ debug :: String -> String -> Either String String
 debug program input = parse program >>= flip exec (encode input) >>= inspect
 
 run :: String -> String -> Either String String
-run program input = parse program >>= flip exec (encode input) <&> decode . output
+run program input = parse program >>= flip exec (encode input) <&> reverse . decode . output
