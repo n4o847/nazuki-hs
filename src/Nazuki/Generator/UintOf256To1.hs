@@ -11,6 +11,7 @@ module Nazuki.Generator.UintOf256To1
     , uintOf256To1Sub
     , uintOf256To1Scan
     , uintOf256To1PutsIfElse
+    , uintOf256To1PutsCase
     )
 where
 
@@ -122,20 +123,6 @@ uintOf256To1Sub = do
     sub bHead 1
     produce 1
 
-uintOf256To1PutsIfElse :: String -> String -> Oper
-uintOf256To1PutsIfElse st sf = do
-    let head = 0
-    let body = 1
-    consume 1
-    while body do
-        set body 0
-        sub head 1
-        puts body st
-    while head do
-        sub head 1
-        puts head sf
-    produce 0
-
 uintOf256To1Scan :: Oper
 uintOf256To1Scan = do
     let head = 0
@@ -166,3 +153,43 @@ uintOf256To1Scan = do
                     add body 1
     add head 1
     produce 1
+
+uintOf256To1PutsIfElse :: String -> String -> Oper
+uintOf256To1PutsIfElse st sf = do
+    let head = 0
+    let body = 1
+    consume 1
+    while body do
+        set body 0
+        sub head 1
+        puts body st
+    while head do
+        sub head 1
+        puts head sf
+    produce 0
+
+uintOf256To1PutsCase :: [(Int, String)] -> Oper
+uintOf256To1PutsCase cases = do
+    let m0 = 0
+    let m1 = 1
+    let m2 = 2
+    let m3 = 3
+    consume 1
+    forM_ cases \(n, s) -> do
+        while m1 do
+            sub m1 1
+            add m2 1
+            add m3 1
+        while m3 do
+            sub m3 1
+            add m1 1
+        sub m2 n
+        add m3 1
+        while m2 do
+            set m2 0
+            sub m3 1
+        while m3 do
+            sub m3 1
+            puts m3 s
+    sub m0 1
+    produce 0
