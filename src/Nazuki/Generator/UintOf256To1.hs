@@ -191,5 +191,6 @@ uintOf256To1PutsCase cases = do
         while m3 do
             sub m3 1
             puts m3 s
+    set m1 0
     sub m0 1
     produce 0
