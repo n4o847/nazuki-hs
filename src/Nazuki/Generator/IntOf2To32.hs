@@ -1,7 +1,17 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE LambdaCase #-}
 
-module Nazuki.Generator.IntOf2To32 where
+module Nazuki.Generator.IntOf2To32
+    ( intOf2To32Const
+    , intOf2To32Not
+    , intOf2To32And
+    , intOf2To32Or
+    , intOf2To32Xor
+    , intOf2To32Shl
+    , intOf2To32Inc
+    , intOf2To32Print
+    )
+where
 
 import           Control.Monad
 import           Data.Bits                      ( bit
@@ -12,24 +22,32 @@ import           Data.Word                      ( Word32 )
 import           Nazuki.Generator.Core
 import           Nazuki.Generator.Util
 
+consume :: Int -> Oper
+consume a =
+    exit (33 * a)
+
+produce :: Int -> Oper
+produce a =
+    enter (33 * a)
+
 intOf2To32Const :: Int32 -> Oper
 intOf2To32Const a = do
     let head = 0
     let body = (1 +)
-    exit 0
+    consume 0
     add head 1
     forM_ [0 .. 31] \i ->
         if testBit a i then
             add (body i) 1
         else
             bfNop
-    enter 33
+    produce 1
 
 intOf2To32Not :: Oper
 intOf2To32Not = do
     let body = (1 +)  -- [1 .. 32]
     let helper = (2 +)  -- [2 .. 33]
-    exit 33
+    consume 1
     forM_ [31, 30 .. 0] \i -> do
         add (helper i) 1
         while (body i) do
@@ -39,34 +57,34 @@ intOf2To32Not = do
         while (helper i) do
             sub (helper i) 1
             add (body i) 1
-    enter 33
+    produce 1
 
 intOf2To32And :: Oper
 intOf2To32And = do
     let aBody = (1 +)  -- [1 .. 32]
     let bHead = 33
     let bBody = (34 +)  -- [34 .. 65]
-    exit 66
+    consume 2
     forM_ [31, 30 .. 0] \i -> do
         sub (bBody i) 1
         while (bBody i) do
             add (bBody i) 1
             set (aBody i) 0
     sub bHead 1
-    enter 33
+    produce 1
 
 intOf2To32Or :: Oper
 intOf2To32Or = do
     let aBody = (1 +)  -- [1 .. 32]
     let bHead = 33
     let bBody = (34 +)  -- [34 .. 65]
-    exit 66
+    consume 2
     forM_ [31, 30 .. 0] \i ->
         while (bBody i) do
             sub (bBody i) 1
             set (aBody i) 1
     sub bHead 1
-    enter 33
+    produce 1
 
 intOf2To32Xor :: Oper
 intOf2To32Xor = do
@@ -74,7 +92,7 @@ intOf2To32Xor = do
     let aBody = (1 +)  -- [1 .. 32]
     let bHead = 33
     let bBody = (34 +)  -- [34 .. 65]
-    exit 66
+    consume 2
     -- 降順の方が若干短い。
     forM_ [31, 30 .. 0] \i ->
         while (bBody i) do
@@ -89,14 +107,14 @@ intOf2To32Xor = do
                 add (bBody i) 1
             add temp 1
     sub bHead 1
-    enter 33
+    produce 1
 
 intOf2To32Shl :: Oper
 intOf2To32Shl = do
     let aBody = (1 +)
     let bHead = 33
     let bBody = (34 +)
-    exit 66
+    consume 2
     forM_ [31, 30 .. 5] \i ->
         set (bBody i) 0
     forM_ [4, 3 .. 1] \i ->
@@ -111,19 +129,19 @@ intOf2To32Shl = do
                 sub (aBody i) 1
                 add (aBody $ i + 1) 1
     sub bHead 1
-    enter 33
+    produce 1
 
 intOf2To32Inc :: Oper
 intOf2To32Inc = do
     let head = 0
     let body = (1 +)
     let carry = 33
-    exit 33
+    consume 1
     sub head 1
     incs $ body 0
     add head 1
     set carry 0
-    enter 33
+    produce 1
 
 intOf2To32Print :: Oper
 intOf2To32Print = do
@@ -131,7 +149,7 @@ intOf2To32Print = do
     let body = (1 +)
     let temp = 33
     let temp0 = 34
-    exit 33
+    consume 1
     -- 負数用の処理 ここから
     while (body 31) do
         add temp 45
@@ -198,7 +216,7 @@ intOf2To32Print = do
         putc t0
         set t0 0
     sub head 1
-    enter 0
+    produce 0
     where
         toDigits 0 = []
         toDigits n = let (q, r) = n `quotRem` 10 in r:toDigits q
