@@ -9,6 +9,8 @@ module Nazuki.Generator.IntOf2To32
     , intOf2To32Xor
     , intOf2To32Shl
     , intOf2To32Inc
+    , intOf2To32Mul10
+    , intOf2To32Scan
     , intOf2To32Print
     )
 where
@@ -141,6 +143,92 @@ intOf2To32Inc = do
     incs $ body 0
     add head 1
     set carry 0
+    produce 1
+
+intOf2To32Mul10 :: Oper
+intOf2To32Mul10 = do
+    let head = 0
+    let body = (1 +)
+    consume 1
+    set (body 31) 0
+    while (body 30) do
+        sub (body 30) 1
+        add (body 31) 1
+    while (body 29) do
+        sub (body 29) 1
+        add (body 30) 1
+    forM_ [28, 27 .. 0] \i ->
+        while (body i) do
+            sub (body i) 1
+            while (body $ i + 2) do
+                sub (body $ i + 2) 1
+                add (body $ i + 1) 1
+            incs (body $ i + 3)
+            while (body $ i + 1) do
+                sub (body $ i + 1) 1
+                add (body $ i + 2) 1
+            add (body $ i + 1) 1
+    set (body 32) 0
+    produce 1
+
+intOf2To32Scan :: Oper
+intOf2To32Scan = do
+    let head = 0
+    let body = (1 +)
+    let temp = 33
+    let digitValue = 33 + 1
+    let flagLoop = 33 + 2
+    let flagNeg = 33 + 3
+    let evalDigit = do
+            sub temp 48
+            while temp do
+                replicateM_ 9 do
+                    sub temp 1
+                    add digitValue 1
+                    at temp do
+                        raw "["
+                set temp 0
+                set digitValue 0
+                sub flagLoop 1
+                replicateM_ 9 do
+                    at temp do
+                        raw "]"
+    let addDigit =
+            while digitValue do
+                sub digitValue 1
+                incs $ body 0
+                set temp 0
+    consume 0
+    -- Check if starting with '-'
+    add flagNeg 1
+    getc temp
+    sub temp 45
+    while temp do
+        sub flagNeg 1
+        add temp 45
+        evalDigit
+        addDigit
+    -- Main
+    add flagLoop 1
+    while flagLoop do
+        getc temp
+        evalDigit
+        while flagLoop do
+            sub flagLoop 1
+            at 33 do
+                intOf2To32Mul10
+            add temp 1
+        while temp do
+            sub temp 1
+            add flagLoop 1
+        addDigit
+    add head 1
+    -- Negate
+    while flagNeg do
+        sub flagNeg 1
+        at 33 do
+            intOf2To32Not
+            intOf2To32Inc
     produce 1
 
 intOf2To32Print :: Oper
