@@ -9,7 +9,7 @@ import Nazuki.Generator
 
 spec :: Spec
 spec = do
-    describe "intOf256To32Scan" $
+    describe "intOf2To32Scan" $
         it "intOf2To32Scan" $
             let
                 program = generate do
