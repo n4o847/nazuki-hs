@@ -45,6 +45,7 @@ intOf2To32Const a = do
             bfNop
     produce 1
 
+-- 480 bytes
 intOf2To32Not :: Oper
 intOf2To32Not = do
     let body = (1 +)  -- [1 .. 32]
@@ -61,6 +62,7 @@ intOf2To32Not = do
             add (body i) 1
     produce 1
 
+-- 2370 bytes
 intOf2To32And :: Oper
 intOf2To32And = do
     let aBody = (1 +)  -- [1 .. 32]
@@ -75,6 +77,7 @@ intOf2To32And = do
     sub bHead 1
     produce 1
 
+-- 2370 bytes
 intOf2To32Or :: Oper
 intOf2To32Or = do
     let aBody = (1 +)  -- [1 .. 32]
@@ -88,6 +91,7 @@ intOf2To32Or = do
     sub bHead 1
     produce 1
 
+-- 5190 bytes
 intOf2To32Xor :: Oper
 intOf2To32Xor = do
     let aHead = 0
@@ -111,6 +115,7 @@ intOf2To32Xor = do
     sub bHead 1
     produce 1
 
+-- 503 bytes
 intOf2To32Shl :: Oper
 intOf2To32Shl = do
     let aBody = (1 +)
@@ -133,6 +138,7 @@ intOf2To32Shl = do
     sub bHead 1
     produce 1
 
+-- 81 bytes
 intOf2To32Inc :: Oper
 intOf2To32Inc = do
     let head = 0
@@ -145,6 +151,7 @@ intOf2To32Inc = do
     set carry 0
     produce 1
 
+-- 952 bytes
 intOf2To32Mul10 :: Oper
 intOf2To32Mul10 = do
     let head = 0
@@ -171,6 +178,7 @@ intOf2To32Mul10 = do
     set (body 32) 0
     produce 1
 
+-- 2073 bytes
 intOf2To32Scan :: Oper
 intOf2To32Scan = do
     let head = 0
@@ -231,6 +239,7 @@ intOf2To32Scan = do
             intOf2To32Inc
     produce 1
 
+-- 4682 bytes
 intOf2To32Print :: Oper
 intOf2To32Print = do
     let head = 0
