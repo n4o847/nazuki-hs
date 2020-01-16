@@ -3,6 +3,7 @@
 
 module Nazuki.Generator.IntOf2To32
     ( intOf2To32Const
+    , intOf2To32Dup
     , intOf2To32Not
     , intOf2To32And
     , intOf2To32Or
@@ -46,6 +47,25 @@ intOf2To32Const a = do
         else
             bfNop
     produce 1
+
+-- 4546 bytes
+intOf2To32Dup :: Oper
+intOf2To32Dup = do
+    let a = 0
+    let a' = (1 +)
+    let b = 33
+    let b' = (34 +)
+    consume 1
+    forM_ [0 .. 31] \i -> do
+        while (a' i) do
+            sub (a' i) 1
+            add b 1
+            add (b' i) 1
+        while b do
+            sub b 1
+            add (a' i) 1
+    add b 1
+    produce 2
 
 -- 480 bytes
 intOf2To32Not :: Oper
