@@ -9,6 +9,7 @@ module Nazuki.Generator.IntOf2To32
     , intOf2To32Xor
     , intOf2To32Shl
     , intOf2To32Inc
+    , intOf2To32Add
     , intOf2To32Mul10
     , intOf2To32Mul
     , intOf2To32Scan
@@ -149,6 +150,25 @@ intOf2To32Inc = do
     sub head 1
     incs $ body 0
     add head 1
+    set carry 0
+    produce 1
+
+intOf2To32Add :: Oper
+intOf2To32Add = do
+    let a = 0
+    let a' = (1 +)
+    let b = 33
+    let b' = (34 +)
+    let carry = 66
+    consume 2
+    sub b 1
+    forM_ [0 .. 31] \i -> do
+        while (a' i) do
+            sub (a' i) 1
+            incs (b' i)
+        while (b' i) do
+            sub (b' i) 1
+            add (a' i) 1
     set carry 0
     produce 1
 
