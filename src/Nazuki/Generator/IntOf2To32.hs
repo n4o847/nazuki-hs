@@ -10,6 +10,7 @@ module Nazuki.Generator.IntOf2To32
     , intOf2To32Shl
     , intOf2To32Inc
     , intOf2To32Mul10
+    , intOf2To32Mul
     , intOf2To32Scan
     , intOf2To32Print
     )
@@ -176,6 +177,48 @@ intOf2To32Mul10 = do
                 add (body $ i + 2) 1
             add (body $ i + 1) 1
     set (body 32) 0
+    produce 1
+
+-- 77400 bytes
+intOf2To32Mul :: Oper
+intOf2To32Mul = do
+    let aHead = 0
+    let aBody = (1 +)
+    let bHead = 33
+    let bBody = (34 +)
+    consume 2
+    sub bHead 1
+    sub aHead 1
+    forM_ [0 .. 31] \i -> do
+        while (aBody i) do
+            sub (aBody i) 1
+            add (aBody $ i - 1) 1
+    forM_ [31, 30 .. 0] \i -> do
+        while (aBody $ i - 1) do
+            sub (aBody $ i - 1) 1
+            forM_ [0 .. 31 - i] \j -> do
+                while (bBody j) do
+                    sub (bBody j) 1
+                    incs (aBody $ i + j)
+                    set bHead 0
+                    unless (i == 0) do
+                        add bHead 1
+                unless (i == 0) do
+                    while bHead do
+                        sub bHead 1
+                        add (bBody j) 1
+                unless (j == 31 - i) do
+                    while (aBody $ i + j) do
+                        sub (aBody $ i + j) 1
+                        add (aBody $ i + j - 1) 1
+            forM_ [31 - i, 30 - i .. 0] \j -> do
+                unless (j == 31 - i) do
+                    while (aBody $ i + j - 1) do
+                        sub (aBody $ i + j - 1) 1
+                        add (aBody $ i + j) 1
+    forM_ [31, 30 .. 0] \j -> do
+        set (bBody j) 0
+    add aHead 1
     produce 1
 
 -- 2073 bytes
