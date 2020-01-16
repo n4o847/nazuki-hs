@@ -11,6 +11,7 @@ module Nazuki.Generator.IntOf2To32
     , intOf2To32Shl
     , intOf2To32Inc
     , intOf2To32Add
+    , intOf2To32Sub
     , intOf2To32Mul10
     , intOf2To32Mul
     , intOf2To32Scan
@@ -173,6 +174,7 @@ intOf2To32Inc = do
     set carry 0
     produce 1
 
+-- 6855 bytes
 intOf2To32Add :: Oper
 intOf2To32Add = do
     let a = 0
@@ -191,6 +193,13 @@ intOf2To32Add = do
             add (a' i) 1
     set carry 0
     produce 1
+
+-- 7416 bytes
+intOf2To32Sub :: Oper
+intOf2To32Sub = do
+    intOf2To32Not
+    intOf2To32Inc
+    intOf2To32Add
 
 -- 952 bytes
 intOf2To32Mul10 :: Oper
