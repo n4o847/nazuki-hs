@@ -139,7 +139,7 @@ intOf2To32Xor = do
                 sub temp 1
             while temp do
                 sub temp 1
-                add (bBody i) 1
+                add (aBody i) 1
             add temp 1
     sub bHead 1
     produce 1
