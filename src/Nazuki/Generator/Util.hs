@@ -4,7 +4,9 @@
 module Nazuki.Generator.Util
     ( raw
     , enter
+    , forward
     , exit
+    , backward
     , at
     , add
     , sub
@@ -43,9 +45,15 @@ enter p =
     else
         replicateM_ (negate p) bfBwd
 
+forward :: Int -> Oper
+forward = enter
+
 exit :: Int -> Oper
 exit p =
     enter (negate p)
+
+backward :: Int -> Oper
+backward = exit
 
 at :: Int -> Oper -> Oper
 at p oper = do
