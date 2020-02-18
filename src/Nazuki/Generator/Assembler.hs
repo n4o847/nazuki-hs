@@ -37,9 +37,10 @@ assemble isa_ opcodes = do
               seeBit (i - 1) bits
             )
           else do
-            ipToSp (isize + 1) 33
-            Map.findWithDefault bfNop bits isa
-            spToIp 33 (isize + 1)
+            forM_ (Map.lookup bits isa) \op -> do
+              ipToSp (isize + 1) 33
+              op
+              spToIp 33 (isize + 1)
     seeBit (isize - 1) 0
     add tmp 1
     backward (isize + 1)
