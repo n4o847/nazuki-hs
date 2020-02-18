@@ -4,6 +4,7 @@
 module Nazuki.Generator.IntOf2To32
     ( intOf2To32Const
     , intOf2To32Dup
+    , intOf2To32Get
     , intOf2To32Not
     , intOf2To32And
     , intOf2To32Or
@@ -14,6 +15,7 @@ module Nazuki.Generator.IntOf2To32
     , intOf2To32Sub
     , intOf2To32Mul10
     , intOf2To32Mul
+    , intOf2To32Eq
     , intOf2To32Scan
     , intOf2To32Print
     )
@@ -52,11 +54,15 @@ intOf2To32Const a = do
 -- 4546 bytes
 intOf2To32Dup :: Oper
 intOf2To32Dup = do
-    let a = 0
-    let a' = (1 +)
-    let b = 33
-    let b' = (34 +)
-    consume 1
+    intOf2To32Get 1
+
+intOf2To32Get :: Int -> Oper
+intOf2To32Get x = do
+    let a = -33 * x
+    let a' = (a + 1 +)
+    let b = 0
+    let b' = (1 +)
+    consume 0
     forM_ [0 .. 31] \i -> do
         while (a' i) do
             sub (a' i) 1
@@ -66,7 +72,7 @@ intOf2To32Dup = do
             sub b 1
             add (a' i) 1
     add b 1
-    produce 2
+    produce 1
 
 -- 480 bytes
 intOf2To32Not :: Oper
@@ -268,6 +274,25 @@ intOf2To32Mul = do
     forM_ [31, 30 .. 0] \j -> do
         set (bBody j) 0
     add aHead 1
+    produce 1
+
+-- 6513 bytes
+intOf2To32Eq :: Oper
+intOf2To32Eq = do
+    intOf2To32Xor
+    let a = 0
+    let a' = (1 +)
+    consume 1
+    sub a 1
+    forM_ [31, 30 .. 0] \i ->
+        while (a' i) do
+            sub (a' i) 1
+            add a 1
+    add (a' 0) 1
+    while a do
+        set a 0
+        sub (a' 0) 1
+    add a 1
     produce 1
 
 -- 2073 bytes
