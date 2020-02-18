@@ -31,7 +31,7 @@ assemble isize ssize isa_ opcodes = do
         sub tmp 1
         let seeBit i bits = do
                 if i >= 0 then
-                    ifElse (cmd i) tmp (
+                    ifElseMut (cmd i) tmp (
                         seeBit (i - 1) (Bits.setBit bits i)
                     ) (
                         seeBit (i - 1) bits

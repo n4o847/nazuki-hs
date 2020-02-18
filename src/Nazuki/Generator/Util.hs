@@ -15,6 +15,7 @@ module Nazuki.Generator.Util
     , while
     , set
     , ifElse
+    , ifElseMut
     , incs
     , decs
     , puts
@@ -105,6 +106,24 @@ ifElse flg tmp cons alt = do
         sub tmp 1
         sub flg 1
         alt
+
+-- in case flg is changed after cons
+ifElseMut :: Int -> Int -> Oper -> Oper -> Oper
+ifElseMut flg tmp cons alt = do
+    while flg do
+        cons
+        sub tmp 1
+        while flg do
+            sub flg 1
+            sub tmp 1
+    add flg 1
+    add tmp 2
+    while tmp do
+        sub tmp 1
+        sub flg 1
+        while tmp do
+            sub tmp 1
+            alt
 
 incs :: Int -> Oper
 incs p =
