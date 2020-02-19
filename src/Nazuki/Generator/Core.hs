@@ -29,7 +29,26 @@ data BfCmd
     | Put
     deriving Show
 
-type Oper = State [BfCmd] ()
+data Gen = Gen
+    { cmds :: [BfCmd]
+    , isize :: Int
+    }
+
+type Oper = State Gen ()
+
+modifyCmds :: ([BfCmd] -> [BfCmd]) -> State Gen ()
+modifyCmds f = modify \gen -> gen { cmds = f $ cmds gen }
+
+getIsize :: State Gen Int
+getIsize = gets isize
+
+putIsize :: Int -> State Gen ()
+putIsize isize = modify \gen -> gen { isize = isize }
+
+empty = Gen
+    { cmds = []
+    , isize = 1
+    }
 
 bfNop :: Oper
 bfNop =
@@ -37,43 +56,43 @@ bfNop =
 
 bfInc :: Oper
 bfInc =
-    modify \case
+    modifyCmds \case
         Dec:xs -> xs
         xs     -> Inc:xs
 
 bfDec :: Oper
 bfDec =
-    modify \case
+    modifyCmds \case
         Inc:xs -> xs
         xs     -> Dec:xs
 
 bfFwd :: Oper
 bfFwd =
-    modify \case
+    modifyCmds \case
         Bwd:xs -> xs
         xs     -> Fwd:xs
 
 bfBwd :: Oper
 bfBwd =
-    modify \case
+    modifyCmds \case
         Fwd:xs -> xs
         xs     -> Bwd:xs
 
 bfOpn :: Oper
 bfOpn =
-    modify (Opn:)
+    modifyCmds (Opn:)
 
 bfCls :: Oper
 bfCls =
-    modify (Cls:)
+    modifyCmds (Cls:)
 
 bfGet :: Oper
 bfGet =
-    modify (Get:)
+    modifyCmds (Get:)
 
 bfPut :: Oper
 bfPut =
-    modify (Put:)
+    modifyCmds (Put:)
 
 toChar :: BfCmd -> Char
 toChar = \case
@@ -88,4 +107,4 @@ toChar = \case
 
 generate :: Oper -> String
 generate oper =
-    map toChar $ reverse $ execState oper []
+    map toChar $ reverse $ cmds $ execState oper empty
