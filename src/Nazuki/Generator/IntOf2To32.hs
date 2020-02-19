@@ -295,7 +295,7 @@ intOf2To32Eqz = do
     add a 1
     produce 1
 
--- 6513 bytes
+-- 5161 bytes
 intOf2To32Eq :: Oper
 intOf2To32Eq = do
     intOf2To32Xor
