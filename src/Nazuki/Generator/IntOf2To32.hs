@@ -62,18 +62,18 @@ intOf2To32Dup = do
 intOf2To32Get :: Int -> Oper
 intOf2To32Get x = do
     let a = -33 * x
-    let a' = (a + 1 +)
+    let a_ = (a + 1 +)
     let b = 0
-    let b' = (1 +)
+    let b_ = (1 +)
     consume 0
     forM_ [0 .. 31] \i -> do
-        while (a' i) do
-            sub (a' i) 1
+        while (a_ i) do
+            sub (a_ i) 1
             add b 1
-            add (b' i) 1
+            add (b_ i) 1
         while b do
             sub b 1
-            add (a' i) 1
+            add (a_ i) 1
     add b 1
     produce 1
 
@@ -97,77 +97,77 @@ intOf2To32Not = do
 -- 2370 bytes
 intOf2To32And :: Oper
 intOf2To32And = do
-    let aBody = (1 +)  -- [1 .. 32]
-    let bHead = 33
-    let bBody = (34 +)  -- [34 .. 65]
+    let a_ = (1 +)  -- [1 .. 32]
+    let b = 33
+    let b_ = (34 +)  -- [34 .. 65]
     consume 2
     forM_ [31, 30 .. 0] \i -> do
-        sub (bBody i) 1
-        while (bBody i) do
-            add (bBody i) 1
-            set (aBody i) 0
-    sub bHead 1
+        sub (b_ i) 1
+        while (b_ i) do
+            add (b_ i) 1
+            set (a_ i) 0
+    sub b 1
     produce 1
 
 -- 2370 bytes
 intOf2To32Or :: Oper
 intOf2To32Or = do
-    let aBody = (1 +)  -- [1 .. 32]
-    let bHead = 33
-    let bBody = (34 +)  -- [34 .. 65]
+    let a_ = (1 +)  -- [1 .. 32]
+    let b = 33
+    let b_ = (34 +)  -- [34 .. 65]
     consume 2
     forM_ [31, 30 .. 0] \i ->
-        while (bBody i) do
-            sub (bBody i) 1
-            set (aBody i) 1
-    sub bHead 1
+        while (b_ i) do
+            sub (b_ i) 1
+            set (a_ i) 1
+    sub b 1
     produce 1
 
--- 5190 bytes
+-- 3836 bytes
 intOf2To32Xor :: Oper
 intOf2To32Xor = do
-    let aHead = 0
-    let aBody = (1 +)  -- [1 .. 32]
-    let bHead = 33
-    let bBody = (34 +)  -- [34 .. 65]
+    let a = 0
+    let a_ = (1 +)  -- [1 .. 32]
+    let b = 33
+    let b_ = (34 +)  -- [34 .. 65]
     consume 2
     -- 降順の方が若干短い。
     forM_ [31, 30 .. 0] \i ->
-        while (bBody i) do
-            sub (bBody i) 1
+        while (b_ i) do
+            sub (b_ i) 1
             -- i < 13 で分けると生成コードが一番短くなる。
-            let temp = if i < 13 then aHead else bHead
-            while (aBody i) do
-                sub (aBody i) 1
+            let temp = if i < 13 then a else b
+            while (a_ i) do
+                sub (a_ i) 1
                 sub temp 1
             while temp do
                 sub temp 1
-                add (aBody i) 1
+                add (a_ i) 1
             add temp 1
-    sub bHead 1
+    sub b 1
     produce 1
 
 -- 503 bytes
 intOf2To32Shl :: Oper
 intOf2To32Shl = do
-    let aBody = (1 +)
-    let bHead = 33
-    let bBody = (34 +)
+    let a_ = (1 +)
+    let b = 33
+    let b_ = (34 +)
     consume 2
     forM_ [31, 30 .. 5] \i ->
-        set (bBody i) 0
+        set (b_ i) 0
     forM_ [4, 3 .. 1] \i ->
-        while (bBody i) do
-            sub (bBody i) 1
-            add (bBody 0) (bit i)
-    while (bBody 0) do
-        sub (bBody 0) 1
-        set (bBody 31) 0
+        while (b_ i) do
+            sub (b_ i) 1
+            add (b_ 0) (bit i)
+    while (b_ 0) do
+        sub (b_ 0) 1
+        set (b_ 31) 0
         forM_ [31, 30 .. 0] \i ->
-            while (aBody i) do
-                sub (aBody i) 1
-                add (aBody $ i + 1) 1
-    sub bHead 1
+            while (a_ i) do
+                sub (a_ i) 1
+                add (a_ $ i + 1) 1
+    sub b 1
     produce 1
 
 -- 81 bytes
@@ -187,19 +187,19 @@ intOf2To32Inc = do
 intOf2To32Add :: Oper
 intOf2To32Add = do
     let a = 0
-    let a' = (1 +)
+    let a_ = (1 +)
     let b = 33
-    let b' = (34 +)
+    let b_ = (34 +)
     let carry = 66
     consume 2
     sub b 1
     forM_ [0 .. 31] \i -> do
-        while (a' i) do
-            sub (a' i) 1
-            incs (b' i)
-        while (b' i) do
-            sub (b' i) 1
-            add (a' i) 1
+        while (a_ i) do
+            sub (a_ i) 1
+            incs (b_ i)
+        while (b_ i) do
+            sub (b_ i) 1
+            add (a_ i) 1
     set carry 0
     produce 1
 
@@ -240,60 +240,60 @@ intOf2To32Mul10 = do
 -- 77400 bytes
 intOf2To32Mul :: Oper
 intOf2To32Mul = do
-    let aHead = 0
-    let aBody = (1 +)
-    let bHead = 33
-    let bBody = (34 +)
+    let a = 0
+    let a_ = (1 +)
+    let b = 33
+    let b_ = (34 +)
     consume 2
-    sub bHead 1
-    sub aHead 1
+    sub b 1
+    sub a 1
     forM_ [0 .. 31] \i -> do
-        while (aBody i) do
-            sub (aBody i) 1
-            add (aBody $ i - 1) 1
+        while (a_ i) do
+            sub (a_ i) 1
+            add (a_ $ i - 1) 1
     forM_ [31, 30 .. 0] \i -> do
-        while (aBody $ i - 1) do
-            sub (aBody $ i - 1) 1
+        while (a_ $ i - 1) do
+            sub (a_ $ i - 1) 1
             forM_ [0 .. 31 - i] \j -> do
-                while (bBody j) do
-                    sub (bBody j) 1
-                    incs (aBody $ i + j)
-                    set bHead 0
+                while (b_ j) do
+                    sub (b_ j) 1
+                    incs (a_ $ i + j)
+                    set b 0
                     unless (i == 0) do
-                        add bHead 1
+                        add b 1
                 unless (i == 0) do
-                    while bHead do
-                        sub bHead 1
-                        add (bBody j) 1
+                    while b do
+                        sub b 1
+                        add (b_ j) 1
                 unless (j == 31 - i) do
-                    while (aBody $ i + j) do
-                        sub (aBody $ i + j) 1
-                        add (aBody $ i + j - 1) 1
+                    while (a_ $ i + j) do
+                        sub (a_ $ i + j) 1
+                        add (a_ $ i + j - 1) 1
             forM_ [31 - i, 30 - i .. 0] \j -> do
                 unless (j == 31 - i) do
-                    while (aBody $ i + j - 1) do
-                        sub (aBody $ i + j - 1) 1
-                        add (aBody $ i + j) 1
+                    while (a_ $ i + j - 1) do
+                        sub (a_ $ i + j - 1) 1
+                        add (a_ $ i + j) 1
     forM_ [31, 30 .. 0] \j -> do
-        set (bBody j) 0
-    add aHead 1
+        set (b_ j) 0
+    add a 1
     produce 1
 
 -- 1325 bytes
 intOf2To32Eqz :: Oper
 intOf2To32Eqz = do
     let a = 0
-    let a' = (1 +)
+    let a_ = (1 +)
     consume 1
     sub a 1
     forM_ [31, 30 .. 0] \i ->
-        while (a' i) do
-            sub (a' i) 1
+        while (a_ i) do
+            sub (a_ i) 1
             add a 1
-    add (a' 0) 1
+    add (a_ 0) 1
     while a do
         set a 0
-        sub (a' 0) 1
+        sub (a_ 0) 1
     add a 1
     produce 1
 
