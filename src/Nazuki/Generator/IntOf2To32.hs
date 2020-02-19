@@ -15,9 +15,11 @@ module Nazuki.Generator.IntOf2To32
     , intOf2To32Sub
     , intOf2To32Mul10
     , intOf2To32Mul
+    , intOf2To32Eqz
     , intOf2To32Eq
     , intOf2To32Scan
     , intOf2To32Print
+    , intOf2To32Jump
     )
 where
 
@@ -29,6 +31,7 @@ import           Data.Int                       ( Int32 )
 import           Data.Word                      ( Word32 )
 import           Nazuki.Generator.Core
 import           Nazuki.Generator.Util
+import           Nazuki.Generator.Assembler
 
 consume :: Int -> Oper
 consume a =
@@ -276,10 +279,9 @@ intOf2To32Mul = do
     add aHead 1
     produce 1
 
--- 6513 bytes
-intOf2To32Eq :: Oper
-intOf2To32Eq = do
-    intOf2To32Xor
+-- 1325 bytes
+intOf2To32Eqz :: Oper
+intOf2To32Eqz = do
     let a = 0
     let a' = (1 +)
     consume 1
@@ -294,6 +296,12 @@ intOf2To32Eq = do
         sub (a' 0) 1
     add a 1
     produce 1
+
+-- 6513 bytes
+intOf2To32Eq :: Oper
+intOf2To32Eq = do
+    intOf2To32Xor
+    intOf2To32Eqz
 
 -- 2073 bytes
 intOf2To32Scan :: Oper
@@ -434,3 +442,7 @@ intOf2To32Print = do
     where
         toDigits 0 = []
         toDigits n = let (q, r) = n `quotRem` 10 in r:toDigits q
+
+intOf2To32Jump :: Int -> Int -> Oper
+intOf2To32Jump isize rel = do
+    jump isize 33 rel
