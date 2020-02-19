@@ -24,9 +24,7 @@ module Nazuki.Generator.IntOf2To32
 where
 
 import           Control.Monad
-import           Data.Bits                      ( bit
-                                                , testBit
-                                                )
+import qualified Data.Bits                     as Bits
 import           Data.Int                       ( Int32 )
 import           Data.Word                      ( Word32 )
 import           Nazuki.Generator.Core
@@ -42,14 +40,14 @@ produce a =
     enter (33 * a)
 
 intOf2To32Const :: Int32 -> Oper
-intOf2To32Const a = do
-    let head = 0
-    let body = (1 +)
+intOf2To32Const x = do
+    let a = 0
+    let a_ = (1 +)
     consume 0
-    add head 1
+    add a 1
     forM_ [0 .. 31] \i ->
-        if testBit a i then
-            add (body i) 1
+        if Bits.testBit x i then
+            add (a_ i) 1
         else
             bfNop
     produce 1
@@ -80,18 +78,18 @@ intOf2To32Get x = do
 -- 480 bytes
 intOf2To32Not :: Oper
 intOf2To32Not = do
-    let body = (1 +)  -- [1 .. 32]
+    let a_ = (1 +)  -- [1 .. 32]
     let helper = (2 +)  -- [2 .. 33]
     consume 1
     forM_ [31, 30 .. 0] \i -> do
         add (helper i) 1
-        while (body i) do
-            sub (body i) 1
+        while (a_ i) do
+            sub (a_ i) 1
             sub (helper i) 1
     forM_ [0 .. 31] \i ->
         while (helper i) do
             sub (helper i) 1
-            add (body i) 1
+            add (a_ i) 1
     produce 1
 
 -- 2370 bytes
@@ -159,7 +157,7 @@ intOf2To32Shl = do
     forM_ [4, 3 .. 1] \i ->
         while (b_ i) do
             sub (b_ i) 1
-            add (b_ 0) (bit i)
+            add (b_ 0) (Bits.bit i)
     while (b_ 0) do
         sub (b_ 0) 1
         set (b_ 31) 0
@@ -173,13 +171,13 @@ intOf2To32Shl = do
 -- 81 bytes
 intOf2To32Inc :: Oper
 intOf2To32Inc = do
-    let head = 0
-    let body = (1 +)
+    let a = 0
+    let a_ = (1 +)
     let carry = 33
     consume 1
-    sub head 1
-    incs $ body 0
-    add head 1
+    sub a 1
+    incs $ a_ 0
+    add a 1
     set carry 0
     produce 1
 
@@ -213,28 +211,28 @@ intOf2To32Sub = do
 -- 952 bytes
 intOf2To32Mul10 :: Oper
 intOf2To32Mul10 = do
-    let head = 0
-    let body = (1 +)
+    let a = 0
+    let a_ = (1 +)
     consume 1
-    set (body 31) 0
-    while (body 30) do
-        sub (body 30) 1
-        add (body 31) 1
-    while (body 29) do
-        sub (body 29) 1
-        add (body 30) 1
+    set (a_ 31) 0
+    while (a_ 30) do
+        sub (a_ 30) 1
+        add (a_ 31) 1
+    while (a_ 29) do
+        sub (a_ 29) 1
+        add (a_ 30) 1
     forM_ [28, 27 .. 0] \i ->
-        while (body i) do
-            sub (body i) 1
-            while (body $ i + 2) do
-                sub (body $ i + 2) 1
-                add (body $ i + 1) 1
-            incs (body $ i + 3)
-            while (body $ i + 1) do
-                sub (body $ i + 1) 1
-                add (body $ i + 2) 1
-            add (body $ i + 1) 1
-    set (body 32) 0
+        while (a_ i) do
+            sub (a_ i) 1
+            while (a_ $ i + 2) do
+                sub (a_ $ i + 2) 1
+                add (a_ $ i + 1) 1
+            incs (a_ $ i + 3)
+            while (a_ $ i + 1) do
+                sub (a_ $ i + 1) 1
+                add (a_ $ i + 2) 1
+            add (a_ $ i + 1) 1
+    set (a_ 32) 0
     produce 1
 
 -- 77400 bytes
@@ -306,8 +304,8 @@ intOf2To32Eq = do
 -- 2073 bytes
 intOf2To32Scan :: Oper
 intOf2To32Scan = do
-    let head = 0
-    let body = (1 +)
+    let a = 0
+    let a_ = (1 +)
     let temp = 33
     let digitValue = 33 + 1
     let flagLoop = 33 + 2
@@ -329,7 +327,7 @@ intOf2To32Scan = do
     let addDigit =
             while digitValue do
                 sub digitValue 1
-                incs $ body 0
+                incs $ a_ 0
                 set temp 0
     consume 0
     -- Check if starting with '-'
@@ -355,7 +353,7 @@ intOf2To32Scan = do
             sub temp 1
             add flagLoop 1
         addDigit
-    add head 1
+    add a 1
     -- Negate
     while flagNeg do
         sub flagNeg 1
@@ -367,34 +365,34 @@ intOf2To32Scan = do
 -- 4682 bytes
 intOf2To32Print :: Oper
 intOf2To32Print = do
-    let head = 0
-    let body = (1 +)
+    let a = 0
+    let a_ = (1 +)
     let temp = 33
     let temp0 = 34
     consume 1
     -- 負数用の処理 ここから
-    while (body 31) do
+    while (a_ 31) do
         add temp 45
         putc temp
         set temp 0
         enter 33
         intOf2To32Not
         exit 33
-        sub head 1
-        incs (body 0)
-        add head 1
-        while (body 31) do
-            sub (body 31) 1
+        sub a 1
+        incs (a_ 0)
+        add a 1
+        while (a_ 31) do
+            sub (a_ 31) 1
             add temp0 1
     while temp0 do
         sub temp0 1
-        add (body 31) 1
+        add (a_ 31) 1
     -- 負数用の処理 ここまで
     -- 2 ** 31 に注意
     forM_ [0 .. 31] \i -> do
-        let digits = toDigits (bit i :: Word32)
-        while (body i) do
-            sub (body i) 1
+        let digits = toDigits (Bits.bit i :: Word32)
+        while (a_ i) do
+            sub (a_ i) 1
             foldM_ (\j d -> do
                 add (temp + 3 * j) (fromIntegral d)
                 return $ j + 1
@@ -437,7 +435,7 @@ intOf2To32Print = do
         add t0 48
         putc t0
         set t0 0
-    sub head 1
+    sub a 1
     produce 0
     where
         toDigits 0 = []

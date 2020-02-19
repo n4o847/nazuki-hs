@@ -8,8 +8,8 @@ module Nazuki.Generator.Assembler
 where
 
 import           Control.Monad
-import qualified Data.Bits as Bits
-import qualified Data.Map as Map
+import qualified Data.Bits                     as Bits
+import qualified Data.Map                      as Map
 import           Nazuki.Generator.Core
 import           Nazuki.Generator.Util
 
