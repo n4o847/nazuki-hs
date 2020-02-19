@@ -3,6 +3,8 @@
 
 module Nazuki.Generator.Core
     ( Oper
+    , getIsize
+    , putIsize
     , bfNop
     , bfInc
     , bfDec

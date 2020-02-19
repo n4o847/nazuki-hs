@@ -16,6 +16,7 @@ import           Nazuki.Generator.Util
 assemble :: Int -> Int -> [(Int, Oper)] -> [Int] -> Oper
 assemble isize ssize isa_ opcodes = do
     let isa = Map.fromList isa_
+    putIsize isize
     let tmp = 0
     let cmd = (1 +)
     bfDec
@@ -38,16 +39,17 @@ assemble isize ssize isa_ opcodes = do
                     )
                 else do
                     forM_ (Map.lookup bits isa) \op -> do
-                        ipToSp isize ssize
+                        ipToSp ssize
                         op
-                        spToIp isize ssize
+                        spToIp ssize
         seeBit (isize - 2) 0
         add tmp 1
         backward isize
         add tmp 1
 
-spToIp :: Int -> Int -> Oper
-spToIp isize ssize = do
+spToIp :: Int -> Oper
+spToIp ssize = do
+    isize <- getIsize
     backward ssize
     bfOpn
     backward ssize
@@ -57,8 +59,9 @@ spToIp isize ssize = do
     backward isize
     bfCls
 
-ipToSp :: Int -> Int -> Oper
-ipToSp isize ssize = do
+ipToSp :: Int -> Oper
+ipToSp ssize = do
+    isize <- getIsize
     forward isize
     bfOpn
     forward isize
@@ -68,9 +71,10 @@ ipToSp isize ssize = do
     forward ssize
     bfCls
 
-jump :: Int -> Int -> Int -> Oper
-jump isize ssize rel = do
-    spToIp isize ssize
+jump :: Int -> Int -> Oper
+jump ssize rel = do
+    isize <- getIsize
+    spToIp ssize
     if rel >= 0 then
         replicateM_ rel do
             bfInc
@@ -79,4 +83,4 @@ jump isize ssize rel = do
         replicateM_ (negate rel) do
             forward isize
             bfDec
-    ipToSp isize ssize
+    ipToSp ssize

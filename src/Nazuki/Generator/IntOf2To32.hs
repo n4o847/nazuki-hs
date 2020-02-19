@@ -441,6 +441,6 @@ intOf2To32Print = do
         toDigits 0 = []
         toDigits n = let (q, r) = n `quotRem` 10 in r:toDigits q
 
-intOf2To32Jump :: Int -> Int -> Oper
-intOf2To32Jump isize rel = do
-    jump isize 33 rel
+intOf2To32Jump :: Int -> Oper
+intOf2To32Jump rel = do
+    jump 33 rel
