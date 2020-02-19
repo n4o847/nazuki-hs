@@ -277,25 +277,26 @@ intOf2To32Mul = do
     add a 1
     produce 1
 
--- 1325 bytes
+-- 358 bytes
 intOf2To32Eqz :: Oper
 intOf2To32Eqz = do
     let a = 0
     let a_ = (1 +)
     consume 1
-    sub a 1
-    forM_ [31, 30 .. 0] \i ->
+    forM_ [31, 30 .. 1] \i ->
         while (a_ i) do
             sub (a_ i) 1
-            add a 1
-    add (a_ 0) 1
-    while a do
-        set a 0
+            set (a_ $ i - 1) 1
+    while (a_ 0) do
         sub (a_ 0) 1
+        sub a 1
+    while a do
+        sub a 1
+        add (a_ 0) 1
     add a 1
     produce 1
 
--- 5161 bytes
+-- 4194 bytes
 intOf2To32Eq :: Oper
 intOf2To32Eq = do
     intOf2To32Xor
