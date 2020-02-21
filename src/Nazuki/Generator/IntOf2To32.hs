@@ -23,6 +23,7 @@ module Nazuki.Generator.IntOf2To32
     , intOf2To32Jump
     , intOf2To32Jez
     , intOf2To32Jnz
+    , intOf2To32Jeq
     )
 where
 
@@ -521,4 +522,9 @@ intOf2To32Jez rel = do
 intOf2To32Jnz :: Int -> Oper
 intOf2To32Jnz rel = do
     intOf2To32Nez
+    _intOf2To32JumpOnLsb rel
+
+intOf2To32Jeq :: Int -> Oper
+intOf2To32Jeq rel = do
+    intOf2To32Eq
     _intOf2To32JumpOnLsb rel
