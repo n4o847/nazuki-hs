@@ -142,13 +142,14 @@ intOf2To32Set x
         forM_ [0 .. 31] \i -> do
             while (a_ i) do
                 sub (a_ i) 1
-            toBack
+        toBack
+        forM_ [0 .. 31] \i -> do
             while (b_ i) do
                 sub (b_ i) 1
                 toFront
                 add (a_ i) 1
                 toBack
-            toFront
+        toFront
         bfInc
         replicateM_ x do
             backward 33
