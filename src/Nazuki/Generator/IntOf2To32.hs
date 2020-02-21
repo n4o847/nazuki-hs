@@ -76,7 +76,6 @@ intOf2To32Get x
         let a_ = (1 +)
         let b = 0
         let b_ = (1 +)
-        let t = 33
         let toFront = backward 33 >> bfOpn >> backward 33 >> bfCls
         let toBack = forward 33 >> bfOpn >> forward 33 >> bfCls
         consume 0
@@ -90,16 +89,12 @@ intOf2To32Get x
             while (a_ i) do
                 sub (a_ i) 1
                 toBack
-                add t 1
                 add (b_ i) 1
                 toFront
-            toBack
-            while t do
-                sub t 1
-                toFront
+                add a 1
+            while a do
+                sub a 1
                 add (a_ i) 1
-                toBack
-            toFront
         bfInc
         replicateM_ x do
             backward 33
