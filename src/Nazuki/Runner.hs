@@ -131,7 +131,7 @@ exec cmds inputData =
         incCnt = do
             state <- get
             let newCnt = cnt state + 1
-            if newCnt > 1000000 then
+            if newCnt > 10000000 then
                 throwError "operation limit exceeded"
             else
                 put state { cnt = newCnt }
