@@ -3,25 +3,67 @@
 
 module Nazuki.Generator.Assembler
     ( assemble
+    , register
+    , immediate
     , jump
     )
 where
 
 import           Control.Monad
+import           Control.Monad.State
 import qualified Data.Bits                     as Bits
 import qualified Data.Map                      as Map
 import           Nazuki.Generator.Core
 import           Nazuki.Generator.Util
 
-assemble :: Int -> Int -> [(Int, Oper)] -> [Int] -> Oper
-assemble isize ssize isa_ opcodes = do
-    let isa = Map.fromList isa_
+type Isa = Map.Map Int Oper
+
+data Asm = Asm
+    { isa :: Isa
+    , opcodes :: [Int]
+    }
+
+getIsa :: State Asm (Map.Map Int Oper)
+getIsa = gets isa
+
+putIsa :: Isa -> State Asm ()
+putIsa isa = modify \asm -> asm { isa = isa }
+
+consOpcode :: Int -> State Asm ()
+consOpcode opcode = modify \asm -> asm { opcodes = opcode : opcodes asm }
+
+empty :: Asm
+empty = Asm
+    { isa = Map.empty
+    , opcodes = []
+    }
+
+logBase2 :: Bits.FiniteBits b => b -> Int
+logBase2 x = Bits.finiteBitSize x - 1 - Bits.countLeadingZeros x
+
+register :: Oper -> State Asm (State Asm ())
+register op = do
+    isa <- getIsa
+    let opcode = Map.size isa
+    putIsa $ Map.insert opcode op isa
+    pure $ consOpcode opcode
+
+immediate :: Oper -> State Asm (State Asm ())
+immediate op = do
+    consOp <- register op
+    consOp
+    pure $ consOp
+
+assemble :: Int -> (State Asm ()) -> Oper
+assemble ssize asmState = do
+    let Asm isa opcodes = execState asmState empty
+    let isize = logBase2 (Map.size isa - 1) + 2
     putIsize isize
     let tmp = 0
     let cmd = (1 +)
     bfDec
     forward isize
-    forM_ (reverse opcodes) \bits -> do
+    forM_ opcodes \bits -> do
         forM_ [0 .. isize - 2] \i -> do
             when (Bits.testBit bits i) do
                 add (cmd i) 1
