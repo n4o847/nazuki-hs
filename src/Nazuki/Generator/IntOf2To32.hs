@@ -5,6 +5,7 @@ module Nazuki.Generator.IntOf2To32
     ( intOf2To32Const
     , intOf2To32Dup
     , intOf2To32Get
+    , intOf2To32Set
     , intOf2To32Not
     , intOf2To32And
     , intOf2To32Or
@@ -124,6 +125,57 @@ intOf2To32Get x
                 add (a_ i) 1
         add b 1
         produce 1
+
+intOf2To32Set :: Int -> Oper
+intOf2To32Set x
+-- non-negative indices count from the front of the stack
+    | x >= 0 = do
+        let a = 0
+        let a_ = (1 +)
+        let b = 0
+        let b_ = (1 +)
+        let toFront = backward 33 >> bfOpn >> backward 33 >> bfCls
+        let toBack = forward 33 >> bfOpn >> forward 33 >> bfCls
+        consume 1
+        sub b 1
+        toFront
+        forward 33
+        replicateM_ x do
+            bfDec
+            forward 33
+        bfDec
+        forM_ [0 .. 31] \i -> do
+            while (a_ i) do
+                sub (a_ i) 1
+            toBack
+            while (b_ i) do
+                sub (b_ i) 1
+                toFront
+                add (a_ i) 1
+                toBack
+            toFront
+        bfInc
+        replicateM_ x do
+            backward 33
+            bfInc
+        backward 33
+        toBack
+        produce 0
+-- negative indices count from the back of the stack
+    | x < 0 = do
+        let a = 33 * x
+        let a_ = (a + 1 +)
+        let b = 0
+        let b_ = (1 +)
+        consume 1
+        sub b 1
+        forM_ [0 .. 31] \i -> do
+            while (a_ i) do
+                sub (a_ i) 1
+            while (b_ i) do
+                sub (b_ i) 1
+                add (a_ i) 1
+        produce 0
 
 -- 480 bytes
 intOf2To32Not :: Oper
