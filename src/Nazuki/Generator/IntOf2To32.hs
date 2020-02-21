@@ -21,8 +21,12 @@ module Nazuki.Generator.IntOf2To32
     , intOf2To32Eqz
     , intOf2To32Nez
     , intOf2To32Eq
+    , intOf2To32LtS
+    , intOf2To32LeS
     , intOf2To32LtU
     , intOf2To32LeU
+    , intOf2To32GtS
+    , intOf2To32GeS
     , intOf2To32GtU
     , intOf2To32GeU
     , intOf2To32Scan
@@ -428,6 +432,30 @@ intOf2To32FlipLsb = do
     add a 1
     produce 1
 
+intOf2To32FlipMsb :: Oper
+intOf2To32FlipMsb = do
+    let a_ = (1 +)
+    let t = 33
+    consume 1
+    add t 1
+    while (a_ 31) do
+        sub (a_ 31) 1
+        sub t 1
+    while t do
+        sub t 1
+        add (a_ 31) 1
+    produce 1
+
+intOf2To32FlipMsb2 :: Oper
+intOf2To32FlipMsb2 = do
+    intOf2To32FlipMsb
+    let a = 0
+    consume 1
+    sub a 1
+    intOf2To32FlipMsb
+    add a 1
+    produce 1
+
 -- 358 bytes
 intOf2To32Eqz :: Oper
 intOf2To32Eqz = do
@@ -507,6 +535,14 @@ _intOf2To32GtUOrLeU t = do
                 add (a_ 0) 1
     produce 1
 
+-- 5064 bytes
+intOf2To32LtS :: Oper
+intOf2To32LtS = intOf2To32FlipMsb2 >> intOf2To32LtU
+
+-- 5003 bytes
+intOf2To32LeS :: Oper
+intOf2To32LeS = intOf2To32FlipMsb2 >> intOf2To32LeU
+
 -- 5034 bytes
 intOf2To32LtU :: Oper
 intOf2To32LtU = _intOf2To32LtUOrGeU LtU
@@ -514,6 +550,14 @@ intOf2To32LtU = _intOf2To32LtUOrGeU LtU
 -- 4907 bytes
 intOf2To32LeU :: Oper
 intOf2To32LeU = _intOf2To32GtUOrLeU LeU
+
+-- 5132 bytes
+intOf2To32GtS :: Oper
+intOf2To32GtS = intOf2To32FlipMsb2 >> intOf2To32GtU
+
+-- 5063 bytes
+intOf2To32GeS :: Oper
+intOf2To32GeS = intOf2To32FlipMsb2 >> intOf2To32GeU
 
 -- 5036 bytes
 intOf2To32GtU :: Oper
