@@ -21,6 +21,8 @@ module Nazuki.Generator.IntOf2To32
     , intOf2To32Scan
     , intOf2To32Print
     , intOf2To32Jump
+    , intOf2To32Jez
+    , intOf2To32Jnz
     )
 where
 
@@ -499,3 +501,24 @@ intOf2To32Print = do
 intOf2To32Jump :: Int -> Oper
 intOf2To32Jump rel = do
     jump 33 rel
+
+_intOf2To32JumpOnLsb :: Int -> Oper
+_intOf2To32JumpOnLsb rel = do
+    let a = 0
+    let a0 = 1
+    consume 1
+    sub a 1
+    while a0 do
+        sub a0 1
+        intOf2To32Jump rel
+    produce 0
+
+intOf2To32Jez :: Int -> Oper
+intOf2To32Jez rel = do
+    intOf2To32Eqz
+    _intOf2To32JumpOnLsb rel
+
+intOf2To32Jnz :: Int -> Oper
+intOf2To32Jnz rel = do
+    intOf2To32Nez
+    _intOf2To32JumpOnLsb rel
