@@ -10,6 +10,8 @@ module Nazuki.Generator.IntOf2To32
     , intOf2To32Or
     , intOf2To32Xor
     , intOf2To32Shl
+    , intOf2To32ShrU
+    , intOf2To32ShrS
     , intOf2To32Inc
     , intOf2To32Add
     , intOf2To32Sub
@@ -193,9 +195,9 @@ intOf2To32Xor = do
     sub b 1
     produce 1
 
--- 503 bytes
-intOf2To32Shl :: Oper
-intOf2To32Shl = do
+data ShlOrShrUOrShrS = Shl | ShrU | ShrS
+_intOf2To32ShlOrShrUOrShrS :: ShlOrShrUOrShrS -> Oper
+_intOf2To32ShlOrShrUOrShrS t = do
     let a_ = (1 +)
     let b = 33
     let b_ = (34 +)
@@ -206,15 +208,54 @@ intOf2To32Shl = do
         while (b_ i) do
             sub (b_ i) 1
             add (b_ 0) (Bits.bit i)
-    while (b_ 0) do
-        sub (b_ 0) 1
-        set (b_ 31) 0
-        forM_ [31, 30 .. 0] \i ->
-            while (a_ i) do
-                sub (a_ i) 1
-                add (a_ $ i + 1) 1
-    sub b 1
+    case t of
+        Shl -> do
+            while (b_ 0) do
+                sub (b_ 0) 1
+                set (a_ 31) 0
+                forM_ [30, 29 .. 0] \i ->
+                    while (a_ i) do
+                        sub (a_ i) 1
+                        add (a_ $ i + 1) 1
+            sub b 1
+        ShrU -> do
+            while (b_ 0) do
+                sub (b_ 0) 1
+                set (a_ 0) 0
+                forM_ [1 .. 31] \i ->
+                    while (a_ i) do
+                        sub (a_ i) 1
+                        add (a_ $ i - 1) 1
+            sub b 1
+        ShrS -> do
+            sub b 1
+            while (b_ 0) do
+                sub (b_ 0) 1
+                set (a_ 0) 0
+                forM_ [1 .. 30] \i ->
+                    while (a_ i) do
+                        sub (a_ i) 1
+                        add (a_ $ i - 1) 1
+                while (a_ 31) do
+                    sub (a_ 31) 1
+                    add b 1
+                while b do
+                    sub b 1
+                    add (a_ 31) 1
+                    add (a_ 30) 1
     produce 1
+
+-- 435 bytes
+intOf2To32Shl :: Oper
+intOf2To32Shl = _intOf2To32ShlOrShrUOrShrS Shl
+
+-- 435 bytes
+intOf2To32ShrU :: Oper
+intOf2To32ShrU = _intOf2To32ShlOrShrUOrShrS ShrU
+
+-- 446 bytes
+intOf2To32ShrS :: Oper
+intOf2To32ShrS = _intOf2To32ShlOrShrUOrShrS ShrS
 
 -- 81 bytes
 intOf2To32Inc :: Oper
