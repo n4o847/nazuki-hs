@@ -18,6 +18,10 @@ module Nazuki.Generator.IntOf2To32
     , intOf2To32Eqz
     , intOf2To32Nez
     , intOf2To32Eq
+    , intOf2To32LtU
+    , intOf2To32LeU
+    , intOf2To32GtU
+    , intOf2To32GeU
     , intOf2To32Scan
     , intOf2To32Print
     , intOf2To32Jump
@@ -358,6 +362,77 @@ intOf2To32Eq :: Oper
 intOf2To32Eq = do
     intOf2To32Xor
     intOf2To32Eqz
+
+data LtUOrGeU = LtU | GeU
+_intOf2To32LtUOrGeU :: LtUOrGeU -> Oper
+_intOf2To32LtUOrGeU t = do
+    let a = 0
+    let a_ = (a + 1 +)
+    let b = 33
+    let b_ = (b + 1 +)
+    consume 2
+    sub a 1
+    forM_ [0 .. 31] \i -> do
+        while (b_ i) do
+            sub (b_ i) 1
+            decs (a_ i)
+        set (a_ i) 0
+    add a 1
+    case t of
+        LtU -> do
+            add (a_ 0) 1
+            while b do
+                sub b 1
+                sub (a_ 0) 1
+        GeU -> do
+            while b do
+                sub b 1
+                add (a_ 0) 1
+    produce 1
+
+data GtUOrLeU = GtU | LeU
+_intOf2To32GtUOrLeU :: GtUOrLeU -> Oper
+_intOf2To32GtUOrLeU t = do
+    let a = 0
+    let a_ = (a + 1 +)
+    let b = 33
+    let b_ = (b + 1 +)
+    let c = 66
+    consume 2
+    add c 1
+    sub b 1
+    forM_ [0 .. 31] \i -> do
+        while (a_ i) do
+            sub (a_ i) 1
+            decs (b_ i)
+        set (b_ i) 0
+    case t of
+        GtU -> do
+            add (a_ 0) 1
+            while c do
+                sub c 1
+                sub (a_ 0) 1
+        LeU -> do
+            while c do
+                sub c 1
+                add (a_ 0) 1
+    produce 1
+
+-- 5034 bytes
+intOf2To32LtU :: Oper
+intOf2To32LtU = _intOf2To32LtUOrGeU LtU
+
+-- 4907 bytes
+intOf2To32LeU :: Oper
+intOf2To32LeU = _intOf2To32GtUOrLeU LeU
+
+-- 5036 bytes
+intOf2To32GtU :: Oper
+intOf2To32GtU = _intOf2To32GtUOrLeU GtU
+
+-- 5033 bytes
+intOf2To32GeU :: Oper
+intOf2To32GeU = _intOf2To32LtUOrGeU GeU
 
 -- 2073 bytes
 intOf2To32Scan :: Oper
