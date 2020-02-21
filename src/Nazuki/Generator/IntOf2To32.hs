@@ -56,25 +56,65 @@ intOf2To32Const x = do
 -- 4546 bytes
 intOf2To32Dup :: Oper
 intOf2To32Dup = do
-    intOf2To32Get 1
+    intOf2To32Get (-1)
 
 intOf2To32Get :: Int -> Oper
-intOf2To32Get x = do
-    let a = -33 * x
-    let a_ = (a + 1 +)
-    let b = 0
-    let b_ = (1 +)
-    consume 0
-    forM_ [0 .. 31] \i -> do
-        while (a_ i) do
-            sub (a_ i) 1
-            add b 1
-            add (b_ i) 1
-        while b do
-            sub b 1
-            add (a_ i) 1
-    add b 1
-    produce 1
+intOf2To32Get x
+-- non-negative indices count from the front of the stack
+    | x >= 0 = do
+        let a = 0
+        let a_ = (1 +)
+        let b = 0
+        let b_ = (1 +)
+        let t = 33
+        let toFront = backward 33 >> bfOpn >> backward 33 >> bfCls
+        let toBack = forward 33 >> bfOpn >> forward 33 >> bfCls
+        consume 0
+        toFront
+        forward 33
+        replicateM_ x do
+            bfDec
+            forward 33
+        bfDec
+        forM_ [0 .. 31] \i -> do
+            while (a_ i) do
+                sub (a_ i) 1
+                toBack
+                add t 1
+                add (b_ i) 1
+                toFront
+            toBack
+            while t do
+                sub t 1
+                toFront
+                add (a_ i) 1
+                toBack
+            toFront
+        bfInc
+        replicateM_ x do
+            backward 33
+            bfInc
+        backward 33
+        toBack
+        add b 1
+        produce 1
+-- negative indices count from the back of the stack
+    | x < 0 = do
+        let a = 33 * x
+        let a_ = (a + 1 +)
+        let b = 0
+        let b_ = (1 +)
+        consume 0
+        forM_ [0 .. 31] \i -> do
+            while (a_ i) do
+                sub (a_ i) 1
+                add b 1
+                add (b_ i) 1
+            while b do
+                sub b 1
+                add (a_ i) 1
+        add b 1
+        produce 1
 
 -- 480 bytes
 intOf2To32Not :: Oper
