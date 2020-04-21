@@ -3,21 +3,33 @@
 
 module Main where
 
+import           System.Environment (getArgs)
+import           System.IO (stderr, hPutStrLn)
 import           Nazuki.Generator
+import qualified Nazuki.Intermediate.InstructionSet
+                                               as I
 import           Nazuki.Runner
 
 main :: IO ()
 main = do
-    let program = generate do
-            --
-            intOf2To32Mul
-        --     intOf2To32Scan
-        --     intOf2To32Scan
-        --     intOf2To32Shl
-        --     intOf2To32Print
-        --     uintOf256To1Scan
-        --     uintOf256To1PutsCase [(n, if n `mod` 2 == 0 then "0.5" else show (realToFrac ((n + 1) `div` 2) / realToFrac n)) | n <- [1..100]]
-    let input =
-            "1 31\n"
-    -- either putStrLn putStrLn $ debug program input
-    putStrLn program
+    args <- getArgs
+    case args of
+        ["gen"] ->
+            putStrLn program
+        ["len"] ->
+            print (length program)
+        ["run"] -> do
+            input <- getContents
+            either (hPutStrLn stderr) putStrLn $ run program input
+        ["debug"] -> do
+            input <- getContents
+            either (hPutStrLn stderr) putStrLn $ debug program input
+        _ ->
+            hPutStrLn stderr "Wrong arguments"
+    where
+        program = I.generate
+            [ I.Scan
+            , I.Scan
+            , I.Add
+            , I.Print
+            ]
