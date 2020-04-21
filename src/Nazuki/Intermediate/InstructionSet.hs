@@ -39,6 +39,7 @@ data Instruction
     | GeU
     | Scan
     | Print
+    | Write String
     | Jump Int
     | Jez Int
     | Jnz Int
@@ -92,6 +93,7 @@ insToOper = \case
     GeU -> G.intOf2To32GeU
     Scan -> G.intOf2To32Scan
     Print -> G.intOf2To32Print
+    Write s -> G.puts 0 s
     Jump r -> G.intOf2To32Jump r
     Jez r -> G.intOf2To32Jez r
     Jnz r -> G.intOf2To32Jnz r
