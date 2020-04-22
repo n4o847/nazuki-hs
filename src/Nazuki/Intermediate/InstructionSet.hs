@@ -14,6 +14,7 @@ data Instruction
     | Dup
     | Get Int
     | Set Int
+    | Drop
     | Not
     | And
     | Or
@@ -68,6 +69,7 @@ insToOper = \case
     Dup -> G.intOf2To32Dup
     Get x -> G.intOf2To32Get x
     Set x -> G.intOf2To32Set x
+    Drop -> G.intOf2To32Drop
     Not -> G.intOf2To32Not
     And -> G.intOf2To32And
     Or -> G.intOf2To32Or

@@ -6,6 +6,7 @@ module Nazuki.Generator.IntOf2To32
     , intOf2To32Dup
     , intOf2To32Get
     , intOf2To32Set
+    , intOf2To32Drop
     , intOf2To32Not
     , intOf2To32And
     , intOf2To32Or
@@ -176,6 +177,16 @@ intOf2To32Set x
                 sub (b_ i) 1
                 add (a_ i) 1
         produce 0
+
+intOf2To32Drop :: Oper
+intOf2To32Drop = do
+    let a = 0
+    let a_ = (1 +)
+    consume 1
+    forM_ [31, 30 .. 0] \i ->
+        set (a_ i) 0
+    sub a 1
+    produce 0
 
 -- 480 bytes
 intOf2To32Not :: Oper
