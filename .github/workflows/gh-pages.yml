@@ -1,4 +1,4 @@
-name: Experimental Workflow
+name: github pages
 
 on:
   push:
@@ -11,9 +11,29 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - run: git update-index --add --chmod=+x ./entrypoint.sh
+      - name: Setup Node
+        uses: actions/setup-node@v2.1.0
+        with:
+          node-version: '12.x'
+
+      - name: Cache npm dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Build
         uses: docker://terrorjack/asterius
         with:
           entrypoint: ./entrypoint.sh
+
+      - run: npm ci
+      - run: npm run build:www
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist

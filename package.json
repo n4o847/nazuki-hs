@@ -2,7 +2,9 @@
   "name": "nazuki",
   "private": true,
   "scripts": {
-    "build": "./build.sh && webpack",
+    "build": "npm run build:wasm && npm run build:www",
+    "build:wasm": "./build.sh",
+    "build:www": "webpack",
     "start": "webpack serve"
   },
   "devDependencies": {
