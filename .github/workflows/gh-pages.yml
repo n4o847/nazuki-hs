@@ -13,12 +13,5 @@ jobs:
 
       - name: Build
         uses: docker://terrorjack/asterius
-        run: |
-          ahc-link \
-            --input-hs wasm/Lib.hs \
-            --output-directory out \
-            --output-prefix nazuki \
-            --no-main \
-            --browser \
-            --ghc-option "-isrc" \
-            --export-function=generate
+        with:
+          entrypoint: ./entrypoint.sh
