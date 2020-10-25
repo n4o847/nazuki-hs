@@ -1,4 +1,10 @@
-.stack-work/
+.stack-work
 nazuki.cabal
-*~
 stack.yaml.lock
+
+out
+*.hi
+*.o
+
+node_modules
+dist
