@@ -1,0 +1,24 @@
+name: Experimental Workflow
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build
+        uses: docker://terrorjack/asterius
+        run: |
+          ahc-link \
+            --input-hs wasm/Lib.hs \
+            --output-directory out \
+            --output-prefix nazuki \
+            --no-main \
+            --browser \
+            --ghc-option "-isrc" \
+            --export-function=generate
