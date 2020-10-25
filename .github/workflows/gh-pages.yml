@@ -11,6 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - run: git update-index --add --chmod=+x ./entrypoint.sh
+
       - name: Build
         uses: docker://terrorjack/asterius
         with:
