@@ -25,7 +25,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Build
-        uses: docker://terrorjack/asterius
+        uses: docker://terrorjack/asterius:201023
         with:
           entrypoint: ./entrypoint.sh
 
