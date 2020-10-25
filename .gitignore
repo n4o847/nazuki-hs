@@ -1,4 +1,4 @@
 .stack-work/
-nazuki-hs.cabal
+nazuki.cabal
 *~
 stack.yaml.lock

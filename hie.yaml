@@ -2,5 +2,7 @@ cradle:
   stack:
     - path: ./src
       component: "nazuki:lib"
+    - path: ./app/Main.hs
+      component: "nazuki:exe:nazuki"
     - path: ./test
-      component: "nazuki:test"
+      component: "nazuki:test:nazuki-test"
