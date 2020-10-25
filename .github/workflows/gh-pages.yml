@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: satackey/action-docker-layer-caching@v0.0.5
+      - uses: satackey/action-docker-layer-caching@v0.0.8
 
       - name: Setup Node
         uses: actions/setup-node@v2.1.0
@@ -26,10 +26,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Build
-        uses: docker://terrorjack/asterius:201023
-        with:
-          entrypoint: ./entrypoint.sh
+      - name: Build WebAssembly
+        run: |
+          docker run --rm -v $(pwd):/workspace -w /workspace --entrypoint ./entrypoint.sh terrorjack/asterius
 
       - run: npm ci
       - run: npm run build:www
