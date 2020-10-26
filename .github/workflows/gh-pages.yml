@@ -3,15 +3,13 @@ name: github pages
 on:
   push:
     branches:
-      - develop
+      - master
 
 jobs:
   deploy:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
-
-      - uses: satackey/action-docker-layer-caching@v0.0.8
 
       - name: Setup Node
         uses: actions/setup-node@v2.1.0
@@ -27,8 +25,9 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Build WebAssembly
-        run: |
-          docker run --rm -v $(pwd):/workspace -w /workspace --entrypoint ./entrypoint.sh terrorjack/asterius
+        uses: docker://terrorjack/asterius:201023
+        with:
+          entrypoint: ./entrypoint.sh
 
       - run: npm ci
       - run: npm run build:www
