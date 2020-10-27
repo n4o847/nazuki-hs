@@ -8,6 +8,7 @@ import           Data.Int                       ( Int32 )
 import qualified Data.Maybe                    as Maybe
 import qualified Data.Map                      as Map
 import qualified Nazuki.Generator              as G
+import qualified Nazuki.Generator.IntOf2To32   as I32
 
 data Instruction
     = Const Int32
@@ -65,39 +66,39 @@ generate list = G.generate do
 
 insToOper :: Instruction -> G.Oper
 insToOper = \case
-    Const x -> G.intOf2To32Const x
-    Dup -> G.intOf2To32Dup
-    Get x -> G.intOf2To32Get x
-    Set x -> G.intOf2To32Set x
-    Drop -> G.intOf2To32Drop
-    Not -> G.intOf2To32Not
-    And -> G.intOf2To32And
-    Or -> G.intOf2To32Or
-    Xor -> G.intOf2To32Xor
-    Shl -> G.intOf2To32Shl
-    ShrU -> G.intOf2To32ShrU
-    ShrS -> G.intOf2To32ShrS
-    Inc -> G.intOf2To32Inc
-    Add -> G.intOf2To32Add
-    Sub -> G.intOf2To32Sub
-    Mul10 -> G.intOf2To32Mul10
-    Mul -> G.intOf2To32Mul
-    Eqz -> G.intOf2To32Eqz
-    Nez -> G.intOf2To32Nez
-    Eq -> G.intOf2To32Eq
-    LtS -> G.intOf2To32LtS
-    LeS -> G.intOf2To32LeS
-    LtU -> G.intOf2To32LtU
-    LeU -> G.intOf2To32LeU
-    GtS -> G.intOf2To32GtS
-    GeS -> G.intOf2To32GeS
-    GtU -> G.intOf2To32GtU
-    GeU -> G.intOf2To32GeU
-    Scan -> G.intOf2To32Scan
-    Print -> G.intOf2To32Print
+    Const x -> I32.doConst x
+    Dup -> I32.doDup
+    Get x -> I32.doGet x
+    Set x -> I32.doSet x
+    Drop -> I32.doDrop
+    Not -> I32.doNot
+    And -> I32.doAnd
+    Or -> I32.doOr
+    Xor -> I32.doXor
+    Shl -> I32.doShl
+    ShrU -> I32.doShrU
+    ShrS -> I32.doShrS
+    Inc -> I32.doInc
+    Add -> I32.doAdd
+    Sub -> I32.doSub
+    Mul10 -> I32.doMul10
+    Mul -> I32.doMul
+    Eqz -> I32.doEqz
+    Nez -> I32.doNez
+    Eq -> I32.doEq
+    LtS -> I32.doLtS
+    LeS -> I32.doLeS
+    LtU -> I32.doLtU
+    LeU -> I32.doLeU
+    GtS -> I32.doGtS
+    GeS -> I32.doGeS
+    GtU -> I32.doGtU
+    GeU -> I32.doGeU
+    Scan -> I32.doScan
+    Print -> I32.doPrint
     Write s -> G.puts 0 s
-    Jump r -> G.intOf2To32Jump r
-    Jez r -> G.intOf2To32Jez r
-    Jnz r -> G.intOf2To32Jnz r
-    Jeq r -> G.intOf2To32Jeq r
+    Jump r -> I32.doJump r
+    Jez r -> I32.doJez r
+    Jnz r -> I32.doJnz r
+    Jeq r -> I32.doJeq r
     _ -> G.bfNop

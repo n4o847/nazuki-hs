@@ -6,7 +6,6 @@ module Nazuki.Generator
     ( module Nazuki.Generator.Core
     , module Nazuki.Generator.Util
     , module Nazuki.Generator.Assembler
-    , module Nazuki.Generator.IntOf2To32
     , module Nazuki.Generator.UintOf256To1
     )
 where
@@ -14,5 +13,4 @@ where
 import           Nazuki.Generator.Core
 import           Nazuki.Generator.Util
 import           Nazuki.Generator.Assembler
-import           Nazuki.Generator.IntOf2To32
 import           Nazuki.Generator.UintOf256To1

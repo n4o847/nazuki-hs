@@ -2,40 +2,40 @@
 {-# LANGUAGE LambdaCase #-}
 
 module Nazuki.Generator.IntOf2To32
-    ( intOf2To32Const
-    , intOf2To32Dup
-    , intOf2To32Get
-    , intOf2To32Set
-    , intOf2To32Drop
-    , intOf2To32Not
-    , intOf2To32And
-    , intOf2To32Or
-    , intOf2To32Xor
-    , intOf2To32Shl
-    , intOf2To32ShrU
-    , intOf2To32ShrS
-    , intOf2To32Inc
-    , intOf2To32Add
-    , intOf2To32Sub
-    , intOf2To32Mul10
-    , intOf2To32Mul
-    , intOf2To32Eqz
-    , intOf2To32Nez
-    , intOf2To32Eq
-    , intOf2To32LtS
-    , intOf2To32LeS
-    , intOf2To32LtU
-    , intOf2To32LeU
-    , intOf2To32GtS
-    , intOf2To32GeS
-    , intOf2To32GtU
-    , intOf2To32GeU
-    , intOf2To32Scan
-    , intOf2To32Print
-    , intOf2To32Jump
-    , intOf2To32Jez
-    , intOf2To32Jnz
-    , intOf2To32Jeq
+    ( doConst
+    , doDup
+    , doGet
+    , doSet
+    , doDrop
+    , doNot
+    , doAnd
+    , doOr
+    , doXor
+    , doShl
+    , doShrU
+    , doShrS
+    , doInc
+    , doAdd
+    , doSub
+    , doMul10
+    , doMul
+    , doEqz
+    , doNez
+    , doEq
+    , doLtS
+    , doLeS
+    , doLtU
+    , doLeU
+    , doGtS
+    , doGeS
+    , doGtU
+    , doGeU
+    , doScan
+    , doPrint
+    , doJump
+    , doJez
+    , doJnz
+    , doJeq
     )
 where
 
@@ -55,8 +55,8 @@ produce :: Int -> Oper
 produce a =
     enter (33 * a)
 
-intOf2To32Const :: Int32 -> Oper
-intOf2To32Const x = do
+doConst :: Int32 -> Oper
+doConst x = do
     let a = 0
     let a_ = (1 +)
     consume 0
@@ -69,12 +69,12 @@ intOf2To32Const x = do
     produce 1
 
 -- 4546 bytes
-intOf2To32Dup :: Oper
-intOf2To32Dup = do
-    intOf2To32Get (-1)
+doDup :: Oper
+doDup = do
+    doGet (-1)
 
-intOf2To32Get :: Int -> Oper
-intOf2To32Get x
+doGet :: Int -> Oper
+doGet x
 -- non-negative indices count from the front of the stack
     | x >= 0 = do
         let a = 0
@@ -126,8 +126,8 @@ intOf2To32Get x
         add b 1
         produce 1
 
-intOf2To32Set :: Int -> Oper
-intOf2To32Set x
+doSet :: Int -> Oper
+doSet x
 -- non-negative indices count from the front of the stack
     | x >= 0 = do
         let a = 0
@@ -178,8 +178,8 @@ intOf2To32Set x
                 add (a_ i) 1
         produce 0
 
-intOf2To32Drop :: Oper
-intOf2To32Drop = do
+doDrop :: Oper
+doDrop = do
     let a = 0
     let a_ = (1 +)
     consume 1
@@ -189,8 +189,8 @@ intOf2To32Drop = do
     produce 0
 
 -- 480 bytes
-intOf2To32Not :: Oper
-intOf2To32Not = do
+doNot :: Oper
+doNot = do
     let a_ = (1 +)  -- [1 .. 32]
     let helper = (2 +)  -- [2 .. 33]
     consume 1
@@ -206,8 +206,8 @@ intOf2To32Not = do
     produce 1
 
 -- 2370 bytes
-intOf2To32And :: Oper
-intOf2To32And = do
+doAnd :: Oper
+doAnd = do
     let a_ = (1 +)  -- [1 .. 32]
     let b = 33
     let b_ = (34 +)  -- [34 .. 65]
@@ -221,8 +221,8 @@ intOf2To32And = do
     produce 1
 
 -- 2370 bytes
-intOf2To32Or :: Oper
-intOf2To32Or = do
+doOr :: Oper
+doOr = do
     let a_ = (1 +)  -- [1 .. 32]
     let b = 33
     let b_ = (34 +)  -- [34 .. 65]
@@ -235,8 +235,8 @@ intOf2To32Or = do
     produce 1
 
 -- 3836 bytes
-intOf2To32Xor :: Oper
-intOf2To32Xor = do
+doXor :: Oper
+doXor = do
     let a = 0
     let a_ = (1 +)  -- [1 .. 32]
     let b = 33
@@ -259,8 +259,8 @@ intOf2To32Xor = do
     produce 1
 
 data ShlOrShrUOrShrS = Shl | ShrU | ShrS
-_intOf2To32ShlOrShrUOrShrS :: ShlOrShrUOrShrS -> Oper
-_intOf2To32ShlOrShrUOrShrS t = do
+_doShlOrShrUOrShrS :: ShlOrShrUOrShrS -> Oper
+_doShlOrShrUOrShrS t = do
     let a_ = (1 +)
     let b = 33
     let b_ = (34 +)
@@ -309,20 +309,20 @@ _intOf2To32ShlOrShrUOrShrS t = do
     produce 1
 
 -- 435 bytes
-intOf2To32Shl :: Oper
-intOf2To32Shl = _intOf2To32ShlOrShrUOrShrS Shl
+doShl :: Oper
+doShl = _doShlOrShrUOrShrS Shl
 
 -- 435 bytes
-intOf2To32ShrU :: Oper
-intOf2To32ShrU = _intOf2To32ShlOrShrUOrShrS ShrU
+doShrU :: Oper
+doShrU = _doShlOrShrUOrShrS ShrU
 
 -- 446 bytes
-intOf2To32ShrS :: Oper
-intOf2To32ShrS = _intOf2To32ShlOrShrUOrShrS ShrS
+doShrS :: Oper
+doShrS = _doShlOrShrUOrShrS ShrS
 
 -- 81 bytes
-intOf2To32Inc :: Oper
-intOf2To32Inc = do
+doInc :: Oper
+doInc = do
     let a = 0
     let a_ = (1 +)
     let carry = 33
@@ -334,8 +334,8 @@ intOf2To32Inc = do
     produce 1
 
 -- 6855 bytes
-intOf2To32Add :: Oper
-intOf2To32Add = do
+doAdd :: Oper
+doAdd = do
     let a = 0
     let a_ = (1 +)
     let b = 33
@@ -354,15 +354,15 @@ intOf2To32Add = do
     produce 1
 
 -- 7416 bytes
-intOf2To32Sub :: Oper
-intOf2To32Sub = do
-    intOf2To32Not
-    intOf2To32Inc
-    intOf2To32Add
+doSub :: Oper
+doSub = do
+    doNot
+    doInc
+    doAdd
 
 -- 952 bytes
-intOf2To32Mul10 :: Oper
-intOf2To32Mul10 = do
+doMul10 :: Oper
+doMul10 = do
     let a = 0
     let a_ = (1 +)
     consume 1
@@ -388,8 +388,8 @@ intOf2To32Mul10 = do
     produce 1
 
 -- 77400 bytes
-intOf2To32Mul :: Oper
-intOf2To32Mul = do
+doMul :: Oper
+doMul = do
     let a = 0
     let a_ = (1 +)
     let b = 33
@@ -429,8 +429,8 @@ intOf2To32Mul = do
     add a 1
     produce 1
 
-intOf2To32FlipLsb :: Oper
-intOf2To32FlipLsb = do
+doFlipLsb :: Oper
+doFlipLsb = do
     let a = 0
     let a_ = (1 +)
     consume 1
@@ -443,8 +443,8 @@ intOf2To32FlipLsb = do
     add a 1
     produce 1
 
-intOf2To32FlipMsb :: Oper
-intOf2To32FlipMsb = do
+doFlipMsb :: Oper
+doFlipMsb = do
     let a_ = (1 +)
     let t = 33
     consume 1
@@ -457,25 +457,25 @@ intOf2To32FlipMsb = do
         add (a_ 31) 1
     produce 1
 
-intOf2To32FlipMsb2 :: Oper
-intOf2To32FlipMsb2 = do
-    intOf2To32FlipMsb
+doFlipMsb2 :: Oper
+doFlipMsb2 = do
+    doFlipMsb
     let a = 0
     consume 1
     sub a 1
-    intOf2To32FlipMsb
+    doFlipMsb
     add a 1
     produce 1
 
 -- 358 bytes
-intOf2To32Eqz :: Oper
-intOf2To32Eqz = do
-    intOf2To32Nez
-    intOf2To32FlipLsb
+doEqz :: Oper
+doEqz = do
+    doNez
+    doFlipLsb
 
 -- 341 bytes
-intOf2To32Nez :: Oper
-intOf2To32Nez = do
+doNez :: Oper
+doNez = do
     let a = 0
     let a_ = (1 +)
     consume 1
@@ -486,14 +486,14 @@ intOf2To32Nez = do
     produce 1
 
 -- 4194 bytes
-intOf2To32Eq :: Oper
-intOf2To32Eq = do
-    intOf2To32Xor
-    intOf2To32Eqz
+doEq :: Oper
+doEq = do
+    doXor
+    doEqz
 
 data LtUOrGeU = LtU | GeU
-_intOf2To32LtUOrGeU :: LtUOrGeU -> Oper
-_intOf2To32LtUOrGeU t = do
+_doLtUOrGeU :: LtUOrGeU -> Oper
+_doLtUOrGeU t = do
     let a = 0
     let a_ = (a + 1 +)
     let b = 33
@@ -519,8 +519,8 @@ _intOf2To32LtUOrGeU t = do
     produce 1
 
 data GtUOrLeU = GtU | LeU
-_intOf2To32GtUOrLeU :: GtUOrLeU -> Oper
-_intOf2To32GtUOrLeU t = do
+_doGtUOrLeU :: GtUOrLeU -> Oper
+_doGtUOrLeU t = do
     let a = 0
     let a_ = (a + 1 +)
     let b = 33
@@ -547,40 +547,40 @@ _intOf2To32GtUOrLeU t = do
     produce 1
 
 -- 5064 bytes
-intOf2To32LtS :: Oper
-intOf2To32LtS = intOf2To32FlipMsb2 >> intOf2To32LtU
+doLtS :: Oper
+doLtS = doFlipMsb2 >> doLtU
 
 -- 5003 bytes
-intOf2To32LeS :: Oper
-intOf2To32LeS = intOf2To32FlipMsb2 >> intOf2To32LeU
+doLeS :: Oper
+doLeS = doFlipMsb2 >> doLeU
 
 -- 5034 bytes
-intOf2To32LtU :: Oper
-intOf2To32LtU = _intOf2To32LtUOrGeU LtU
+doLtU :: Oper
+doLtU = _doLtUOrGeU LtU
 
 -- 4907 bytes
-intOf2To32LeU :: Oper
-intOf2To32LeU = _intOf2To32GtUOrLeU LeU
+doLeU :: Oper
+doLeU = _doGtUOrLeU LeU
 
 -- 5132 bytes
-intOf2To32GtS :: Oper
-intOf2To32GtS = intOf2To32FlipMsb2 >> intOf2To32GtU
+doGtS :: Oper
+doGtS = doFlipMsb2 >> doGtU
 
 -- 5063 bytes
-intOf2To32GeS :: Oper
-intOf2To32GeS = intOf2To32FlipMsb2 >> intOf2To32GeU
+doGeS :: Oper
+doGeS = doFlipMsb2 >> doGeU
 
 -- 5036 bytes
-intOf2To32GtU :: Oper
-intOf2To32GtU = _intOf2To32GtUOrLeU GtU
+doGtU :: Oper
+doGtU = _doGtUOrLeU GtU
 
 -- 5033 bytes
-intOf2To32GeU :: Oper
-intOf2To32GeU = _intOf2To32LtUOrGeU GeU
+doGeU :: Oper
+doGeU = _doLtUOrGeU GeU
 
 -- 2073 bytes
-intOf2To32Scan :: Oper
-intOf2To32Scan = do
+doScan :: Oper
+doScan = do
     let a = 0
     let a_ = (1 +)
     let temp = 33
@@ -624,7 +624,7 @@ intOf2To32Scan = do
         while flagLoop do
             sub flagLoop 1
             at 33 do
-                intOf2To32Mul10
+                doMul10
             add temp 1
         while temp do
             sub temp 1
@@ -635,13 +635,13 @@ intOf2To32Scan = do
     while flagNeg do
         sub flagNeg 1
         at 33 do
-            intOf2To32Not
-            intOf2To32Inc
+            doNot
+            doInc
     produce 1
 
 -- 4682 bytes
-intOf2To32Print :: Oper
-intOf2To32Print = do
+doPrint :: Oper
+doPrint = do
     let a = 0
     let a_ = (1 +)
     let temp = 33
@@ -653,7 +653,7 @@ intOf2To32Print = do
         putc temp
         set temp 0
         enter 33
-        intOf2To32Not
+        doNot
         exit 33
         sub a 1
         incs (a_ 0)
@@ -718,32 +718,32 @@ intOf2To32Print = do
         toDigits 0 = []
         toDigits n = let (q, r) = n `quotRem` 10 in r:toDigits q
 
-intOf2To32Jump :: Int -> Oper
-intOf2To32Jump rel = do
+doJump :: Int -> Oper
+doJump rel = do
     jump 33 rel
 
-_intOf2To32JumpOnLsb :: Int -> Oper
-_intOf2To32JumpOnLsb rel = do
+_doJumpOnLsb :: Int -> Oper
+_doJumpOnLsb rel = do
     let a = 0
     let a0 = 1
     consume 1
     sub a 1
     while a0 do
         sub a0 1
-        intOf2To32Jump rel
+        doJump rel
     produce 0
 
-intOf2To32Jez :: Int -> Oper
-intOf2To32Jez rel = do
-    intOf2To32Eqz
-    _intOf2To32JumpOnLsb rel
+doJez :: Int -> Oper
+doJez rel = do
+    doEqz
+    _doJumpOnLsb rel
 
-intOf2To32Jnz :: Int -> Oper
-intOf2To32Jnz rel = do
-    intOf2To32Nez
-    _intOf2To32JumpOnLsb rel
+doJnz :: Int -> Oper
+doJnz rel = do
+    doNez
+    _doJumpOnLsb rel
 
-intOf2To32Jeq :: Int -> Oper
-intOf2To32Jeq rel = do
-    intOf2To32Eq
-    _intOf2To32JumpOnLsb rel
+doJeq :: Int -> Oper
+doJeq rel = do
+    doEq
+    _doJumpOnLsb rel
