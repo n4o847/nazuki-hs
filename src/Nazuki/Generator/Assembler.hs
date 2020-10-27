@@ -59,8 +59,8 @@ assemble ssize asmState = do
     let Asm isa opcodes = execState asmState empty
     let isize = logBase2 (Map.size isa - 1) + 2
     putIsize isize
-    let tmp = 0
-    let cmd = (1 +)
+    let tmp = mem 0
+    let cmd = mems [1 ..]
     bfDec
     forward isize
     forM_ opcodes \bits -> do

@@ -2,11 +2,13 @@
 {-# LANGUAGE LambdaCase #-}
 
 module Nazuki.Generator.Util
-    ( raw
-    , enter
+    ( mem
+    , mems
+    , raw
     , forward
-    , exit
+    , enter
     , backward
+    , exit
     , at
     , add
     , sub
@@ -26,6 +28,14 @@ import           Control.Monad
 import           Data.Char                      ( ord )
 import           Nazuki.Generator.Core
 
+newtype Ptr = Ptr Int
+
+mem :: Int -> Ptr
+mem = Ptr
+
+mems :: [Int] -> Int -> Ptr
+mems s i = Ptr (s !! i)
+
 raw :: String -> Oper
 raw =
     mapM_ \case
@@ -39,30 +49,32 @@ raw =
         '.' -> bfPut
         _   -> bfNop
 
-enter :: Int -> Oper
-enter p =
-    if p >= 0 then
-        replicateM_ p bfFwd
-    else
-        replicateM_ (negate p) bfBwd
-
 forward :: Int -> Oper
-forward = enter
+forward a =
+    if a >= 0 then
+        replicateM_ a bfFwd
+    else
+        replicateM_ (negate a) bfBwd
 
-exit :: Int -> Oper
-exit p =
-    enter (negate p)
+enter :: Ptr -> Oper
+enter (Ptr a) =
+    forward a
 
 backward :: Int -> Oper
-backward = exit
+backward a =
+    forward (negate a)
 
-at :: Int -> Oper -> Oper
+exit :: Ptr -> Oper
+exit (Ptr a) =
+    backward a
+
+at :: Ptr -> Oper -> Oper
 at p oper = do
     enter p
     oper
     exit p
 
-add :: Int -> Int -> Oper
+add :: Ptr -> Int -> Oper
 add p x =
     at p
         if x >= 0 then
@@ -70,31 +82,31 @@ add p x =
         else
             replicateM_ (negate x) bfDec
 
-sub :: Int -> Int -> Oper
+sub :: Ptr -> Int -> Oper
 sub p x =
     add p (negate x)
 
-getc :: Int -> Oper
+getc :: Ptr -> Oper
 getc p =
     at p bfGet
 
-putc :: Int -> Oper
+putc :: Ptr -> Oper
 putc p =
     at p bfPut
 
-while :: Int -> Oper -> Oper
+while :: Ptr -> Oper -> Oper
 while p block = do
     at p bfOpn
     block
     at p bfCls
 
-set :: Int -> Int -> Oper
+set :: Ptr -> Int -> Oper
 set p x = do
     while p $
         sub p 1
     add p x
 
-ifElse :: Int -> Int -> Oper -> Oper -> Oper
+ifElse :: Ptr -> Ptr -> Oper -> Oper -> Oper
 ifElse flg tmp cons alt = do
     while flg do
         cons
@@ -108,7 +120,7 @@ ifElse flg tmp cons alt = do
         alt
 
 -- in case flg is changed after cons
-ifElseMut :: Int -> Int -> Oper -> Oper -> Oper
+ifElseMut :: Ptr -> Ptr -> Oper -> Oper -> Oper
 ifElseMut flg tmp cons alt = do
     while flg do
         cons
@@ -125,17 +137,17 @@ ifElseMut flg tmp cons alt = do
             sub tmp 1
             alt
 
-incs :: Int -> Oper
+incs :: Ptr -> Oper
 incs p =
     at p $
         raw "[>]+<[-<]>"
 
-decs :: Int -> Oper
+decs :: Ptr -> Oper
 decs p =
     at p $
         raw "-[++>-]<[<]>"
 
-puts :: Int -> String -> Oper
+puts :: Ptr -> String -> Oper
 puts p s =
     forM_ s \c -> do
         add p (ord c)

@@ -22,16 +22,16 @@ import           Nazuki.Generator.Util
 
 consume :: Int -> Oper
 consume a =
-    exit (2 * a)
+    backward (2 * a)
 
 produce :: Int -> Oper
 produce a =
-    enter (2 * a)
+    forward (2 * a)
 
 uintOf256To1Const :: Int -> Oper
 uintOf256To1Const a = do
-    let head = 0
-    let body = 1
+    let head = mem 0
+    let body = mem 1
     consume 0
     add head 1
     add body (a `mod` 256)
@@ -39,10 +39,10 @@ uintOf256To1Const a = do
 
 uintOf256To1Dup :: Oper
 uintOf256To1Dup = do
-    let aHead = 0
-    let aBody = 1
-    let bHead = 2
-    let bBody = 3
+    let aHead = mem 0
+    let aBody = mem 1
+    let bHead = mem 2
+    let bBody = mem 3
     consume 1
     while aBody do
         sub aBody 1
@@ -56,8 +56,8 @@ uintOf256To1Dup = do
 
 uintOf256To1Drop :: Oper
 uintOf256To1Drop = do
-    let head = 0
-    let body = 1
+    let head = mem 0
+    let body = mem 1
     consume 1
     set body 0
     sub head 1
@@ -65,10 +65,10 @@ uintOf256To1Drop = do
 
 uintOf256To1Swap :: Oper
 uintOf256To1Swap = do
-    let aHead = 0
-    let aBody = 1
-    let bHead = 2
-    let bBody = 3
+    let aHead = mem 0
+    let aBody = mem 1
+    let bHead = mem 2
+    let bBody = mem 3
     consume 2
     sub bHead 1
     while aBody do
@@ -85,8 +85,8 @@ uintOf256To1Swap = do
 
 uintOf256To1Not :: Oper
 uintOf256To1Not = do
-    let head = 0
-    let body = 1
+    let head = mem 0
+    let body = mem 1
     consume 1
     while body do
         set body 0
@@ -99,10 +99,10 @@ uintOf256To1Not = do
 
 uintOf256To1Add :: Oper
 uintOf256To1Add = do
-    let aHead = 0
-    let aBody = 1
-    let bHead = 2
-    let bBody = 3
+    let aHead = mem 0
+    let aBody = mem 1
+    let bHead = mem 2
+    let bBody = mem 3
     consume 2
     while bBody do
         sub bBody 1
@@ -112,10 +112,10 @@ uintOf256To1Add = do
 
 uintOf256To1Sub :: Oper
 uintOf256To1Sub = do
-    let aHead = 0
-    let aBody = 1
-    let bHead = 2
-    let bBody = 3
+    let aHead = mem 0
+    let aBody = mem 1
+    let bHead = mem 2
+    let bBody = mem 3
     consume 2
     while bBody do
         sub bBody 1
@@ -125,10 +125,10 @@ uintOf256To1Sub = do
 
 uintOf256To1Scan :: Oper
 uintOf256To1Scan = do
-    let head = 0
-    let body = 1
-    let input = 2
-    let continue = 3
+    let head = mem 0
+    let body = mem 1
+    let input = mem 2
+    let continue = mem 3
     consume 0
     add continue 1
     while continue do
@@ -156,8 +156,8 @@ uintOf256To1Scan = do
 
 uintOf256To1PutsIfElse :: String -> String -> Oper
 uintOf256To1PutsIfElse st sf = do
-    let head = 0
-    let body = 1
+    let head = mem 0
+    let body = mem 1
     consume 1
     while body do
         set body 0
@@ -170,10 +170,10 @@ uintOf256To1PutsIfElse st sf = do
 
 uintOf256To1PutsCase :: [(Int, String)] -> Oper
 uintOf256To1PutsCase cases = do
-    let m0 = 0
-    let m1 = 1
-    let m2 = 2
-    let m3 = 3
+    let m0 = mem 0
+    let m1 = mem 1
+    let m2 = mem 2
+    let m3 = mem 3
     consume 1
     forM_ cases \(n, s) -> do
         while m1 do

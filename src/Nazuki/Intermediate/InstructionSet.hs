@@ -96,7 +96,7 @@ insToOper = \case
     GeU -> I32.doGeU
     Scan -> I32.doScan
     Print -> I32.doPrint
-    Write s -> G.puts 0 s
+    Write s -> G.puts (G.mem 0) s
     Jump r -> I32.doJump r
     Jez r -> I32.doJez r
     Jnz r -> I32.doJnz r

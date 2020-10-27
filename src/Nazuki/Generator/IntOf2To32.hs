@@ -49,16 +49,16 @@ import           Nazuki.Generator.Assembler
 
 consume :: Int -> Oper
 consume a =
-    exit (33 * a)
+    backward (33 * a)
 
 produce :: Int -> Oper
 produce a =
-    enter (33 * a)
+    forward (33 * a)
 
 doConst :: Int32 -> Oper
 doConst x = do
-    let a = 0
-    let a_ = (1 +)
+    let a = mem 0
+    let a_ = mems [1 .. 32]
     consume 0
     add a 1
     forM_ [0 .. 31] \i ->
@@ -77,10 +77,10 @@ doGet :: Int -> Oper
 doGet x
 -- non-negative indices count from the front of the stack
     | x >= 0 = do
-        let a = 0
-        let a_ = (1 +)
-        let b = 0
-        let b_ = (1 +)
+        let a = mem 0
+        let a_ = mems [1 .. 32]
+        let b = mem 0
+        let b_ = mems [1 .. 32]
         let toFront = backward 33 >> bfOpn >> backward 33 >> bfCls
         let toBack = forward 33 >> bfOpn >> forward 33 >> bfCls
         consume 0
@@ -110,10 +110,10 @@ doGet x
         produce 1
 -- negative indices count from the back of the stack
     | x < 0 = do
-        let a = 33 * x
-        let a_ = (a + 1 +)
-        let b = 0
-        let b_ = (1 +)
+        let a = mem (33 * x)
+        let a_ = mems [33 * x + 1 .. 33 * x + 32]
+        let b = mem 0
+        let b_ = mems [1 .. 32]
         consume 0
         forM_ [0 .. 31] \i -> do
             while (a_ i) do
@@ -130,10 +130,10 @@ doSet :: Int -> Oper
 doSet x
 -- non-negative indices count from the front of the stack
     | x >= 0 = do
-        let a = 0
-        let a_ = (1 +)
-        let b = 0
-        let b_ = (1 +)
+        let a = mem 0
+        let a_ = mems [1 .. 32]
+        let b = mem 0
+        let b_ = mems [1 .. 32]
         let toFront = backward 33 >> bfOpn >> backward 33 >> bfCls
         let toBack = forward 33 >> bfOpn >> forward 33 >> bfCls
         consume 1
@@ -164,10 +164,10 @@ doSet x
         produce 0
 -- negative indices count from the back of the stack
     | x < 0 = do
-        let a = 33 * x
-        let a_ = (a + 1 +)
-        let b = 0
-        let b_ = (1 +)
+        let a = mem (33 * x)
+        let a_ = mems [33 * x + 1 .. 33 * x + 32]
+        let b = mem 0
+        let b_ = mems [1 .. 32]
         consume 1
         sub b 1
         forM_ [0 .. 31] \i -> do
@@ -180,8 +180,8 @@ doSet x
 
 doDrop :: Oper
 doDrop = do
-    let a = 0
-    let a_ = (1 +)
+    let a = mem 0
+    let a_ = mems [1 .. 32]
     consume 1
     forM_ [31, 30 .. 0] \i ->
         set (a_ i) 0
@@ -191,8 +191,8 @@ doDrop = do
 -- 480 bytes
 doNot :: Oper
 doNot = do
-    let a_ = (1 +)  -- [1 .. 32]
-    let helper = (2 +)  -- [2 .. 33]
+    let a_ = mems [1 .. 32]
+    let helper = mems [2 .. 33]
     consume 1
     forM_ [31, 30 .. 0] \i -> do
         add (helper i) 1
@@ -208,9 +208,9 @@ doNot = do
 -- 2370 bytes
 doAnd :: Oper
 doAnd = do
-    let a_ = (1 +)  -- [1 .. 32]
-    let b = 33
-    let b_ = (34 +)  -- [34 .. 65]
+    let a_ = mems [1 .. 32]
+    let b = mem 33
+    let b_ = mems [34 .. 65]
     consume 2
     forM_ [31, 30 .. 0] \i -> do
         sub (b_ i) 1
@@ -223,9 +223,9 @@ doAnd = do
 -- 2370 bytes
 doOr :: Oper
 doOr = do
-    let a_ = (1 +)  -- [1 .. 32]
-    let b = 33
-    let b_ = (34 +)  -- [34 .. 65]
+    let a_ = mems [1 .. 32]
+    let b = mem 33
+    let b_ = mems [34 .. 65]
     consume 2
     forM_ [31, 30 .. 0] \i ->
         while (b_ i) do
@@ -237,10 +237,10 @@ doOr = do
 -- 3836 bytes
 doXor :: Oper
 doXor = do
-    let a = 0
-    let a_ = (1 +)  -- [1 .. 32]
-    let b = 33
-    let b_ = (34 +)  -- [34 .. 65]
+    let a = mem 0
+    let a_ = mems [1 .. 32]
+    let b = mem 33
+    let b_ = mems [34 .. 65]
     consume 2
     -- 降順の方が若干短い。
     forM_ [31, 30 .. 0] \i ->
@@ -261,9 +261,9 @@ doXor = do
 data ShlOrShrUOrShrS = Shl | ShrU | ShrS
 _doShlOrShrUOrShrS :: ShlOrShrUOrShrS -> Oper
 _doShlOrShrUOrShrS t = do
-    let a_ = (1 +)
-    let b = 33
-    let b_ = (34 +)
+    let a_ = mems [1 .. 32]
+    let b = mem 33
+    let b_ = mems [34 .. 65]
     consume 2
     forM_ [31, 30 .. 5] \i ->
         set (b_ i) 0
@@ -323,9 +323,9 @@ doShrS = _doShlOrShrUOrShrS ShrS
 -- 81 bytes
 doInc :: Oper
 doInc = do
-    let a = 0
-    let a_ = (1 +)
-    let carry = 33
+    let a = mem 0
+    let a_ = mems [1 .. 32]
+    let carry = mem 33
     consume 1
     sub a 1
     incs $ a_ 0
@@ -336,11 +336,11 @@ doInc = do
 -- 6855 bytes
 doAdd :: Oper
 doAdd = do
-    let a = 0
-    let a_ = (1 +)
-    let b = 33
-    let b_ = (34 +)
-    let carry = 66
+    let a = mem 0
+    let a_ = mems [1 .. 32]
+    let b = mem 33
+    let b_ = mems [34 .. 65]
+    let carry = mem 66
     consume 2
     sub b 1
     forM_ [0 .. 31] \i -> do
@@ -363,8 +363,8 @@ doSub = do
 -- 952 bytes
 doMul10 :: Oper
 doMul10 = do
-    let a = 0
-    let a_ = (1 +)
+    let a = mem 0
+    let a_ = mems [1 .. 33]
     consume 1
     set (a_ 31) 0
     while (a_ 30) do
@@ -390,10 +390,10 @@ doMul10 = do
 -- 77400 bytes
 doMul :: Oper
 doMul = do
-    let a = 0
-    let a_ = (1 +)
-    let b = 33
-    let b_ = (34 +)
+    let a = mem 0
+    let a_ = mems [1 .. 32]
+    let b = mem 33
+    let b_ = mems [34 .. 65]
     consume 2
     sub b 1
     sub a 1
@@ -431,8 +431,8 @@ doMul = do
 
 doFlipLsb :: Oper
 doFlipLsb = do
-    let a = 0
-    let a_ = (1 +)
+    let a = mem 0
+    let a_ = mems [1 .. 32]
     consume 1
     while (a_ 0) do
         sub (a_ 0) 1
@@ -445,8 +445,8 @@ doFlipLsb = do
 
 doFlipMsb :: Oper
 doFlipMsb = do
-    let a_ = (1 +)
-    let t = 33
+    let a_ = mems [1 .. 32]
+    let t = mem 33
     consume 1
     add t 1
     while (a_ 31) do
@@ -460,7 +460,7 @@ doFlipMsb = do
 doFlipMsb2 :: Oper
 doFlipMsb2 = do
     doFlipMsb
-    let a = 0
+    let a = mem 0
     consume 1
     sub a 1
     doFlipMsb
@@ -476,8 +476,8 @@ doEqz = do
 -- 341 bytes
 doNez :: Oper
 doNez = do
-    let a = 0
-    let a_ = (1 +)
+    let a = mem 0
+    let a_ = mems [1 .. 32]
     consume 1
     forM_ [31, 30 .. 1] \i ->
         while (a_ i) do
@@ -494,10 +494,10 @@ doEq = do
 data LtUOrGeU = LtU | GeU
 _doLtUOrGeU :: LtUOrGeU -> Oper
 _doLtUOrGeU t = do
-    let a = 0
-    let a_ = (a + 1 +)
-    let b = 33
-    let b_ = (b + 1 +)
+    let a = mem 0
+    let a_ = mems [1 .. 32]
+    let b = mem 33
+    let b_ = mems [34 .. 65]
     consume 2
     sub a 1
     forM_ [0 .. 31] \i -> do
@@ -521,11 +521,11 @@ _doLtUOrGeU t = do
 data GtUOrLeU = GtU | LeU
 _doGtUOrLeU :: GtUOrLeU -> Oper
 _doGtUOrLeU t = do
-    let a = 0
-    let a_ = (a + 1 +)
-    let b = 33
-    let b_ = (b + 1 +)
-    let c = 66
+    let a = mem 0
+    let a_ = mems [1 .. 32]
+    let b = mem 33
+    let b_ = mems [34 .. 65]
+    let c = mem 66
     consume 2
     add c 1
     sub b 1
@@ -581,12 +581,12 @@ doGeU = _doLtUOrGeU GeU
 -- 2073 bytes
 doScan :: Oper
 doScan = do
-    let a = 0
-    let a_ = (1 +)
-    let temp = 33
-    let digitValue = 33 + 1
-    let flagLoop = 33 + 2
-    let flagNeg = 33 + 3
+    let a = mem 0
+    let a_ = mems [1 .. 32]
+    let temp = mem 33
+    let digitValue = mem (33 + 1)
+    let flagLoop = mem (33 + 2)
+    let flagNeg = mem (33 + 3)
     let evalDigit = do
             sub temp 48
             while temp do
@@ -623,7 +623,7 @@ doScan = do
         evalDigit
         while flagLoop do
             sub flagLoop 1
-            at 33 do
+            at (mem 33) do
                 doMul10
             add temp 1
         while temp do
@@ -634,7 +634,7 @@ doScan = do
     -- Negate
     while flagNeg do
         sub flagNeg 1
-        at 33 do
+        at (mem 33) do
             doNot
             doInc
     produce 1
@@ -642,28 +642,30 @@ doScan = do
 -- 4682 bytes
 doPrint :: Oper
 doPrint = do
-    let a = 0
-    let a_ = (1 +)
+    let a = mem 0
+    let a_ = mems [1 .. 32]
     let temp = 33
-    let temp0 = 34
     consume 1
     -- 負数用の処理 ここから
-    while (a_ 31) do
-        add temp 45
-        putc temp
-        set temp 0
-        enter 33
-        doNot
-        exit 33
-        sub a 1
-        incs (a_ 0)
-        add a 1
+    do
+        let t0 = mem temp
+        let t1 = mem (temp + 1)
         while (a_ 31) do
-            sub (a_ 31) 1
-            add temp0 1
-    while temp0 do
-        sub temp0 1
-        add (a_ 31) 1
+            add t0 45
+            putc t0
+            set t0 0
+            enter (mem 33)
+            doNot
+            exit (mem 33)
+            sub a 1
+            incs (a_ 0)
+            add a 1
+            while (a_ 31) do
+                sub (a_ 31) 1
+                add t1 1
+        while t1 do
+            sub t1 1
+            add (a_ 31) 1
     -- 負数用の処理 ここまで
     -- 2 ** 31 に注意
     forM_ [0 .. 31] \i -> do
@@ -671,14 +673,15 @@ doPrint = do
         while (a_ i) do
             sub (a_ i) 1
             foldM_ (\j d -> do
-                add (temp + 3 * j) (fromIntegral d)
+                let t = mem (temp + 3 * j)
+                add t (fromIntegral d)
                 return $ j + 1
                 ) 0 digits
     forM_ [0 .. 8] \j -> do
-        let dividend  = temp + 3 * j
-        let divisor   = temp + 3 * j + 1
-        let remainder = temp + 3 * j + 2
-        let quotient  = temp + 3 * j + 3
+        let dividend  = mem (temp + 3 * j)
+        let divisor   = mem (temp + 3 * j + 1)
+        let remainder = mem (temp + 3 * j + 2)
+        let quotient  = mem (temp + 3 * j + 3)
         add divisor 10
         at dividend $
             -- https://esolangs.org/wiki/Brainfuck_algorithms#Divmod_algorithm
@@ -690,10 +693,10 @@ doPrint = do
             sub remainder 1
             add dividend 1
     forM_ [9, 8 .. 1] \j -> do
-        let s1 = temp + 3 * j - 2
-        let t0 = temp + 3 * j
-        let t1 = temp + 3 * j + 1
-        let t2 = temp + 3 * j + 2
+        let s1 = mem (temp + 3 * j - 2)
+        let t0 = mem (temp + 3 * j)
+        let t1 = mem (temp + 3 * j + 1)
+        let t2 = mem (temp + 3 * j + 2)
         while t0 do
             sub t0 1
             add t1 1
@@ -706,8 +709,8 @@ doPrint = do
             putc t2
             set t2 0
     do
-        let t0 = temp
-        let t1 = temp + 1
+        let t0 = mem temp
+        let t1 = mem (temp + 1)
         set t1 0
         add t0 48
         putc t0
@@ -724,8 +727,8 @@ doJump rel = do
 
 _doJumpOnLsb :: Int -> Oper
 _doJumpOnLsb rel = do
-    let a = 0
-    let a0 = 1
+    let a = mem 0
+    let a0 = mem 1
     consume 1
     sub a 1
     while a0 do
