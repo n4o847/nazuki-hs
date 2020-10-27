@@ -1,11 +1,20 @@
+// @ts-ignore
 import * as rts from '../out/rts.mjs';
+// @ts-ignore
 import wasmURL from '../out/nazuki.wasm';
+// @ts-ignore
 import req from '../out/nazuki.req.mjs';
 
-(async () => {
+interface Nazuki {
+  generate(x: number): Promise<string>;
+}
+
+export async function loadNazuki(): Promise<Nazuki> {
   const res = await fetch(wasmURL);
   const bytes = await res.arrayBuffer();
   const module = await WebAssembly.compile(bytes);
   const instance = await rts.newAsteriusInstance(Object.assign(req, { module }));
-  document.getElementById('target').value = await instance.exports.generate(10);
-})();
+  return {
+    generate: instance.exports.generate,
+  };
+}
