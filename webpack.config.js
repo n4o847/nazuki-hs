@@ -5,7 +5,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 module.exports = {
-  entry: './www/index.tsx',
+  entry: './web/index.tsx',
   module: {
     rules: [
       {
@@ -33,7 +33,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, './www/index.html'),
+      template: path.resolve(__dirname, './web/index.html'),
     }),
     new MiniCssExtractPlugin(),
   ],

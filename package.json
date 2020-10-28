@@ -2,9 +2,9 @@
   "name": "nazuki",
   "private": true,
   "scripts": {
-    "build": "npm run build:wasm && npm run build:www",
+    "build": "npm run build:wasm && npm run build:web",
     "build:wasm": "./build.sh --local",
-    "build:www": "rimraf dist && webpack",
+    "build:web": "rimraf dist && webpack",
     "start": "rimraf dist && webpack serve"
   },
   "dependencies": {
