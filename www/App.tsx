@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import Jumbotron from 'react-bootstrap/Jumbotron';
+import Container from 'react-bootstrap/Container';
+import Alert from 'react-bootstrap/Alert';
+import Form from 'react-bootstrap/Form';
 
 export default function App () {
   const [result, setResult] = useState('');
@@ -19,19 +23,26 @@ export default function App () {
   }, []);
 
   return (
-    <div>
-      <h1>Nazuki</h1>
-      <div>
-        {errors.map((error) => (
-          <p>{error}</p>
-        ))}
-      </div>
-      <textarea
-        readOnly
-        style={{ boxSizing: 'border-box', width: '100%', height: '10rem' }}
-        value={result}
-      />
-      <div>{result.length}</div>
-    </div>
+    <>
+      <Jumbotron>
+        <h1>Nazuki</h1>
+        <p>[WIP] Compiler Infrastructure for Brainfuck</p>
+      </Jumbotron>
+      <Container>
+        <div>
+          {errors.map((error, idx) => (
+            <Alert key={idx} variant="danger">{error}</Alert>
+          ))}
+        </div>
+        <Form.Control
+          as="textarea"
+          readOnly
+          className="text-monospace"
+          style={{ wordBreak: 'break-all', height: '10rem' }}
+          value={result}
+        />
+        <p>{result.length}</p>
+      </Container>
+    </>
   );
 }
