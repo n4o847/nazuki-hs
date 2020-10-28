@@ -10,6 +10,7 @@ export default function App () {
   const [nazuki, setNazuki] = useState<Nazuki>();
   const [result, setResult] = useState('');
   const [input, setInput] = useState('');
+  const [running, setRunning] = useState(false);
   const [output, setOutput] = useState('');
   const [error, setError] = useState('');
   const [alerts, setAlerts] = useState<string[]>([]);
@@ -32,10 +33,13 @@ export default function App () {
 
   const run = () => {
     if (!nazuki) return;
+    setRunning(true);
     nazuki.run(result, input).then((output) => {
       setOutput(String(output));
+      setRunning(false);
     }).catch((error) => {
       setError(String(error));
+      setRunning(false);
     });
   };
 
@@ -73,7 +77,7 @@ export default function App () {
             />
           </Form.Group>
           <Form.Group>
-            <Button variant="primary" onClick={run}>Run</Button>
+            <Button variant="primary" onClick={run}>{running ? 'Running...' : 'Run'}</Button>
           </Form.Group>
           <Form.Group>
             <Form.Label>Output</Form.Label>
