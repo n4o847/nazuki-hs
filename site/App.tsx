@@ -11,10 +11,11 @@ export default function App () {
   const [result, setResult] = useState('');
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
-  const [errors, setErrors] = useState<any[]>([]);
+  const [error, setError] = useState('');
+  const [alerts, setAlerts] = useState<string[]>([]);
 
-  const addError = (error: any) => {
-    setErrors((errors) => [...errors, error]);
+  const addAlert = (alert: string) => {
+    setAlerts((alerts) => [...alerts, alert]);
   };
 
   useEffect(() => {
@@ -25,16 +26,16 @@ export default function App () {
       const result = await nazuki.generate(10);
       setResult(result);
     })().catch((err) => {
-      addError(`${err}`);
+      addAlert(String(err));
     });
   }, []);
 
   const run = () => {
     if (!nazuki) return;
     nazuki.run(result, input).then((output) => {
-      setOutput(output);
+      setOutput(String(output));
     }).catch((error) => {
-      addError(error);
+      setError(String(error));
     });
   };
 
@@ -46,8 +47,8 @@ export default function App () {
       </Jumbotron>
       <Container>
         <div>
-          {errors.map((error, idx) => (
-            <Alert key={idx} variant="danger">{error}</Alert>
+          {alerts.map((alert, idx) => (
+            <Alert key={idx} variant="danger">{alert}</Alert>
           ))}
         </div>
         <Form>
@@ -55,7 +56,8 @@ export default function App () {
             as="textarea"
             readOnly
             className="text-monospace"
-            style={{ wordBreak: 'break-all', height: '10rem' }}
+            style={{ wordBreak: 'break-all' }}
+            rows={5}
             value={result}
           />
           <p>{result.length}</p>
@@ -64,7 +66,7 @@ export default function App () {
             <Form.Control
               as="textarea"
               className="text-monospace"
-              style={{ height: '10rem' }}
+              rows={5}
               spellCheck={false}
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -79,8 +81,18 @@ export default function App () {
               as="textarea"
               readOnly
               className="text-monospace"
-              style={{ height: '10rem' }}
+              rows={5}
               value={output}
+            />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Error</Form.Label>
+            <Form.Control
+              as="textarea"
+              readOnly
+              className="text-monospace"
+              rows={5}
+              value={error}
             />
           </Form.Group>
         </Form>
