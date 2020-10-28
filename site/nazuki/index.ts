@@ -10,9 +10,15 @@ export async function loadNazuki(): Promise<Nazuki> {
   const res = await fetch(wasmURL);
   const bytes = await res.arrayBuffer();
   const module = await WebAssembly.compile(bytes);
-  const instance = await rts.newAsteriusInstance(Object.assign(req, { module }));
+  Object.assign(req, { module });
   return {
-    generate: instance.exports.generate,
-    run: instance.exports.run,
+    async generate(x: number) {
+      const instance = await rts.newAsteriusInstance(req);
+      return instance.exports.generate(x);
+    },
+    async run(program: string, input: string) {
+      const instance = await rts.newAsteriusInstance(req);
+      return instance.exports.run(program, input);
+    },
   };
 }
