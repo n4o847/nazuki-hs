@@ -30,7 +30,7 @@ jobs:
           entrypoint: ./entrypoint.sh
 
       - run: npm ci
-      - run: npm run build:web
+      - run: npm run build:site
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
