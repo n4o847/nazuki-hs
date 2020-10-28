@@ -4,8 +4,8 @@
   "scripts": {
     "build": "npm run build:wasm && npm run build:www",
     "build:wasm": "./build.sh --local",
-    "build:www": "webpack",
-    "start": "webpack serve"
+    "build:www": "rimraf dist && webpack",
+    "start": "rimraf dist && webpack serve"
   },
   "dependencies": {
     "@types/react": "^16.9.53",
@@ -21,6 +21,7 @@
     "file-loader": "^6.1.1",
     "html-webpack-plugin": "^4.5.0",
     "mini-css-extract-plugin": "^1.2.1",
+    "rimraf": "^3.0.2",
     "ts-loader": "^8.0.7",
     "typescript": "^4.0.5",
     "webpack": "^5.2.0",
