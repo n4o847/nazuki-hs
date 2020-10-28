@@ -8,3 +8,5 @@ case $1 in
     WASI_SDK_PATH=/opt/wasi-sdk ./entrypoint.sh
     ;;
 esac
+
+find ./src ./wasm \( -name *.hi -o -name *.o \) -delete
