@@ -63,8 +63,10 @@ export default function App () {
     setRunning(true);
     nazuki.run(result, input).then((output) => {
       setOutput(output);
+      setError('');
       setRunning(false);
     }).catch((error) => {
+      setOutput('');
       setError(String(error));
       setRunning(false);
     });
