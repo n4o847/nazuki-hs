@@ -4,7 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { Nazuki } from './nazuki/types';
+import { Nazuki } from '../pkg/types';
 
 export default function App () {
   const [nazuki, setNazuki] = useState<Nazuki>();
@@ -21,7 +21,7 @@ export default function App () {
 
   useEffect(() => {
     (async () => {
-      const { loadNazuki } = await import('./nazuki');
+      const { loadNazuki } = await import('../pkg');
       const nazuki = await loadNazuki();
       setNazuki(nazuki);
       const result = await nazuki.generate(10);

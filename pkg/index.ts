@@ -1,9 +1,9 @@
 // @ts-ignore
-import * as rts from '../../out/rts.mjs';
+import * as rts from '../out/rts.mjs';
 // @ts-ignore
-import wasmURL from '../../out/nazuki.wasm';
+import wasmURL from '../out/nazuki.wasm';
 // @ts-ignore
-import req from '../../out/nazuki.req.mjs';
+import req from '../out/nazuki.req.mjs';
 import { Nazuki } from './types';
 
 export async function loadNazuki(): Promise<Nazuki> {

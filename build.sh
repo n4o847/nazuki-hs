@@ -9,4 +9,4 @@ case $1 in
     ;;
 esac
 
-find ./src ./wasm \( -name *.hi -o -name *.o \) -delete
+find ./src ./pkg \( -name *.hi -o -name *.o \) -delete

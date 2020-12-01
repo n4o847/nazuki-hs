@@ -3,7 +3,7 @@
 mkdir -p out
 
 ahc-link \
-  --input-hs wasm/Lib.hs \
+  --input-hs pkg/Lib.hs \
   --output-directory out \
   --output-prefix nazuki \
   --no-main \
