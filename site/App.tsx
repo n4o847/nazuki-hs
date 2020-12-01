@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import Alert from 'react-bootstrap/Alert';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -81,30 +83,36 @@ export default function App () {
           ))}
         </div>
         <Form>
-          <Form.Group>
-            <Form.Control
-              as="textarea"
-              className="text-monospace"
-              style={{ wordBreak: 'break-all' }}
-              rows={5}
-              value={source}
-              onChange={(e) => setSource(e.target.value)}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Button variant="primary" onClick={assemble}>{assembling ? 'Assembling...' : 'Assemble'}</Button>
-          </Form.Group>
-          <Form.Group>
-            <Form.Control
-              as="textarea"
-              readOnly
-              className="text-monospace"
-              style={{ wordBreak: 'break-all' }}
-              rows={5}
-              value={result}
-            />
-            <p>{result.length}</p>
-          </Form.Group>
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Control
+                  as="textarea"
+                  className="text-monospace"
+                  style={{ wordBreak: 'break-all' }}
+                  rows={10}
+                  value={source}
+                  onChange={(e) => setSource(e.target.value)}
+                />
+              </Form.Group>
+              <Form.Group>
+                <Button variant="primary" onClick={assemble}>{assembling ? 'Assembling...' : 'Assemble'}</Button>
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group>
+                <Form.Control
+                  as="textarea"
+                  readOnly
+                  className="text-monospace"
+                  style={{ wordBreak: 'break-all' }}
+                  rows={10}
+                  value={result}
+                />
+                <p>{result.length}</p>
+              </Form.Group>
+            </Col>
+          </Row>
           <Form.Group>
             <Form.Label>Input</Form.Label>
             <Form.Control
