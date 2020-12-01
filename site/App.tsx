@@ -8,6 +8,7 @@ import { Nazuki } from '../pkg/types';
 
 export default function App () {
   const [nazuki, setNazuki] = useState<Nazuki>();
+  const [source, setSource] = useState('scan\nscan\nadd\nprint');
   const [result, setResult] = useState('');
   const [input, setInput] = useState('');
   const [running, setRunning] = useState(false);
@@ -24,7 +25,7 @@ export default function App () {
       const { loadNazuki } = await import('../pkg');
       const nazuki = await loadNazuki();
       setNazuki(nazuki);
-      const result = await nazuki.generate(10);
+      const result = await nazuki.assemble(source);
       setResult(result);
     })().catch((err) => {
       addAlert(String(err));
