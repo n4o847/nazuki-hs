@@ -6,12 +6,23 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { Nazuki } from '../pkg/types';
 
+const defaultSource = `
+scan
+scan
+add
+print
+`.slice(1);
+
+const defaultInput = `
+10 20
+`.slice(1);
+
 export default function App () {
   const [nazuki, setNazuki] = useState<Nazuki>();
-  const [source, setSource] = useState('scan\nscan\nadd\nprint');
+  const [source, setSource] = useState(defaultSource);
   const [assembling, setAssembling] = useState(false);
   const [result, setResult] = useState('');
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState(defaultInput);
   const [running, setRunning] = useState(false);
   const [output, setOutput] = useState('');
   const [error, setError] = useState('');
