@@ -2,6 +2,7 @@ module Lib where
 
 import Asterius.Types
 import qualified Nazuki.Intermediate.InstructionSet as I
+import qualified Nazuki.Intermediate.Label as L
 import qualified Nazuki.Intermediate.Parser as P
 import qualified Nazuki.Runner as R
 
@@ -11,7 +12,8 @@ foreign export javascript run :: JSString -> JSString -> JSString
 
 assemble :: JSString -> JSString
 assemble source =
-    either error toJSString $ I.generate <$> P.parse (fromJSString source)
+    either error toJSString $
+        I.generate <$> L.resolveLabels <$> P.parse (fromJSString source)
 
 generate :: Int -> JSString
 generate x = toJSString $ I.generate
