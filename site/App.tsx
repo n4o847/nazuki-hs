@@ -9,6 +9,7 @@ import { Nazuki } from '../pkg/types';
 export default function App () {
   const [nazuki, setNazuki] = useState<Nazuki>();
   const [source, setSource] = useState('scan\nscan\nadd\nprint');
+  const [assembling, setAssembling] = useState(false);
   const [result, setResult] = useState('');
   const [input, setInput] = useState('');
   const [running, setRunning] = useState(false);
@@ -32,11 +33,23 @@ export default function App () {
     });
   }, []);
 
+  const assemble = () => {
+    if (!nazuki) return;
+    setAssembling(true);
+    nazuki.assemble(source).then((result) => {
+      setResult(result);
+      setAssembling(false);
+    }).catch((error) => {
+      addAlert(String(error));
+      setAssembling(false);
+    });
+  };
+
   const run = () => {
     if (!nazuki) return;
     setRunning(true);
     nazuki.run(result, input).then((output) => {
-      setOutput(String(output));
+      setOutput(output);
       setRunning(false);
     }).catch((error) => {
       setError(String(error));
@@ -57,15 +70,30 @@ export default function App () {
           ))}
         </div>
         <Form>
-          <Form.Control
-            as="textarea"
-            readOnly
-            className="text-monospace"
-            style={{ wordBreak: 'break-all' }}
-            rows={5}
-            value={result}
-          />
-          <p>{result.length}</p>
+          <Form.Group>
+            <Form.Control
+              as="textarea"
+              className="text-monospace"
+              style={{ wordBreak: 'break-all' }}
+              rows={5}
+              value={source}
+              onChange={(e) => setSource(e.target.value)}
+            />
+          </Form.Group>
+          <Form.Group>
+            <Button variant="primary" onClick={assemble}>{assembling ? 'Assembling...' : 'Assemble'}</Button>
+          </Form.Group>
+          <Form.Group>
+            <Form.Control
+              as="textarea"
+              readOnly
+              className="text-monospace"
+              style={{ wordBreak: 'break-all' }}
+              rows={5}
+              value={result}
+            />
+            <p>{result.length}</p>
+          </Form.Group>
           <Form.Group>
             <Form.Label>Input</Form.Label>
             <Form.Control
