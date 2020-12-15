@@ -30,10 +30,6 @@ export default function App () {
   const [error, setError] = useState('');
   const [alerts, setAlerts] = useState<string[]>([]);
 
-  const addAlert = (alert: string) => {
-    setAlerts((alerts) => [...alerts, alert]);
-  };
-
   useEffect(() => {
     (async () => {
       const { loadNazuki } = await import('../pkg');
@@ -42,7 +38,7 @@ export default function App () {
       const result = await nazuki.assemble(source);
       setResult(result);
     })().catch((err) => {
-      addAlert(String(err));
+      setAlerts([String(err)]);
     });
   }, []);
 
@@ -51,9 +47,10 @@ export default function App () {
     setAssembling(true);
     nazuki.assemble(source).then((result) => {
       setResult(result);
+      setAlerts([]);
       setAssembling(false);
     }).catch((error) => {
-      addAlert(String(error));
+      setAlerts([String(error)]);
       setAssembling(false);
     });
   };
