@@ -1,10 +1,11 @@
-.stack-work
-nazuki.cabal
-stack.yaml.lock
+/.stack-work/
+/*.cabal
 
-out
-*.hi
-*.o
+/out/
+/**/*.hi
+/**/*.o
 
-node_modules
-dist
+/node_modules/
+/dist/
+
+/.vscode/
