@@ -21,29 +21,20 @@ parse =
   evalStateT parse'
 
 parse' :: Parser [L.LabeledInstruction]
-parse' = do
+parse' =
   readToken >>= \case
-    Id "const" -> do
-      x <- readToken >>= assertIntLit
-      (L.Holder0 (I.Const x) :) <$> parse'
-    Id "dup" ->
-      (L.Holder0 I.Dup :) <$> parse'
-    Id "add" ->
-      (L.Holder0 I.Add :) <$> parse'
-    Id "eq" ->
-      (L.Holder0 I.Eq :) <$> parse'
-    Id "scan" ->
-      (L.Holder0 I.Scan :) <$> parse'
-    Id "print" ->
-      (L.Holder0 I.Print :) <$> parse'
-    Id "jez" -> do
-      x <- readToken >>= assertLabelWithoutColon
-      (L.Holder1 I.Jez x :) <$> parse'
-    Id "jnz" -> do
-      x <- readToken >>= assertLabelWithoutColon
-      (L.Holder1 I.Jnz x :) <$> parse'
-    Id op ->
-      throwError $ "undefined operation " <> op
+    Id id -> do
+      ins <- case id of
+        "const" -> L.Holder0 <$> I.Const <$> readIntLit
+        "dup" -> return $ L.Holder0 I.Dup
+        "add" -> return $ L.Holder0 I.Add
+        "eq" -> return $ L.Holder0 I.Eq
+        "scan" -> return $ L.Holder0 I.Scan
+        "print" -> return $ L.Holder0 I.Print
+        "jez" -> L.Holder1 I.Jez <$> readLabelWithoutColon
+        "jnz" -> L.Holder1 I.Jnz <$> readLabelWithoutColon
+        _ -> throwError $ "undefined operation " <> id
+      (ins :) <$> parse'
     IntLit x ->
       throwError $ "unexpected number " <> show x
     Label label ->
@@ -107,16 +98,18 @@ takeWhileM pred = do
   put xs
   return x
 
-assertIntLit :: Token -> Parser Int32
-assertIntLit = \case
-  IntLit x -> return x
-  Id x -> throwError $ "number expected but found operation " <> x
-  Label x -> throwError $ "number expected but found label " <> x
-  EOS -> throwError $ "number expected but found end of input"
+readIntLit :: Parser Int32
+readIntLit =
+  readToken >>= \case
+    IntLit x -> return x
+    Id x -> throwError $ "number expected but found operation " <> x
+    Label x -> throwError $ "number expected but found label " <> x
+    EOS -> throwError $ "number expected but found end of input"
 
-assertLabelWithoutColon :: Token -> Parser String
-assertLabelWithoutColon = \case
-  Id x -> return x
-  IntLit x -> throwError $ "label expected but found number " <> show x
-  Label _ -> throwError $ "no colon needed"
-  EOS -> throwError $ "label expected but found end of input"
+readLabelWithoutColon :: Parser String
+readLabelWithoutColon =
+  readToken >>= \case
+    Id x -> return x
+    IntLit x -> throwError $ "label expected but found number " <> show x
+    Label _ -> throwError $ "no colon needed"
+    EOS -> throwError $ "label expected but found end of input"
