@@ -6,3 +6,5 @@ cradle:
       component: "nazuki:exe:nazuki"
     - path: ./test
       component: "nazuki:test:nazuki-test"
+    - path: "./bench/Main.hs"
+      component: "nazuki:bench:nazuki-bench"
