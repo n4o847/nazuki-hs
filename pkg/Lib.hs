@@ -15,7 +15,7 @@ foreign export javascript run :: JSString -> JSString -> JSString
 assemble :: JSString -> JSString
 assemble source =
   either error toJSString $
-    I.generate <$> L.resolveLabels <$> P.parse (fromJSString source)
+    I.generate <$> (L.resolveLabels =<< P.parse (fromJSString source))
 
 generate :: Int -> JSString
 generate x =
