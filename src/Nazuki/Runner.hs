@@ -12,6 +12,9 @@ import qualified Data.ByteString as BS
 import Data.Functor ((<&>))
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
+import qualified Data.Text.Lazy as TL
+import qualified Data.Text.Lazy.Builder as TLB
+import Data.Text.Lazy.Builder.Int (decimal)
 import Data.Word (Word8)
 import Text.Printf
 
@@ -156,24 +159,28 @@ inspect state =
   let Tape ls x rs = mem state
       out = reverse $ output state
    in return $
-        "mem: " <> T.unwords (map hex $ reverse ls)
-          <> "["
-          <> hex x
-          <> "]"
-          <> T.unwords (map hex rs)
-          <> "\n"
-          <> "ptr: "
-          <> T.pack (show (ptr state))
-          <> "\n"
-          <> "cnt: "
-          <> T.pack (show (cnt state))
-          <> "\n"
-          <> "out: "
-          <> T.unwords (map hex out)
-          <> "\n"
-          <> "out: "
-          <> decode out
-          <> "\n"
+        TL.toStrict $
+          TLB.toLazyText
+            ( "mem: "
+                <> TLB.fromLazyText (TL.fromChunks (map hex $ reverse ls))
+                <> "["
+                <> TLB.fromText (hex x)
+                <> "]"
+                <> TLB.fromLazyText (TL.fromChunks (map hex rs))
+                <> "\n"
+                <> "ptr: "
+                <> decimal (ptr state)
+                <> "\n"
+                <> "cnt: "
+                <> decimal (cnt state)
+                <> "\n"
+                <> "out: "
+                <> TLB.fromLazyText (TL.fromChunks (map hex out))
+                <> "\n"
+                <> "out: "
+                <> TLB.fromText (decode out)
+                <> "\n"
+            )
 
 debug :: T.Text -> T.Text -> Either T.Text T.Text
 debug program input = parse program >>= flip exec (encode input) >>= inspect
