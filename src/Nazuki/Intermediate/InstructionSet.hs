@@ -42,7 +42,7 @@ data Instruction
   | GeU
   | Scan
   | Print
-  | Write String
+  | Write T.Text
   | Jump Int
   | Jez Int
   | Jnz Int

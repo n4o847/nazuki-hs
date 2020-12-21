@@ -1,5 +1,6 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Nazuki.Intermediate.Parser
   ( parse,
@@ -10,13 +11,14 @@ import Control.Monad.Except
 import Control.Monad.State
 import Data.Char (isAsciiLower, isAsciiUpper, isDigit, isSpace)
 import Data.Int (Int32)
+import qualified Data.Text as T
+import qualified Data.Text.Read as TR
 import qualified Nazuki.Intermediate.InstructionSet as I
 import qualified Nazuki.Intermediate.Label as L
-import Text.Read (readMaybe)
 
-type Parser a = StateT String (Either String) a
+type Parser a = StateT T.Text (Either T.Text) a
 
-parse :: String -> Either String [L.LabeledInstruction]
+parse :: T.Text -> Either T.Text [L.LabeledInstruction]
 parse =
   evalStateT parse'
 
@@ -36,16 +38,16 @@ parse' =
         _ -> throwError $ "undefined operation " <> id
       (ins :) <$> parse'
     IntLit x ->
-      throwError $ "unexpected number " <> show x
+      throwError $ "unexpected number " <> T.pack (show x)
     Label label ->
       (L.Label label :) <$> parse'
     EOS ->
       return []
 
 data Token
-  = Id String
+  = Id T.Text
   | IntLit Int32
-  | Label String
+  | Label T.Text
   | EOS
 
 readToken :: Parser Token
@@ -57,44 +59,44 @@ readToken =
         peekChar >>= \case
           Just ':' -> do
             readChar
-            return $ Label (x : xs)
+            return $ Label (T.cons x xs)
           _ ->
-            return $ Id (x : xs)
+            return $ Id (T.cons x xs)
       | isDigit x || x == '-' -> do
         xs <- takeWhileM isDigit
-        case readMaybe (x : xs) of
-          Just x' ->
+        case TR.signed TR.decimal (T.cons x xs) of
+          Right (x', "") ->
             return $ IntLit x'
-          Nothing ->
-            throwError $ "invalid number " <> (x : xs)
+          _ ->
+            throwError $ "invalid number " <> T.cons x xs
       | isSpace x ->
         readToken
       | otherwise ->
-        throwError $ "unexpected char " <> [x]
+        throwError $ "unexpected char " <> T.singleton x
     Nothing ->
       return EOS
 
 readChar :: Parser (Maybe Char)
 readChar =
-  get >>= \case
-    x : xs -> do
+  gets T.uncons >>= \case
+    Just (x, xs) -> do
       put xs
       return $ Just x
-    "" ->
+    Nothing ->
       return Nothing
 
 peekChar :: Parser (Maybe Char)
 peekChar =
-  get >>= \case
-    x : _ ->
+  gets T.uncons >>= \case
+    Just (x, _) ->
       return $ Just x
-    "" ->
+    Nothing ->
       return Nothing
 
-takeWhileM :: (Char -> Bool) -> Parser String
+takeWhileM :: (Char -> Bool) -> Parser T.Text
 takeWhileM pred = do
   s <- get
-  let (x, xs) = span pred s
+  let (x, xs) = T.span pred s
   put xs
   return x
 
@@ -106,10 +108,10 @@ readIntLit =
     Label x -> throwError $ "number expected but found label " <> x
     EOS -> throwError $ "number expected but found end of input"
 
-readLabelWithoutColon :: Parser String
+readLabelWithoutColon :: Parser T.Text
 readLabelWithoutColon =
   readToken >>= \case
     Id x -> return x
-    IntLit x -> throwError $ "label expected but found number " <> show x
+    IntLit x -> throwError $ "label expected but found number " <> T.pack (show x)
     Label _ -> throwError $ "no colon needed"
     EOS -> throwError $ "label expected but found end of input"

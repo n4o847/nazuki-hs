@@ -16,8 +16,8 @@ foreign export javascript run :: JSString -> JSString -> JSString
 
 assemble :: JSString -> JSString
 assemble source =
-  either error textToJSString $
-    I.generate <$> (L.resolveLabels =<< P.parse (fromJSString source))
+  either (error . T.unpack) textToJSString $
+    I.generate <$> (L.resolveLabels =<< P.parse (textFromJSString source))
 
 generate :: Int -> JSString
 generate x =
@@ -31,4 +31,5 @@ generate x =
 
 run :: JSString -> JSString -> JSString
 run program input =
-  either (error . T.unpack) textToJSString $ R.run (textFromJSString program) (textFromJSString input)
+  either (error . T.unpack) textToJSString $
+    R.run (textFromJSString program) (textFromJSString input)

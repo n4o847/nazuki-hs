@@ -1,5 +1,6 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Nazuki.Intermediate.Label
   ( LabeledInstruction (..),
@@ -9,14 +10,15 @@ where
 
 import Control.Monad
 import qualified Data.Map as Map
+import qualified Data.Text as T
 import qualified Nazuki.Intermediate.InstructionSet as I
 
 data LabeledInstruction
   = Holder0 I.Instruction
-  | Holder1 (Int -> I.Instruction) String
-  | Label String
+  | Holder1 (Int -> I.Instruction) T.Text
+  | Label T.Text
 
-resolveLabels :: [LabeledInstruction] -> Either String [I.Instruction]
+resolveLabels :: [LabeledInstruction] -> Either T.Text [I.Instruction]
 resolveLabels list = do
   (positions, _, removed') <-
     foldM
