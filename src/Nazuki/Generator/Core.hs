@@ -19,6 +19,7 @@ module Nazuki.Generator.Core
 where
 
 import Control.Monad.State
+import qualified Data.Text as T
 
 data BfCmd
   = Inc
@@ -108,6 +109,6 @@ toChar = \case
   Get -> ','
   Put -> '.'
 
-generate :: Oper -> String
+generate :: Oper -> T.Text
 generate oper =
-  map toChar $ reverse $ cmds $ execState oper empty
+  T.pack $ map toChar $ reverse $ cmds $ execState oper empty
