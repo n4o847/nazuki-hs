@@ -1,6 +1,8 @@
 module Lib where
 
+import Asterius.Text
 import Asterius.Types
+import qualified Data.Text as T
 import qualified Nazuki.Intermediate.InstructionSet as I
 import qualified Nazuki.Intermediate.Label as L
 import qualified Nazuki.Intermediate.Parser as P
@@ -14,12 +16,12 @@ foreign export javascript run :: JSString -> JSString -> JSString
 
 assemble :: JSString -> JSString
 assemble source =
-  either error toJSString $
-    I.generate <$> (L.resolveLabels =<< P.parse (fromJSString source))
+  either (error . T.unpack) textToJSString $
+    I.generate <$> (L.resolveLabels =<< P.parse (textFromJSString source))
 
 generate :: Int -> JSString
 generate x =
-  toJSString $
+  textToJSString $
     I.generate
       [ I.Scan,
         I.Scan,
@@ -29,4 +31,5 @@ generate x =
 
 run :: JSString -> JSString -> JSString
 run program input =
-  either error toJSString $ R.run (fromJSString program) (fromJSString input)
+  either (error . T.unpack) textToJSString $
+    R.run (textFromJSString program) (textFromJSString input)

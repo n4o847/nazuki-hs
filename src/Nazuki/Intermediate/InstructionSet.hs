@@ -7,6 +7,7 @@ import Control.Monad
 import Data.Int (Int32)
 import qualified Data.Map as Map
 import qualified Data.Maybe as Maybe
+import qualified Data.Text as T
 import qualified Nazuki.Generator as G
 import qualified Nazuki.Generator.IntOf2To32 as I32
 
@@ -41,14 +42,14 @@ data Instruction
   | GeU
   | Scan
   | Print
-  | Write String
+  | Write T.Text
   | Jump Int
   | Jez Int
   | Jnz Int
   | Jeq Int
   deriving (Eq, Ord)
 
-generate :: [Instruction] -> String
+generate :: [Instruction] -> T.Text
 generate list = G.generate do
   G.assemble 33 do
     set <-

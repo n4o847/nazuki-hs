@@ -16,6 +16,7 @@ module Nazuki.Generator.UintOf256To1
 where
 
 import Control.Monad
+import qualified Data.Text as T
 import Nazuki.Generator.Core
 import Nazuki.Generator.Util
 
@@ -153,7 +154,7 @@ uintOf256To1Scan = do
   add head 1
   produce 1
 
-uintOf256To1PutsIfElse :: String -> String -> Oper
+uintOf256To1PutsIfElse :: T.Text -> T.Text -> Oper
 uintOf256To1PutsIfElse st sf = do
   let head = mem 0
   let body = mem 1
@@ -167,7 +168,7 @@ uintOf256To1PutsIfElse st sf = do
     puts head sf
   produce 0
 
-uintOf256To1PutsCase :: [(Int, String)] -> Oper
+uintOf256To1PutsCase :: [(Int, T.Text)] -> Oper
 uintOf256To1PutsCase cases = do
   let m0 = mem 0
   let m1 = mem 1
