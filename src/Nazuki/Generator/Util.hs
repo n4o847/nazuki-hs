@@ -28,7 +28,7 @@ where
 import Control.Monad
 import Data.Char (ord)
 import qualified Data.Text as T
-import Nazuki.Generator.Core
+import Nazuki.CodeGen.Core
 
 newtype Ptr = Ptr Int
 

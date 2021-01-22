@@ -17,7 +17,7 @@ where
 
 import Control.Monad
 import qualified Data.Text as T
-import Nazuki.Generator.Core
+import Nazuki.CodeGen.Core
 import Nazuki.Generator.Util
 
 consume :: Int -> Oper

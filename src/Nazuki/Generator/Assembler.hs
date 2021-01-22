@@ -13,7 +13,7 @@ import Control.Monad
 import Control.Monad.State
 import qualified Data.Bits as Bits
 import qualified Data.Map as Map
-import Nazuki.Generator.Core
+import Nazuki.CodeGen.Core
 import Nazuki.Generator.Util
 
 type Isa = Map.Map Int Oper

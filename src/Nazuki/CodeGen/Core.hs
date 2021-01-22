@@ -1,7 +1,7 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE LambdaCase #-}
 
-module Nazuki.Generator.Core
+module Nazuki.CodeGen.Core
   ( Oper,
     getIsize,
     putIsize,
