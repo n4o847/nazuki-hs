@@ -27,7 +27,8 @@ where
 
 import Control.Monad
 import Data.Char (ord)
-import qualified Data.Text as T
+import Data.Text (Text)
+import qualified Data.Text as Text
 import Nazuki.CodeGen.Core
 
 newtype Ptr = Ptr Int
@@ -50,9 +51,9 @@ fromChar = \case
   '.' -> bfPut
   _ -> bfNop
 
-raw :: T.Text -> Oper
+raw :: Text -> Oper
 raw =
-  mapM_ fromChar . T.unpack
+  mapM_ fromChar . Text.unpack
 
 forward :: Int -> Oper
 forward a =
@@ -150,9 +151,9 @@ decs p =
   at p $
     raw "-[++>-]<[<]>"
 
-puts :: Ptr -> T.Text -> Oper
+puts :: Ptr -> Text -> Oper
 puts p s =
-  forM_ (T.unpack s) \c -> do
+  forM_ (Text.unpack s) \c -> do
     add p (ord c)
     putc p
     sub p (ord c)
