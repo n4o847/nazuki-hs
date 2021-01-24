@@ -4,7 +4,7 @@
 
 module Nazuki.Generator.IntOf2To32Spec (spec) where
 
-import Nazuki.Generator
+import Nazuki.CodeGen.Core (generate)
 import qualified Nazuki.Generator.IntOf2To32 as I32
 import Nazuki.Runner
 import Test.Hspec

@@ -5,7 +5,8 @@
 module Nazuki.Generator.UintOf256To1Spec (spec) where
 
 import qualified Data.Text as T
-import Nazuki.Generator
+import Nazuki.CodeGen.Core (generate)
+import Nazuki.Generator.UintOf256To1
 import Nazuki.Runner
 import Test.Hspec
 
