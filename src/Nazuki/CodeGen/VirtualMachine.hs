@@ -1,7 +1,7 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE LambdaCase #-}
 
-module Nazuki.Generator.Assembler
+module Nazuki.CodeGen.VirtualMachine
   ( assemble,
     register,
     immediate,
