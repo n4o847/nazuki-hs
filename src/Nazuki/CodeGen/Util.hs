@@ -2,7 +2,7 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Nazuki.Generator.Util
+module Nazuki.CodeGen.Util
   ( mem,
     mems,
     raw,

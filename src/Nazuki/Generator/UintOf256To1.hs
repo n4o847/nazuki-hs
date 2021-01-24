@@ -18,7 +18,7 @@ where
 import Control.Monad
 import qualified Data.Text as T
 import Nazuki.CodeGen.Core
-import Nazuki.Generator.Util
+import Nazuki.CodeGen.Util
 
 consume :: Int -> Oper
 consume a =

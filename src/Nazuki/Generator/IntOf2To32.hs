@@ -45,8 +45,8 @@ import qualified Data.Bits as Bits
 import Data.Int (Int32)
 import Data.Word (Word32)
 import Nazuki.CodeGen.Core
+import Nazuki.CodeGen.Util
 import Nazuki.Generator.Assembler
-import Nazuki.Generator.Util
 
 consume :: Int -> Oper
 consume a =
