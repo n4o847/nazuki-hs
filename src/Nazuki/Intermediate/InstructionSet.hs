@@ -9,9 +9,9 @@ import qualified Data.Map as Map
 import qualified Data.Maybe as Maybe
 import qualified Data.Text as T
 import qualified Nazuki.CodeGen.Core as G
+import qualified Nazuki.CodeGen.Int32 as I32
 import qualified Nazuki.CodeGen.Util as G
 import qualified Nazuki.CodeGen.VirtualMachine as G
-import qualified Nazuki.Generator.IntOf2To32 as I32
 
 data Instruction
   = Const Int32

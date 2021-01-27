@@ -2,7 +2,7 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Nazuki.Generator.IntOf2To32
+module Nazuki.CodeGen.Int32
   ( doConst,
     doDup,
     doGet,
