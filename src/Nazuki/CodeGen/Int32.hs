@@ -1,7 +1,7 @@
 {-# LANGUAGE BlockArguments #-}
-{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE OverloadedStrings #-}
 
-module Nazuki.Generator.IntOf2To32
+module Nazuki.CodeGen.Int32
   ( doConst,
     doDup,
     doGet,
@@ -43,9 +43,9 @@ import Control.Monad
 import qualified Data.Bits as Bits
 import Data.Int (Int32)
 import Data.Word (Word32)
-import Nazuki.Generator.Assembler
-import Nazuki.Generator.Core
-import Nazuki.Generator.Util
+import Nazuki.CodeGen.Core
+import Nazuki.CodeGen.Util
+import Nazuki.CodeGen.VirtualMachine
 
 consume :: Int -> Oper
 consume a =

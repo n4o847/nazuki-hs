@@ -1,7 +1,8 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE OverloadedStrings #-}
 
-module Nazuki.Generator.Util
+module Nazuki.CodeGen.Util
   ( mem,
     mems,
     raw,
@@ -26,7 +27,9 @@ where
 
 import Control.Monad
 import Data.Char (ord)
-import Nazuki.Generator.Core
+import Data.Text (Text)
+import qualified Data.Text as Text
+import Nazuki.CodeGen.Core
 
 newtype Ptr = Ptr Int
 
@@ -36,18 +39,21 @@ mem = Ptr
 mems :: [Int] -> Int -> Ptr
 mems s i = Ptr (s !! i)
 
-raw :: String -> Oper
+fromChar :: Char -> Oper
+fromChar = \case
+  '+' -> bfInc
+  '-' -> bfDec
+  '>' -> bfFwd
+  '<' -> bfBwd
+  '[' -> bfOpn
+  ']' -> bfCls
+  ',' -> bfGet
+  '.' -> bfPut
+  _ -> bfNop
+
+raw :: Text -> Oper
 raw =
-  mapM_ \case
-    '+' -> bfInc
-    '-' -> bfDec
-    '>' -> bfFwd
-    '<' -> bfBwd
-    '[' -> bfOpn
-    ']' -> bfCls
-    ',' -> bfGet
-    '.' -> bfPut
-    _ -> bfNop
+  mapM_ fromChar . Text.unpack
 
 forward :: Int -> Oper
 forward a =
@@ -145,9 +151,9 @@ decs p =
   at p $
     raw "-[++>-]<[<]>"
 
-puts :: Ptr -> String -> Oper
+puts :: Ptr -> Text -> Oper
 puts p s =
-  forM_ s \c -> do
+  forM_ (Text.unpack s) \c -> do
     add p (ord c)
     putc p
     sub p (ord c)

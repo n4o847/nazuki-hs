@@ -12,11 +12,11 @@ extra-source-files:
 description:         Please see the README on GitHub at <https://github.com/n4o847/nazuki-hs>
 
 dependencies:
-- base >= 4.7 && < 5
+- base
+- bytestring
 - containers
 - mtl
 - text
-- utf8-string
 
 library:
   source-dirs: src
@@ -43,3 +43,15 @@ tests:
     dependencies:
     - nazuki
     - hspec
+
+benchmarks:
+  nazuki-bench:
+    main:                Main.hs
+    source-dirs:         bench
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - nazuki
+    - criterion

@@ -1,7 +1,7 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE LambdaCase #-}
 
-module Nazuki.Generator.Core
+module Nazuki.CodeGen.Core
   ( Oper,
     getIsize,
     putIsize,
@@ -19,6 +19,8 @@ module Nazuki.Generator.Core
 where
 
 import Control.Monad.State
+import Data.Text (Text)
+import qualified Data.Text as Text
 
 data BfCmd
   = Inc
@@ -47,6 +49,7 @@ getIsize = gets isize
 putIsize :: Int -> State Gen ()
 putIsize isize = modify \gen -> gen {isize = isize}
 
+empty :: Gen
 empty =
   Gen
     { cmds = [],
@@ -108,6 +111,6 @@ toChar = \case
   Get -> ','
   Put -> '.'
 
-generate :: Oper -> String
+generate :: Oper -> Text
 generate oper =
-  map toChar $ reverse $ cmds $ execState oper empty
+  Text.pack $ map toChar $ reverse $ cmds $ execState oper empty

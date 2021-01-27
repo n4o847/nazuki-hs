@@ -1,29 +1,31 @@
 {-# LANGUAGE BlockArguments #-}
-{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Main where
 
+import Data.Text as T
+import Data.Text.IO as TIO
 import qualified Nazuki.Intermediate.InstructionSet as I
 import Nazuki.Runner
 import System.Environment (getArgs)
-import System.IO (hPutStrLn, stderr)
+import System.IO (stderr)
 
 main :: IO ()
 main = do
   args <- getArgs
   case args of
     ["gen"] ->
-      putStrLn program
+      TIO.putStrLn program
     ["len"] ->
-      print (length program)
+      print (T.length program)
     ["run"] -> do
-      input <- getContents
-      either (hPutStrLn stderr) putStrLn $ run program input
+      input <- TIO.getContents
+      either (TIO.hPutStrLn stderr) TIO.putStrLn $ run program input
     ["debug"] -> do
-      input <- getContents
-      either (hPutStrLn stderr) putStrLn $ debug program input
+      input <- TIO.getContents
+      either (TIO.hPutStrLn stderr) TIO.putStrLn $ debug program input
     _ ->
-      hPutStrLn stderr "Wrong arguments"
+      TIO.hPutStrLn stderr "Wrong arguments"
   where
     program =
       I.generate

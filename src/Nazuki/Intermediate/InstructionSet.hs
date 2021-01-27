@@ -7,8 +7,11 @@ import Control.Monad
 import Data.Int (Int32)
 import qualified Data.Map as Map
 import qualified Data.Maybe as Maybe
-import qualified Nazuki.Generator as G
-import qualified Nazuki.Generator.IntOf2To32 as I32
+import qualified Data.Text as T
+import qualified Nazuki.CodeGen.Core as G
+import qualified Nazuki.CodeGen.Int32 as I32
+import qualified Nazuki.CodeGen.Util as G
+import qualified Nazuki.CodeGen.VirtualMachine as G
 
 data Instruction
   = Const Int32
@@ -41,14 +44,14 @@ data Instruction
   | GeU
   | Scan
   | Print
-  | Write String
+  | Write T.Text
   | Jump Int
   | Jez Int
   | Jnz Int
   | Jeq Int
   deriving (Eq, Ord)
 
-generate :: [Instruction] -> String
+generate :: [Instruction] -> T.Text
 generate list = G.generate do
   G.assemble 33 do
     set <-
@@ -102,4 +105,3 @@ insToOper = \case
   Jez r -> I32.doJez r
   Jnz r -> I32.doJnz r
   Jeq r -> I32.doJeq r
-  _ -> G.bfNop
