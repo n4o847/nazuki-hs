@@ -27,7 +27,7 @@ parse' =
   readToken >>= \case
     Id id -> do
       ins <- case id of
-        "const" -> L.Holder0 <$> I.Const <$> readIntLit
+        "const" -> L.Holder0 . I.Const <$> readIntLit
         "dup" -> return $ L.Holder0 I.Dup
         "add" -> return $ L.Holder0 I.Add
         "eq" -> return $ L.Holder0 I.Eq
@@ -106,12 +106,12 @@ readIntLit =
     IntLit x -> return x
     Id x -> throwError $ "number expected but found operation " <> x
     Label x -> throwError $ "number expected but found label " <> x
-    EOS -> throwError $ "number expected but found end of input"
+    EOS -> throwError "number expected but found end of input"
 
 readLabelWithoutColon :: Parser T.Text
 readLabelWithoutColon =
   readToken >>= \case
     Id x -> return x
     IntLit x -> throwError $ "label expected but found number " <> T.pack (show x)
-    Label _ -> throwError $ "no colon needed"
-    EOS -> throwError $ "label expected but found end of input"
+    Label _ -> throwError "no colon needed"
+    EOS -> throwError "label expected but found end of input"

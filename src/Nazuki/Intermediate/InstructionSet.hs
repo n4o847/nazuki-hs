@@ -105,4 +105,3 @@ insToOper = \case
   Jez r -> I32.doJez r
   Jnz r -> I32.doJnz r
   Jeq r -> I32.doJeq r
-  _ -> G.bfNop

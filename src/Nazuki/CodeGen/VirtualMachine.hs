@@ -1,5 +1,4 @@
 {-# LANGUAGE BlockArguments #-}
-{-# LANGUAGE LambdaCase #-}
 
 module Nazuki.CodeGen.VirtualMachine
   ( assemble,
@@ -54,9 +53,9 @@ immediate :: Oper -> State Asm (State Asm ())
 immediate op = do
   consOp <- register op
   consOp
-  pure $ consOp
+  pure consOp
 
-assemble :: Int -> (State Asm ()) -> Oper
+assemble :: Int -> State Asm () -> Oper
 assemble ssize asmState = do
   let Asm isa opcodes = execState asmState empty
   let isize = logBase2 (Map.size isa - 1) + 2
