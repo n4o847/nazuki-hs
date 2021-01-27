@@ -1,7 +1,7 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE LambdaCase #-}
 
-module Nazuki.Generator.Assembler
+module Nazuki.CodeGen.VirtualMachine
   ( assemble,
     register,
     immediate,
@@ -12,18 +12,19 @@ where
 import Control.Monad
 import Control.Monad.State
 import qualified Data.Bits as Bits
+import Data.Map (Map)
 import qualified Data.Map as Map
-import Nazuki.Generator.Core
-import Nazuki.Generator.Util
+import Nazuki.CodeGen.Core
+import Nazuki.CodeGen.Util
 
-type Isa = Map.Map Int Oper
+type Isa = Map Int Oper
 
 data Asm = Asm
   { isa :: Isa,
     opcodes :: [Int]
   }
 
-getIsa :: State Asm (Map.Map Int Oper)
+getIsa :: State Asm (Map Int Oper)
 getIsa = gets isa
 
 putIsa :: Isa -> State Asm ()

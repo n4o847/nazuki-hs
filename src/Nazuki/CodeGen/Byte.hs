@@ -1,24 +1,24 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE LambdaCase #-}
 
-module Nazuki.Generator.UintOf256To1
-  ( uintOf256To1Const,
-    uintOf256To1Dup,
-    uintOf256To1Drop,
-    uintOf256To1Swap,
-    uintOf256To1Not,
-    uintOf256To1Add,
-    uintOf256To1Sub,
-    uintOf256To1Scan,
-    uintOf256To1PutsIfElse,
-    uintOf256To1PutsCase,
+module Nazuki.CodeGen.Byte
+  ( doConst,
+    doDup,
+    doDrop,
+    doSwap,
+    doNot,
+    doAdd,
+    doSub,
+    doScan,
+    doPutsIfElse,
+    doPutsCase,
   )
 where
 
 import Control.Monad
 import qualified Data.Text as T
-import Nazuki.Generator.Core
-import Nazuki.Generator.Util
+import Nazuki.CodeGen.Core
+import Nazuki.CodeGen.Util
 
 consume :: Int -> Oper
 consume a =
@@ -28,8 +28,8 @@ produce :: Int -> Oper
 produce a =
   forward (2 * a)
 
-uintOf256To1Const :: Int -> Oper
-uintOf256To1Const a = do
+doConst :: Int -> Oper
+doConst a = do
   let head = mem 0
   let body = mem 1
   consume 0
@@ -37,8 +37,8 @@ uintOf256To1Const a = do
   add body (a `mod` 256)
   produce 1
 
-uintOf256To1Dup :: Oper
-uintOf256To1Dup = do
+doDup :: Oper
+doDup = do
   let aHead = mem 0
   let aBody = mem 1
   let bHead = mem 2
@@ -54,8 +54,8 @@ uintOf256To1Dup = do
   add bHead 1
   produce 2
 
-uintOf256To1Drop :: Oper
-uintOf256To1Drop = do
+doDrop :: Oper
+doDrop = do
   let head = mem 0
   let body = mem 1
   consume 1
@@ -63,8 +63,8 @@ uintOf256To1Drop = do
   sub head 1
   produce 0
 
-uintOf256To1Swap :: Oper
-uintOf256To1Swap = do
+doSwap :: Oper
+doSwap = do
   let aHead = mem 0
   let aBody = mem 1
   let bHead = mem 2
@@ -83,8 +83,8 @@ uintOf256To1Swap = do
   add bHead 1
   produce 2
 
-uintOf256To1Not :: Oper
-uintOf256To1Not = do
+doNot :: Oper
+doNot = do
   let head = mem 0
   let body = mem 1
   consume 1
@@ -97,8 +97,8 @@ uintOf256To1Not = do
   add head 1
   produce 1
 
-uintOf256To1Add :: Oper
-uintOf256To1Add = do
+doAdd :: Oper
+doAdd = do
   let aHead = mem 0
   let aBody = mem 1
   let bHead = mem 2
@@ -110,8 +110,8 @@ uintOf256To1Add = do
   sub bHead 1
   produce 1
 
-uintOf256To1Sub :: Oper
-uintOf256To1Sub = do
+doSub :: Oper
+doSub = do
   let aHead = mem 0
   let aBody = mem 1
   let bHead = mem 2
@@ -123,8 +123,8 @@ uintOf256To1Sub = do
   sub bHead 1
   produce 1
 
-uintOf256To1Scan :: Oper
-uintOf256To1Scan = do
+doScan :: Oper
+doScan = do
   let head = mem 0
   let body = mem 1
   let input = mem 2
@@ -154,8 +154,8 @@ uintOf256To1Scan = do
   add head 1
   produce 1
 
-uintOf256To1PutsIfElse :: T.Text -> T.Text -> Oper
-uintOf256To1PutsIfElse st sf = do
+doPutsIfElse :: T.Text -> T.Text -> Oper
+doPutsIfElse st sf = do
   let head = mem 0
   let body = mem 1
   consume 1
@@ -168,8 +168,8 @@ uintOf256To1PutsIfElse st sf = do
     puts head sf
   produce 0
 
-uintOf256To1PutsCase :: [(Int, T.Text)] -> Oper
-uintOf256To1PutsCase cases = do
+doPutsCase :: [(Int, T.Text)] -> Oper
+doPutsCase cases = do
   let m0 = mem 0
   let m1 = mem 1
   let m2 = mem 2
