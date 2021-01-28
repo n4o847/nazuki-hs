@@ -156,11 +156,17 @@ ifElseMut flg tmp doCons doAlt = do
       sub tmp 1
       doAlt
 
+-- The value of `p - 1` must be 0.
+-- Consider the sequence of the values from `p` to the right as a binary number
+-- with `p` as the LSB and increment the value by 1.
 incs :: Ptr -> Oper
 incs p =
   at p $
     raw "[>]+<[-<]>"
 
+-- The value of `p - 1` must be 0.
+-- Consider the sequence of the values from `p` to the right as a binary number
+-- with `p` as the LSB and decrement the value by 1.
 decs :: Ptr -> Oper
 decs p =
   at p $
