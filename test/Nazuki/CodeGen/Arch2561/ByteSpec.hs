@@ -1,10 +1,10 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Nazuki.CodeGen.ByteSpec (spec) where
+module Nazuki.CodeGen.Arch2561.ByteSpec (spec) where
 
 import qualified Data.Text as T
-import Nazuki.CodeGen.Byte
+import Nazuki.CodeGen.Arch2561.Byte
 import Nazuki.CodeGen.Core (generate)
 import Nazuki.Runner
 import Test.Hspec

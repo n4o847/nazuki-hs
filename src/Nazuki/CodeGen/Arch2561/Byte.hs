@@ -1,6 +1,6 @@
 {-# LANGUAGE BlockArguments #-}
 
-module Nazuki.CodeGen.Byte
+module Nazuki.CodeGen.Arch2561.Byte
   ( doConst,
     doDup,
     doDrop,
