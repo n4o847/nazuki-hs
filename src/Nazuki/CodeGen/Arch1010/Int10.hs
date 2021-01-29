@@ -3,7 +3,7 @@
 -- Int10 has:
 --   - 10 decimal digits
 --
--- The layoyt is:
+-- Layout:
 --    0                 9
 --   [ | | | | | | | | | ]
 --
@@ -11,7 +11,7 @@
 --   - A negative number is represented by the ten's complement
 --     of the absolute value.
 
-module Nazuki.CodeGen.Arch10.Int10
+module Nazuki.CodeGen.Arch1010.Int10
   ( doConst,
   )
 where

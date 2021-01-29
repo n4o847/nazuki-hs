@@ -3,7 +3,7 @@
 --   - 2 decimal digits of exponent (e)
 --   - 7 decimal digits of significand (f)
 --
--- The layoyt is:
+-- Layout:
 --    0                 9
 --   [ | | | | | | | | | ]
 --   |------f------|-e-|s|
@@ -24,4 +24,4 @@
 --   - The decoded value is
 --       f[6] . f[5] ... f[0]
 
-module Nazuki.CodeGen.Arch10.Float10 where
+module Nazuki.CodeGen.Arch1010.Float10 where
