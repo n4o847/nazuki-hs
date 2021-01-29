@@ -1,7 +1,7 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Nazuki.CodeGen.Int32
+module Nazuki.CodeGen.Arch232.Int32
   ( doConst,
     doDup,
     doGet,

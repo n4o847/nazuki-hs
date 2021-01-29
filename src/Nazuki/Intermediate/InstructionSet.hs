@@ -8,8 +8,8 @@ import Data.Int (Int32)
 import qualified Data.Map as Map
 import qualified Data.Maybe as Maybe
 import qualified Data.Text as T
+import qualified Nazuki.CodeGen.Arch232.Int32 as I32
 import qualified Nazuki.CodeGen.Core as G
-import qualified Nazuki.CodeGen.Int32 as I32
 import qualified Nazuki.CodeGen.Util as G
 import qualified Nazuki.CodeGen.VirtualMachine as G
 
