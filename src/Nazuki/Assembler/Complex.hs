@@ -1,6 +1,6 @@
 {-# LANGUAGE BlockArguments #-}
 
-module Nazuki.Intermediate.Complex where
+module Nazuki.Assembler.Complex where
 
 import qualified Nazuki.Assembler.Instruction as I
 
