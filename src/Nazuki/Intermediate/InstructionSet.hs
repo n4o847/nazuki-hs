@@ -49,7 +49,7 @@ data Instruction
   | Jez Int
   | Jnz Int
   | Jeq Int
-  deriving (Eq, Ord)
+  deriving (Eq, Ord, Show)
 
 generate :: [Instruction] -> T.Text
 generate list = G.generate do
