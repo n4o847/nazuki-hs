@@ -1,15 +1,15 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE LambdaCase #-}
 
-module Nazuki.Intermediate.InstructionSet where
+module Nazuki.Assembler.Instruction where
 
 import Control.Monad
 import Data.Int (Int32)
 import qualified Data.Map as Map
 import qualified Data.Maybe as Maybe
-import qualified Data.Text as T
+import Data.Text (Text)
+import qualified Nazuki.CodeGen.Arch232.Int32 as I32
 import qualified Nazuki.CodeGen.Core as G
-import qualified Nazuki.CodeGen.Int32 as I32
 import qualified Nazuki.CodeGen.Util as G
 import qualified Nazuki.CodeGen.VirtualMachine as G
 
@@ -44,14 +44,14 @@ data Instruction
   | GeU
   | Scan
   | Print
-  | Write T.Text
+  | Write Text
   | Jump Int
   | Jez Int
   | Jnz Int
   | Jeq Int
-  deriving (Eq, Ord)
+  deriving (Eq, Ord, Show)
 
-generate :: [Instruction] -> T.Text
+generate :: [Instruction] -> Text
 generate list = G.generate do
   G.assemble 33 do
     set <-

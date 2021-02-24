@@ -1,0 +1,27 @@
+-- Float10 has:
+--   - 1 bit of sign (s)
+--   - 2 decimal digits of exponent (e)
+--   - 7 decimal digits of significand (f)
+--
+-- Layout:
+--    0                 9
+--   [ | | | | | | | | | ]
+--   |------f------|-e-|s|
+--
+-- Sign bit:
+--   - If the sign is 0, the number is positive.
+--   - If the sign is 1, the number is negative.
+--
+-- Exponent:
+--   - The exponent is biased with the zero offset being 49.
+--   - If the exponent is within the range 01 .. 98,
+--     we get the decoded value in the range -48 .. 49 by subtracting 49.
+--   - If the exponent is 00, the number is a signed zero.
+--   - If the exponent is 99, the number is an signed infinity or a NaN.
+--
+-- Significand:
+--   - Unlike the IEEE 754 binary formats, there is no implicit leading 1.
+--   - The decoded value is
+--       f[6] . f[5] ... f[0]
+
+module Nazuki.CodeGen.Arch1010.Float10 where

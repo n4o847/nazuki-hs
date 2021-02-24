@@ -162,11 +162,11 @@ inspect state =
         TL.toStrict $
           TLB.toLazyText
             ( "mem: "
-                <> TLB.fromLazyText (TL.fromChunks (map hex $ reverse ls))
+                <> TLB.fromLazyText (TL.unwords $ TL.fromStrict . hex <$> reverse ls)
                 <> "["
                 <> TLB.fromText (hex x)
                 <> "]"
-                <> TLB.fromLazyText (TL.fromChunks (map hex rs))
+                <> TLB.fromLazyText (TL.unwords $ TL.fromStrict . hex <$> rs)
                 <> "\n"
                 <> "ptr: "
                 <> decimal (ptr state)

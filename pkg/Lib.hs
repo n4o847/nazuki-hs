@@ -3,9 +3,9 @@ module Lib where
 import Asterius.Text
 import Asterius.Types
 import qualified Data.Text as T
-import qualified Nazuki.Intermediate.InstructionSet as I
-import qualified Nazuki.Intermediate.Label as L
-import qualified Nazuki.Intermediate.Parser as P
+import qualified Nazuki.Assembler.Instruction as I
+import qualified Nazuki.Assembler.Label as L
+import qualified Nazuki.Assembler.Parser as P
 import qualified Nazuki.Runner as R
 
 foreign export javascript assemble :: JSString -> JSString

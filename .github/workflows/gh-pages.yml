@@ -25,7 +25,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Build WebAssembly
-        uses: docker://terrorjack/asterius:201023
+        uses: docker://terrorjack/asterius:210111
         with:
           entrypoint: ./entrypoint.sh
 

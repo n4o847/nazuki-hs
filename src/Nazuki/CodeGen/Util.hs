@@ -110,10 +110,17 @@ set p x = do
     sub p 1
   add p x
 
+-- The value of `tmp` must be 0.
+-- If the value of `flg` is 1:
+--   Execute `doCons`.
+--   The value of `flg` should not be changed after executing `doCons`.
+-- If the value of `flg` is 0:
+--   Execute `doAlt`.
+--   The value of `flg` should not be changed after executing `doAlt`.
 ifElse :: Ptr -> Ptr -> Oper -> Oper -> Oper
-ifElse flg tmp cons alt = do
+ifElse flg tmp doCons doAlt = do
   while flg do
-    cons
+    doCons
     sub tmp 1
     sub flg 1
   add flg 1
@@ -121,13 +128,21 @@ ifElse flg tmp cons alt = do
   while tmp do
     sub tmp 1
     sub flg 1
-    alt
+    doAlt
 
--- in case flg is changed after cons
+-- The value of `tmp` must be 0.
+-- If the value of `flg` is 1:
+--   Execute `doCons`.
+--   If the value of `flg` is changed after executing `doCons`,
+--   preserve it but do not execute `doAlt`.
+-- If the value of `flg` is 0:
+--   Execute `doAlt`.
+--   If the value of `flg` is changed after executing `doAlt`,
+--   preserve it but do not execute `doCons`.
 ifElseMut :: Ptr -> Ptr -> Oper -> Oper -> Oper
-ifElseMut flg tmp cons alt = do
+ifElseMut flg tmp doCons doAlt = do
   while flg do
-    cons
+    doCons
     sub tmp 1
     while flg do
       sub flg 1
@@ -139,13 +154,19 @@ ifElseMut flg tmp cons alt = do
     sub flg 1
     while tmp do
       sub tmp 1
-      alt
+      doAlt
 
+-- The value of `p - 1` must be 0.
+-- Consider the sequence of the values from `p` to the right as a binary number
+-- with `p` as the LSB and increment the value by 1.
 incs :: Ptr -> Oper
 incs p =
   at p $
     raw "[>]+<[-<]>"
 
+-- The value of `p - 1` must be 0.
+-- Consider the sequence of the values from `p` to the right as a binary number
+-- with `p` as the LSB and decrement the value by 1.
 decs :: Ptr -> Oper
 decs p =
   at p $
