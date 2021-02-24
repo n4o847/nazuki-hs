@@ -46,10 +46,10 @@ pKeyword keyword = lexeme (string keyword <* notFollowedBy (alphaNumChar <|> cha
 pLabelWithoutColon :: Parser Text
 pLabelWithoutColon = lexeme (Text.pack <$> ((:) <$> (letterChar <|> char '_') <*> many (alphaNumChar <|> char '_')))
 
-pLabel :: Parser LabeledInstruction
+pLabel :: Parser (Labeled Instruction)
 pLabel = Label <$> pLabelWithoutColon <* symbol ":" <?> "label"
 
-pOperator :: Parser LabeledInstruction
+pOperator :: Parser (Labeled Instruction)
 pOperator =
   choice
     [ Holder0 . I.Const <$ pKeyword "const" <*> pInt,
@@ -63,9 +63,9 @@ pOperator =
     ]
     <?> "valid operator"
 
-program :: Parser [LabeledInstruction]
+program :: Parser [Labeled Instruction]
 program = many (try pLabel <|> pOperator)
 
-parse :: Text -> Either Text [LabeledInstruction]
+parse :: Text -> Either Text [Labeled Instruction]
 parse =
   left (Text.pack . errorBundlePretty) . runParser (sc *> program <* eof) ""

@@ -2,22 +2,21 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Nazuki.Intermediate.Label
-  ( LabeledInstruction (..),
+  ( Labeled (..),
     resolveLabels,
   )
 where
 
 import Control.Monad
 import qualified Data.Map as Map
-import qualified Data.Text as T
-import qualified Nazuki.Intermediate.InstructionSet as I
+import Data.Text (Text)
 
-data LabeledInstruction
-  = Holder0 I.Instruction
-  | Holder1 (Int -> I.Instruction) T.Text
-  | Label T.Text
+data Labeled a
+  = Holder0 a
+  | Holder1 (Int -> a) Text
+  | Label Text
 
-resolveLabels :: [LabeledInstruction] -> Either T.Text [I.Instruction]
+resolveLabels :: [Labeled a] -> Either Text [a]
 resolveLabels list = do
   (positions, _, removed') <-
     foldM
