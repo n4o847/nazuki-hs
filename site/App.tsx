@@ -78,7 +78,11 @@ export default function App () {
       <Container>
         <div>
           {alerts.map((alert, idx) => (
-            <Alert key={idx} variant="danger">{alert}</Alert>
+            <Alert key={idx} variant="danger">
+              <pre className="m-0" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
+                {alert}
+              </pre>
+            </Alert>
           ))}
         </div>
         <Form>
