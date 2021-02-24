@@ -37,7 +37,7 @@ mem :: Int -> Ptr
 mem = Ptr
 
 mems :: [Int] -> Int -> Ptr
-mems s i = Ptr (s !! i)
+mems s i = Ptr (head s + i)
 
 fromChar :: Char -> Oper
 fromChar = \case
