@@ -11,8 +11,8 @@ import Data.Int (Int32)
 import Data.Text (Text)
 import qualified Data.Text as Text
 import Data.Void (Void)
+import Nazuki.Assembler.Label
 import Nazuki.Intermediate.InstructionSet as I
-import Nazuki.Intermediate.Label
 import Text.Megaparsec hiding (Label, parse)
 import Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L

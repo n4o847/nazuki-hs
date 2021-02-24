@@ -2,9 +2,9 @@
 
 module Nazuki.Assembler.ParserSpec (spec) where
 
+import Nazuki.Assembler.Label (resolveLabels)
 import Nazuki.Assembler.Parser (parse)
 import qualified Nazuki.Intermediate.InstructionSet as I
-import Nazuki.Intermediate.Label (resolveLabels)
 import Test.Hspec
 
 spec :: Spec
