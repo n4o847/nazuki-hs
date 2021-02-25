@@ -94,6 +94,7 @@ export default function App () {
                   className="text-monospace"
                   style={{ wordBreak: 'break-all' }}
                   rows={10}
+                  spellCheck={false}
                   value={source}
                   onChange={(e) => setSource(e.target.value)}
                 />
@@ -110,6 +111,7 @@ export default function App () {
                   className="text-monospace"
                   style={{ wordBreak: 'break-all' }}
                   rows={10}
+                  spellCheck={false}
                   value={result}
                 />
                 <p>{result.length}</p>
@@ -137,6 +139,7 @@ export default function App () {
               readOnly
               className="text-monospace"
               rows={5}
+              spellCheck={false}
               value={output}
             />
           </Form.Group>
@@ -147,6 +150,7 @@ export default function App () {
               readOnly
               className="text-monospace"
               rows={5}
+              spellCheck={false}
               value={error}
             />
           </Form.Group>
