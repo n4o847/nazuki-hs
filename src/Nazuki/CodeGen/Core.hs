@@ -18,7 +18,7 @@ module Nazuki.CodeGen.Core
   )
 where
 
-import Control.Monad.State
+import Control.Monad.State.Strict
 import Data.Text (Text)
 import qualified Data.Text as Text
 
@@ -41,13 +41,13 @@ data Gen = Gen
 type Oper = State Gen ()
 
 modifyCmds :: ([BfCmd] -> [BfCmd]) -> State Gen ()
-modifyCmds f = modify \gen -> gen {cmds = f $ cmds gen}
+modifyCmds f = modify' \gen -> gen {cmds = f $ cmds gen}
 
 getIsize :: State Gen Int
 getIsize = gets isize
 
 putIsize :: Int -> State Gen ()
-putIsize isize = modify \gen -> gen {isize = isize}
+putIsize isize = modify' \gen -> gen {isize = isize}
 
 empty :: Gen
 empty =

@@ -9,7 +9,7 @@ module Nazuki.CodeGen.VirtualMachine
 where
 
 import Control.Monad
-import Control.Monad.State
+import Control.Monad.State.Strict
 import qualified Data.Bits as Bits
 import Data.Map (Map)
 import qualified Data.Map as Map
@@ -27,10 +27,10 @@ getIsa :: State Asm (Map Int Oper)
 getIsa = gets isa
 
 putIsa :: Isa -> State Asm ()
-putIsa isa = modify \asm -> asm {isa = isa}
+putIsa isa = modify' \asm -> asm {isa = isa}
 
 consOpcode :: Int -> State Asm ()
-consOpcode opcode = modify \asm -> asm {opcodes = opcode : opcodes asm}
+consOpcode opcode = modify' \asm -> asm {opcodes = opcode : opcodes asm}
 
 empty :: Asm
 empty =
