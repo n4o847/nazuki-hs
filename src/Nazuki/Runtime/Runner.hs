@@ -1,7 +1,7 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Nazuki.Runner
+module Nazuki.Runtime.Runner
   ( debug,
     run,
   )

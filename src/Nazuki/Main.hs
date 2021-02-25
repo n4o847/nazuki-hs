@@ -9,7 +9,7 @@ import Data.Text (Text)
 import qualified Nazuki.Assembler.Instruction as I
 import qualified Nazuki.Assembler.Label as L
 import qualified Nazuki.Assembler.Parser as P
-import qualified Nazuki.Runner as R
+import qualified Nazuki.Runtime.Runner as R
 
 assemble :: Text -> Either Text Text
 assemble source =
