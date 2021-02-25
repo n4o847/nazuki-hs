@@ -8,6 +8,7 @@ import Data.Int (Int32)
 import qualified Data.Map as Map
 import qualified Data.Maybe as Maybe
 import Data.Text (Text)
+import qualified Nazuki.CodeGen.Arch232.IO as IO
 import qualified Nazuki.CodeGen.Arch232.Int32 as I32
 import qualified Nazuki.CodeGen.Core as G
 import qualified Nazuki.CodeGen.Util as G
@@ -44,6 +45,8 @@ data Instruction
   | GeU
   | Scan
   | Print
+  | Getc
+  | Putc
   | Write Text
   | Jump Int
   | Jez Int
@@ -100,6 +103,8 @@ insToOper = \case
   GeU -> I32.doGeU
   Scan -> I32.doScan
   Print -> I32.doPrint
+  Getc -> IO.doGetc
+  Putc -> IO.doPutc
   Write s -> G.puts (G.mem 0) s
   Jump r -> I32.doJump r
   Jez r -> I32.doJez r

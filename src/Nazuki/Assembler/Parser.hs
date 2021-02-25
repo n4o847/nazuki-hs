@@ -82,6 +82,8 @@ pOperator =
       Holder0 I.GeU <$ pKeyword "ge_u",
       Holder0 I.Scan <$ pKeyword "scan",
       Holder0 I.Print <$ pKeyword "print",
+      Holder0 I.Getc <$ pKeyword "getc",
+      Holder0 I.Putc <$ pKeyword "putc",
       Holder0 . I.Write <$ pKeyword "write" <*> pString,
       Holder1 I.Jump <$ pKeyword "jump" <*> pLabelWithoutColon,
       Holder1 I.Jez <$ pKeyword "jez" <*> pLabelWithoutColon,
