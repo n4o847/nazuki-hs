@@ -16,10 +16,6 @@ export async function loadNazuki(): Promise<Nazuki> {
       const instance = await rts.newAsteriusInstance(req);
       return instance.exports.assemble(source);
     },
-    async generate(x: number) {
-      const instance = await rts.newAsteriusInstance(req);
-      return instance.exports.generate(x);
-    },
     async run(program: string, input: string) {
       const instance = await rts.newAsteriusInstance(req);
       return instance.exports.run(program, input);
