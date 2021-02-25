@@ -9,16 +9,21 @@ import Test.Hspec
 spec :: Spec
 spec = do
   describe "parse" $
-    it "const 1" $
+    it "a + 1" $
       let result =
             parse
               "\
-              \a\n\
+              \a + 1\n\
               \"
           expected =
             Right
               ( AST.Program
-                  [ AST.Expr (AST.Get (AST.Ident "a"))
+                  [ AST.Expr
+                      ( AST.BinOp
+                          AST.Add
+                          (AST.Var (AST.Ident "a"))
+                          (AST.Int 1)
+                      )
                   ]
               )
        in result `shouldBe` expected

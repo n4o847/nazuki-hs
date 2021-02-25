@@ -8,6 +8,7 @@ where
 
 import Control.Arrow (left)
 import Control.Monad (void)
+import Control.Monad.Combinators.Expr (Operator (..), makeExprParser)
 import Data.Text (Text)
 import qualified Data.Text as Text
 import Data.Void (Void)
@@ -30,6 +31,27 @@ sc = L.space (void $ some (char ' ' <|> char '\t')) lineComment empty
 lexeme :: Parser a -> Parser a
 lexeme = L.lexeme sc
 
+symbol :: Text -> Parser Text
+symbol = L.symbol sc
+
+charLiteral :: Parser Char
+charLiteral =
+  lexeme (between (char '\'') (char '\'') L.charLiteral)
+    <?> "char"
+
+stringLiteral :: Parser Text
+stringLiteral =
+  lexeme (char '\"' >> Text.pack <$> manyTill L.charLiteral (char '\"'))
+    <?> "string"
+
+intLiteral :: Num a => Parser a
+intLiteral =
+  lexeme (L.signed sc L.decimal)
+    <?> "integer"
+
+parens :: Parser a -> Parser a
+parens = between (symbol "(") (symbol ")")
+
 pKeyword :: Text -> Parser Text
 pKeyword keyword =
   lexeme (string keyword <* notFollowedBy (alphaNumChar <|> char '_'))
@@ -42,17 +64,35 @@ pIdent =
     return (AST.Ident (Text.pack (x : xs)))
     <?> "identifier"
 
+pTerm :: Parser AST.Expr
+pTerm =
+  choice
+    [ parens pExpr,
+      AST.Var <$> pIdent,
+      AST.Int <$> intLiteral
+    ]
+
 pExpr :: Parser AST.Expr
 pExpr =
-  AST.Get <$> pIdent
+  makeExprParser pTerm operatorTable
+    <?> "expression"
+
+operatorTable :: [[Operator Parser AST.Expr]]
+operatorTable =
+  [ [ InfixL (AST.BinOp AST.Add <$ symbol "+"),
+      InfixL (AST.BinOp AST.Sub <$ symbol "-")
+    ]
+  ]
 
 pStmt :: Parser AST.Stmt
 pStmt =
   AST.Expr <$> pExpr <* scn
+    <?> "statement"
 
 pProgram :: Parser AST.Program
 pProgram =
   AST.Program <$> many pStmt
+    <?> "program"
 
 parse :: Text -> Either Text AST.Program
 parse =
