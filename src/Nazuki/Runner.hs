@@ -8,7 +8,7 @@ module Nazuki.Runner
 where
 
 import Control.Monad.Except
-import Control.Monad.State
+import Control.Monad.State.Strict
 import qualified Data.ByteString as BS
 import Data.Functor ((<&>))
 import Data.Text (Text)
@@ -87,7 +87,7 @@ exec' cmds =
 
 updateMem :: (Tape Word8 -> Tape Word8) -> Runner ()
 updateMem f =
-  modify $ \state -> state {mem = f $ mem state}
+  modify' $ \state -> state {mem = f $ mem state}
 
 plus :: Word8 -> Tape Word8 -> Tape Word8
 plus x (Tape ls a rs) = Tape ls (a + x) rs

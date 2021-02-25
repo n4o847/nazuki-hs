@@ -10,7 +10,7 @@ module Nazuki.Runtime.Parser
 where
 
 import Control.Monad.Except
-import Control.Monad.State
+import Control.Monad.State.Strict
 import Data.Functor ((<&>))
 import Data.Text (Text)
 import qualified Data.Text as Text
@@ -41,14 +41,14 @@ getDepth =
 
 setDepth :: Int -> Parser ()
 setDepth depth =
-  modify (\s -> s {depth})
+  modify' (\s -> s {depth})
 
 readChar :: Parser (Maybe Char)
 readChar = do
   ParserState {rest} <- get
   case Text.uncons rest of
     Just (x, xs) -> do
-      modify (\s -> s {rest = xs})
+      modify' (\s -> s {rest = xs})
       return $ Just x
     Nothing ->
       return Nothing
