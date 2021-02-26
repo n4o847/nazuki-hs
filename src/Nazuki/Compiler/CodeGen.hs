@@ -57,6 +57,8 @@ fromStmt :: AST.Stmt -> Generator ()
 fromStmt = \case
   AST.Expr expr ->
     fromExpr expr
+  AST.If a b c ->
+    fromIf a b c
   AST.While cond body ->
     fromWhile cond body
 
@@ -99,6 +101,33 @@ fromAssign :: AST.Ident -> AST.Expr -> Generator ()
 fromAssign ident expr = do
   fromExpr expr
   undefined
+
+fromIf :: (AST.Expr, [AST.Stmt]) -> [(AST.Expr, [AST.Stmt])] -> Maybe [AST.Stmt] -> Generator ()
+fromIf a b c = do
+  lEnd <- createLabel "L"
+  forM_ (init (a : b)) \(cond, body) -> do
+    lNext <- createLabel "L"
+    fromExpr cond
+    push (L1 I.Jez lNext)
+    mapM_ fromStmt body
+    push (L1 I.Jump lEnd)
+    push (Label lNext)
+  let (cond, body) = last (a : b)
+  case c of
+    Just d -> do
+      lNext <- createLabel "L"
+      fromExpr cond
+      push (L1 I.Jez lNext)
+      mapM_ fromStmt body
+      push (L1 I.Jump lEnd)
+      push (Label lNext)
+      mapM_ fromStmt d
+      push (Label lEnd)
+    Nothing -> do
+      fromExpr cond
+      push (L1 I.Jez lEnd)
+      mapM_ fromStmt body
+      push (Label lEnd)
 
 fromWhile :: AST.Expr -> [AST.Stmt] -> Generator ()
 fromWhile cond body = do
