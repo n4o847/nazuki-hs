@@ -1,4 +1,5 @@
 {-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE StrictData #-}
 
 module Nazuki.CodeGen.VirtualMachine
   ( assemble,
