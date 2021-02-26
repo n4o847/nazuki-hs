@@ -15,6 +15,7 @@ newtype Program
 
 data Stmt
   = Expr Expr
+  | If (Expr, [Stmt]) [(Expr, [Stmt])] (Maybe [Stmt])
   | While Expr [Stmt]
   deriving (Eq, Show)
 

@@ -42,6 +42,74 @@ spec = do
                     ]
                 ]
             )
+        ),
+        ( "\
+          \if a:\n\
+          \  a\n\
+          \",
+          Right
+            ( AST.Program
+                [ AST.If
+                    (AST.Var (AST.Ident "a"), [AST.Expr (AST.Var (AST.Ident "a"))])
+                    []
+                    Nothing
+                ]
+            )
+        ),
+        ( "\
+          \if a:\n\
+          \  a\n\
+          \else:\n\
+          \  b\n\
+          \",
+          Right
+            ( AST.Program
+                [ AST.If
+                    (AST.Var (AST.Ident "a"), [AST.Expr (AST.Var (AST.Ident "a"))])
+                    []
+                    (Just [AST.Expr (AST.Var (AST.Ident "b"))])
+                ]
+            )
+        ),
+        ( "\
+          \if a:\n\
+          \  a\n\
+          \elif b:\n\
+          \  b\n\
+          \elif c:\n\
+          \  c\n\
+          \",
+          Right
+            ( AST.Program
+                [ AST.If
+                    (AST.Var (AST.Ident "a"), [AST.Expr (AST.Var (AST.Ident "a"))])
+                    [ (AST.Var (AST.Ident "b"), [AST.Expr (AST.Var (AST.Ident "b"))]),
+                      (AST.Var (AST.Ident "c"), [AST.Expr (AST.Var (AST.Ident "c"))])
+                    ]
+                    Nothing
+                ]
+            )
+        ),
+        ( "\
+          \if a:\n\
+          \  a\n\
+          \elif b:\n\
+          \  b\n\
+          \elif c:\n\
+          \  c\n\
+          \else:\n\
+          \  d\n\
+          \",
+          Right
+            ( AST.Program
+                [ AST.If
+                    (AST.Var (AST.Ident "a"), [AST.Expr (AST.Var (AST.Ident "a"))])
+                    [ (AST.Var (AST.Ident "b"), [AST.Expr (AST.Var (AST.Ident "b"))]),
+                      (AST.Var (AST.Ident "c"), [AST.Expr (AST.Var (AST.Ident "c"))])
+                    ]
+                    (Just [AST.Expr (AST.Var (AST.Ident "d"))])
+                ]
+            )
         )
       ]
       \(source, expected) ->

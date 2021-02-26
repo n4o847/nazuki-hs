@@ -1,5 +1,6 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TupleSections #-}
 
 module Nazuki.Compiler.Parser
   ( parse,
@@ -84,6 +85,29 @@ operatorTable =
     ]
   ]
 
+pIf :: Parser (AST.Expr, [AST.Stmt])
+pIf =
+  L.nonIndented scn $ L.indentBlock scn do
+    pKeyword "if"
+    cond <- pExpr
+    symbol ":"
+    return (L.IndentSome Nothing (return . (cond,)) pStmt)
+
+pElif :: Parser (AST.Expr, [AST.Stmt])
+pElif =
+  L.nonIndented scn $ L.indentBlock scn do
+    pKeyword "elif"
+    cond <- pExpr
+    symbol ":"
+    return (L.IndentSome Nothing (return . (cond,)) pStmt)
+
+pElse :: Parser [AST.Stmt]
+pElse =
+  L.nonIndented scn $ L.indentBlock scn do
+    pKeyword "else"
+    symbol ":"
+    return (L.IndentSome Nothing return pStmt)
+
 pWhile :: Parser AST.Stmt
 pWhile =
   L.nonIndented scn $ L.indentBlock scn do
@@ -95,7 +119,8 @@ pWhile =
 pStmt :: Parser AST.Stmt
 pStmt =
   choice
-    [ pWhile,
+    [ AST.If <$> pIf <*> many pElif <*> optional pElse,
+      pWhile,
       AST.Expr <$> pExpr <* scn
     ]
     <?> "statement"
