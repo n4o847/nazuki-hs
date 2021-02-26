@@ -45,8 +45,11 @@ fromProgram (AST.Program statements) =
   mapM_ fromStmt statements
 
 fromStmt :: AST.Stmt -> Generator
-fromStmt (AST.Expr expr) =
-  fromExpr expr
+fromStmt = \case
+  AST.Expr expr ->
+    fromExpr expr
+  AST.While cond body ->
+    fromWhile cond body
 
 fromExpr :: AST.Expr -> Generator
 fromExpr = \case
@@ -54,6 +57,8 @@ fromExpr = \case
     fromVar ident
   AST.Int int ->
     fromInt int
+  AST.Char char ->
+    fromChar char
   AST.String string ->
     throwError "cannot use a string as a value"
   AST.BinOp op left right ->
@@ -69,6 +74,10 @@ fromInt :: Int -> Generator
 fromInt int =
   push (I.Const (fromIntegral int))
 
+fromChar :: Char -> Generator
+fromChar char =
+  push (I.Const (fromIntegral (fromEnum char)))
+
 fromBinOp :: AST.BinOp -> AST.Expr -> AST.Expr -> Generator
 fromBinOp op left right = do
   fromExpr left
@@ -80,4 +89,8 @@ fromBinOp op left right = do
 fromAssign :: AST.Ident -> AST.Expr -> Generator
 fromAssign ident expr = do
   fromExpr expr
+  undefined
+
+fromWhile :: AST.Expr -> [AST.Stmt] -> Generator
+fromWhile cond body =
   undefined

@@ -84,9 +84,20 @@ operatorTable =
     ]
   ]
 
+pWhile :: Parser AST.Stmt
+pWhile =
+  L.nonIndented scn $ L.indentBlock scn do
+    pKeyword "while"
+    cond <- pExpr
+    symbol ":"
+    return (L.IndentSome Nothing (return . AST.While cond) pStmt)
+
 pStmt :: Parser AST.Stmt
 pStmt =
-  AST.Expr <$> pExpr <* scn
+  choice
+    [ pWhile,
+      AST.Expr <$> pExpr <* scn
+    ]
     <?> "statement"
 
 pProgram :: Parser AST.Program

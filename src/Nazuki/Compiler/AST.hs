@@ -13,8 +13,9 @@ newtype Program
   = Program [Stmt]
   deriving (Eq, Show)
 
-newtype Stmt
+data Stmt
   = Expr Expr
+  | While Expr [Stmt]
   deriving (Eq, Show)
 
 data Expr
