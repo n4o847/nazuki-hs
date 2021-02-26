@@ -13,8 +13,7 @@ import Data.Text (Text)
 import qualified Data.Text as Text
 import Nazuki.Assembler.Instruction (Instruction)
 import qualified Nazuki.Assembler.Instruction as I
-import Nazuki.Assembler.Label (Labeled)
-import qualified Nazuki.Assembler.Label as L
+import Nazuki.Assembler.Label (Labeled (..))
 import qualified Nazuki.Compiler.AST as AST
 
 data GeneratorState = GeneratorState
@@ -82,19 +81,19 @@ fromVar =
 
 fromInt :: Int -> Generator ()
 fromInt int =
-  push (L.Holder0 (I.Const (fromIntegral int)))
+  push (L0 (I.Const (fromIntegral int)))
 
 fromChar :: Char -> Generator ()
 fromChar char =
-  push (L.Holder0 (I.Const (fromIntegral (fromEnum char))))
+  push (L0 (I.Const (fromIntegral (fromEnum char))))
 
 fromBinOp :: AST.BinOp -> AST.Expr -> AST.Expr -> Generator ()
 fromBinOp op left right = do
   fromExpr left
   fromExpr right
   push case op of
-    AST.Add -> L.Holder0 I.Add
-    AST.Sub -> L.Holder0 I.Sub
+    AST.Add -> L0 I.Add
+    AST.Sub -> L0 I.Sub
 
 fromAssign :: AST.Ident -> AST.Expr -> Generator ()
 fromAssign ident expr = do
@@ -105,9 +104,9 @@ fromWhile :: AST.Expr -> [AST.Stmt] -> Generator ()
 fromWhile cond body = do
   lStart <- createLabel "L"
   lEnd <- createLabel "L"
-  push (L.Label lStart)
+  push (Label lStart)
   fromExpr cond
-  push (L.Holder1 I.Jez lEnd)
+  push (L1 I.Jez lEnd)
   mapM_ fromStmt body
-  push (L.Holder1 I.Jump lStart)
-  push (L.Label lEnd)
+  push (L1 I.Jump lStart)
+  push (Label lEnd)

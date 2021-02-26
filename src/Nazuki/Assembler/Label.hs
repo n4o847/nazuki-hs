@@ -13,8 +13,8 @@ import qualified Data.Map as Map
 import Data.Text (Text)
 
 data Labeled a
-  = Holder0 a
-  | Holder1 (Int -> a) Text
+  = L0 a
+  | L1 (Int -> a) Text
   | Label Text
 
 insertLookup :: Ord k => k -> a -> Map k a -> (Maybe a, Map k a)
@@ -43,7 +43,7 @@ resolveLabels list = do
           Nothing -> Left $ "undefined label \"" <> name <> "\""
   forM removed \(labeled, pos) ->
     case labeled of
-      Holder0 ins -> return ins
-      Holder1 ins l0 -> do
+      L0 ins -> return ins
+      L1 ins l0 -> do
         p0 <- getPosition l0
         return $ ins (p0 - pos - 1)
