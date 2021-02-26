@@ -5,8 +5,7 @@ module Main where
 
 import Data.Text as T
 import Data.Text.IO as TIO
-import qualified Nazuki.Assembler.Instruction as I
-import Nazuki.Runner
+import qualified Nazuki.Main as Nazuki
 import System.Environment (getArgs)
 import System.IO (stderr)
 
@@ -14,23 +13,19 @@ main :: IO ()
 main = do
   args <- getArgs
   case args of
-    ["gen"] ->
-      TIO.putStrLn program
-    ["len"] ->
-      print (T.length program)
-    ["run"] -> do
+    ["asm", inFile, outFile] -> do
+      program <- TIO.readFile inFile
+      let result = Nazuki.assemble program
+      either (TIO.hPutStrLn stderr) (TIO.writeFile outFile) result
+    ["run", inFile] -> do
+      program <- TIO.readFile inFile
       input <- TIO.getContents
-      either (TIO.hPutStrLn stderr) TIO.putStrLn $ run program input
-    ["debug"] -> do
+      let result = Nazuki.run program input
+      either (TIO.hPutStrLn stderr) TIO.putStrLn result
+    ["debug", inFile] -> do
+      program <- TIO.readFile inFile
       input <- TIO.getContents
-      either (TIO.hPutStrLn stderr) TIO.putStrLn $ debug program input
+      let result = Nazuki.debug program input
+      either (TIO.hPutStrLn stderr) TIO.putStrLn result
     _ ->
       TIO.hPutStrLn stderr "Wrong arguments"
-  where
-    program =
-      I.generate
-        [ I.Scan,
-          I.Scan,
-          I.Add,
-          I.Print
-        ]

@@ -43,17 +43,10 @@ import Control.Monad
 import qualified Data.Bits as Bits
 import Data.Int (Int32)
 import Data.Word (Word32)
+import Nazuki.CodeGen.Arch232.Common
 import Nazuki.CodeGen.Core
 import Nazuki.CodeGen.Util
 import Nazuki.CodeGen.VirtualMachine
-
-consume :: Int -> Oper
-consume a =
-  backward (33 * a)
-
-produce :: Int -> Oper
-produce a =
-  forward (33 * a)
 
 doConst :: Int32 -> Oper
 doConst x = do

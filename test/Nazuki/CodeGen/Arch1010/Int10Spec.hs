@@ -7,7 +7,7 @@ import Control.Monad
 import qualified Data.Text as Text
 import qualified Nazuki.CodeGen.Arch1010.Int10 as Int10
 import Nazuki.CodeGen.Core (generate)
-import Nazuki.Runner
+import Nazuki.Runtime.Runner (run)
 import Test.Hspec
 
 spec :: Spec

@@ -7,7 +7,7 @@ import Control.Monad
 import qualified Data.Text as Text
 import qualified Nazuki.CodeGen.Arch232.Int32 as Int32
 import Nazuki.CodeGen.Core (generate)
-import Nazuki.Runner
+import Nazuki.Runtime.Runner (run)
 import Test.Hspec
 
 spec :: Spec
