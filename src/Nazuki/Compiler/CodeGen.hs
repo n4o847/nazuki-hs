@@ -14,44 +14,54 @@ import qualified Data.Text as Text
 import Nazuki.Assembler.Instruction (Instruction)
 import qualified Nazuki.Assembler.Instruction as I
 import Nazuki.Assembler.Label (Labeled)
+import qualified Nazuki.Assembler.Label as L
 import qualified Nazuki.Compiler.AST as AST
 
-newtype GeneratorState = GeneratorState
-  { instructions :: [Instruction]
+data GeneratorState = GeneratorState
+  { instructions :: [Labeled Instruction],
+    nextLabel :: Int
   }
 
-type Generator = StateT GeneratorState (Either Text) ()
+type Generator = StateT GeneratorState (Either Text)
 
 emptyGeneratorState :: GeneratorState
 emptyGeneratorState =
   GeneratorState
-    { instructions = []
+    { instructions = [],
+      nextLabel = 0
     }
 
-push :: Instruction -> Generator
+push :: Labeled Instruction -> Generator ()
 push i =
   modify' \s -> s {instructions = i : instructions s}
 
-append :: [Instruction] -> Generator
+append :: [Labeled Instruction] -> Generator ()
 append is =
   modify' \s -> s {instructions = is ++ instructions s}
 
-generate :: AST.Program -> Either Text [Instruction]
+createLabel :: Text -> Generator Text
+createLabel prefix = do
+  state <- get
+  let label = nextLabel state
+  put state {nextLabel = label + 1}
+  return (prefix <> Text.pack (show label))
+
+generate :: AST.Program -> Either Text [Labeled Instruction]
 generate program =
   reverse . instructions <$> execStateT (fromProgram program) emptyGeneratorState
 
-fromProgram :: AST.Program -> Generator
+fromProgram :: AST.Program -> Generator ()
 fromProgram (AST.Program statements) =
   mapM_ fromStmt statements
 
-fromStmt :: AST.Stmt -> Generator
+fromStmt :: AST.Stmt -> Generator ()
 fromStmt = \case
   AST.Expr expr ->
     fromExpr expr
   AST.While cond body ->
     fromWhile cond body
 
-fromExpr :: AST.Expr -> Generator
+fromExpr :: AST.Expr -> Generator ()
 fromExpr = \case
   AST.Var ident ->
     fromVar ident
@@ -66,31 +76,38 @@ fromExpr = \case
   AST.Assign ident expr ->
     fromAssign ident expr
 
-fromVar :: AST.Ident -> Generator
+fromVar :: AST.Ident -> Generator ()
 fromVar =
   undefined
 
-fromInt :: Int -> Generator
+fromInt :: Int -> Generator ()
 fromInt int =
-  push (I.Const (fromIntegral int))
+  push (L.Holder0 (I.Const (fromIntegral int)))
 
-fromChar :: Char -> Generator
+fromChar :: Char -> Generator ()
 fromChar char =
-  push (I.Const (fromIntegral (fromEnum char)))
+  push (L.Holder0 (I.Const (fromIntegral (fromEnum char))))
 
-fromBinOp :: AST.BinOp -> AST.Expr -> AST.Expr -> Generator
+fromBinOp :: AST.BinOp -> AST.Expr -> AST.Expr -> Generator ()
 fromBinOp op left right = do
   fromExpr left
   fromExpr right
   push case op of
-    AST.Add -> I.Add
-    AST.Sub -> I.Sub
+    AST.Add -> L.Holder0 I.Add
+    AST.Sub -> L.Holder0 I.Sub
 
-fromAssign :: AST.Ident -> AST.Expr -> Generator
+fromAssign :: AST.Ident -> AST.Expr -> Generator ()
 fromAssign ident expr = do
   fromExpr expr
   undefined
 
-fromWhile :: AST.Expr -> [AST.Stmt] -> Generator
-fromWhile cond body =
-  undefined
+fromWhile :: AST.Expr -> [AST.Stmt] -> Generator ()
+fromWhile cond body = do
+  lStart <- createLabel "L"
+  lEnd <- createLabel "L"
+  push (L.Label lStart)
+  fromExpr cond
+  push (L.Holder1 I.Jez lEnd)
+  mapM_ fromStmt body
+  push (L.Holder1 I.Jump lStart)
+  push (L.Label lEnd)
