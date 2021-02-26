@@ -13,6 +13,10 @@ main :: IO ()
 main = do
   args <- getArgs
   case args of
+    ["c", inFile, outFile] -> do
+      program <- TIO.readFile inFile
+      let result = Nazuki.compile program
+      either (TIO.hPutStrLn stderr) (TIO.writeFile outFile) result
     ["asm", inFile, outFile] -> do
       program <- TIO.readFile inFile
       let result = Nazuki.assemble program
