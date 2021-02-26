@@ -3,7 +3,7 @@ module Nazuki.Compiler.AST
     Stmt (..),
     Expr (..),
     Ident (..),
-    Op (..),
+    BinOp (..),
   )
 where
 
@@ -22,14 +22,14 @@ data Expr
   | Int Int
   | Char Char
   | String Text
-  | BinOp Op Expr Expr
+  | BinOp BinOp Expr Expr
   | Assign Ident Expr
   deriving (Eq, Show)
 
 newtype Ident = Ident Text
   deriving (Eq, Show)
 
-data Op
+data BinOp
   = Add
   | Sub
   deriving (Eq, Show)
