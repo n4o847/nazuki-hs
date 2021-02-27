@@ -80,6 +80,8 @@ fromExpr = \case
     throwError "cannot use a string as a value"
   AST.BinOp op left right ->
     fromBinOp op left right
+  AST.Call callee arguments ->
+    fromCall callee arguments
 
 fromVar :: AST.Ident -> Generator ()
 fromVar ident = do
@@ -107,6 +109,37 @@ fromBinOp op left right = do
   push case op of
     AST.Add -> L0 I.Add
     AST.Sub -> L0 I.Sub
+
+fromCall :: AST.Expr -> [AST.Expr] -> Generator ()
+fromCall callee arguments =
+  case callee of
+    AST.Var (AST.Ident "scan") ->
+      case arguments of
+        [] ->
+          push (L0 I.Scan)
+        _ ->
+          throwError "invalid arguments"
+    AST.Var (AST.Ident "getc") ->
+      case arguments of
+        [] ->
+          push (L0 I.Getc)
+        _ ->
+          throwError "invalid arguments"
+    AST.Var (AST.Ident "print") ->
+      forM_ arguments \case
+        AST.Int int -> do
+          fromInt int
+          push (L0 I.Print)
+        AST.Char char -> do
+          fromChar char
+          push (L0 I.Putc)
+        AST.String string -> do
+          push (L0 (I.Write string))
+        expr -> do
+          fromExpr expr
+          push (L0 I.Print)
+    _ ->
+      throwError "function call is not implemented"
 
 fromAssign :: AST.Ident -> AST.Expr -> Generator ()
 fromAssign ident expr = do
