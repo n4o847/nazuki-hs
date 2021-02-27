@@ -85,6 +85,10 @@ operatorTable =
     ]
   ]
 
+pAssign :: Parser AST.Stmt
+pAssign =
+  AST.Assign <$> pIdent <* symbol "=" <*> pExpr
+
 pIf :: Parser (AST.Expr, [AST.Stmt])
 pIf =
   L.nonIndented scn $ L.indentBlock scn do
@@ -121,6 +125,7 @@ pStmt =
   choice
     [ AST.If <$> pIf <*> many pElif <*> optional pElse,
       pWhile,
+      try pAssign <* scn,
       AST.Expr <$> pExpr <* scn
     ]
     <?> "statement"
