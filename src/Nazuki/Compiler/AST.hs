@@ -15,6 +15,7 @@ newtype Program
 
 data Stmt
   = Expr Expr
+  | Assign Ident Expr
   | If (Expr, [Stmt]) [(Expr, [Stmt])] (Maybe [Stmt])
   | While Expr [Stmt]
   deriving (Eq, Show)
@@ -25,7 +26,6 @@ data Expr
   | Char Char
   | String Text
   | BinOp BinOp Expr Expr
-  | Assign Ident Expr
   deriving (Eq, Show)
 
 newtype Ident

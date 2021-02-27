@@ -61,6 +61,8 @@ fromStmt :: AST.Stmt -> Generator ()
 fromStmt = \case
   AST.Expr expr ->
     fromExpr expr
+  AST.Assign ident expr ->
+    fromAssign ident expr
   AST.If a b c ->
     fromIf a b c
   AST.While cond body ->
@@ -78,8 +80,6 @@ fromExpr = \case
     throwError "cannot use a string as a value"
   AST.BinOp op left right ->
     fromBinOp op left right
-  AST.Assign ident expr ->
-    fromAssign ident expr
 
 fromVar :: AST.Ident -> Generator ()
 fromVar ident = do
