@@ -115,6 +115,8 @@ fromBinOp op left right = do
     AST.Ge -> push (L0 I.GeS)
     AST.Eq -> push (L0 I.Eq)
     AST.Ne -> append [L0 I.Eq, L0 (I.Const 1), L0 I.Xor]
+    AST.And -> push (L0 I.And)
+    AST.Or -> push (L0 I.Or)
 
 fromCall :: AST.Expr -> [AST.Expr] -> Generator ()
 fromCall callee arguments =

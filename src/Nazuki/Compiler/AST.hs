@@ -42,4 +42,6 @@ data BinOp
   | Ge
   | Eq
   | Ne
+  | And
+  | Or
   deriving (Eq, Show)
