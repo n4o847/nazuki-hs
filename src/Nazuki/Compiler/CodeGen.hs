@@ -106,9 +106,15 @@ fromBinOp :: AST.BinOp -> AST.Expr -> AST.Expr -> Generator ()
 fromBinOp op left right = do
   fromExpr left
   fromExpr right
-  push case op of
-    AST.Add -> L0 I.Add
-    AST.Sub -> L0 I.Sub
+  case op of
+    AST.Add -> push (L0 I.Add)
+    AST.Sub -> push (L0 I.Sub)
+    AST.Lt -> push (L0 I.LtS)
+    AST.Le -> push (L0 I.LeS)
+    AST.Gt -> push (L0 I.GtS)
+    AST.Ge -> push (L0 I.GeS)
+    AST.Eq -> push (L0 I.Eq)
+    AST.Ne -> append [L0 I.Eq, L0 (I.Const 1), L0 I.Xor]
 
 fromCall :: AST.Expr -> [AST.Expr] -> Generator ()
 fromCall callee arguments =

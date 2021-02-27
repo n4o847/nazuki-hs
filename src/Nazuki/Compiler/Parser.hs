@@ -84,6 +84,13 @@ operatorTable =
     ],
     [ InfixL (AST.BinOp AST.Add <$ symbol "+"),
       InfixL (AST.BinOp AST.Sub <$ symbol "-")
+    ],
+    [ InfixN (AST.BinOp AST.Lt <$ symbol "<"),
+      InfixN (AST.BinOp AST.Le <$ symbol "<="),
+      InfixN (AST.BinOp AST.Gt <$ symbol ">"),
+      InfixN (AST.BinOp AST.Ge <$ symbol ">="),
+      InfixN (AST.BinOp AST.Eq <$ symbol "=="),
+      InfixN (AST.BinOp AST.Ne <$ symbol "!=")
     ]
   ]
   where

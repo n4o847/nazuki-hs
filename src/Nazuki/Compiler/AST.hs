@@ -36,4 +36,10 @@ newtype Ident
 data BinOp
   = Add
   | Sub
+  | Lt
+  | Le
+  | Gt
+  | Ge
+  | Eq
+  | Ne
   deriving (Eq, Show)
