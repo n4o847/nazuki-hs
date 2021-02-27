@@ -96,7 +96,7 @@ operatorTable =
     ],
     [ InfixL (AST.BinOp AST.And <$ pKeyword "and")
     ],
-    [ InfixL (AST.BinOp AST.And <$ pKeyword "or")
+    [ InfixL (AST.BinOp AST.Or <$ pKeyword "or")
     ]
   ]
   where
