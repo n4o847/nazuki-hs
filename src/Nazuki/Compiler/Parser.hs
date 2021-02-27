@@ -102,7 +102,7 @@ pAssign =
 
 pIf :: Parser (AST.Expr, [AST.Stmt])
 pIf =
-  L.nonIndented scn $ L.indentBlock scn do
+  L.indentBlock scn do
     pKeyword "if"
     cond <- pExpr
     symbol ":"
@@ -110,7 +110,7 @@ pIf =
 
 pElif :: Parser (AST.Expr, [AST.Stmt])
 pElif =
-  L.nonIndented scn $ L.indentBlock scn do
+  L.indentBlock scn do
     pKeyword "elif"
     cond <- pExpr
     symbol ":"
@@ -118,14 +118,14 @@ pElif =
 
 pElse :: Parser [AST.Stmt]
 pElse =
-  L.nonIndented scn $ L.indentBlock scn do
+  L.indentBlock scn do
     pKeyword "else"
     symbol ":"
     return (L.IndentSome Nothing return pStmt)
 
 pWhile :: Parser AST.Stmt
 pWhile =
-  L.nonIndented scn $ L.indentBlock scn do
+  L.indentBlock scn do
     pKeyword "while"
     cond <- pExpr
     symbol ":"
@@ -143,7 +143,7 @@ pStmt =
 
 pProgram :: Parser AST.Program
 pProgram =
-  AST.Program <$> many pStmt
+  AST.Program <$> many (L.nonIndented scn pStmt)
     <?> "program"
 
 parse :: Text -> Either Text AST.Program
