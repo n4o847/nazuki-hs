@@ -9,6 +9,8 @@ where
 
 import Control.Monad.Except
 import Control.Monad.State.Strict
+import Data.Map (Map)
+import qualified Data.Map as Map
 import Data.Text (Text)
 import qualified Data.Text as Text
 import Nazuki.Assembler.Instruction (Instruction)
@@ -18,6 +20,7 @@ import qualified Nazuki.Compiler.AST as AST
 
 data GeneratorState = GeneratorState
   { instructions :: [Labeled Instruction],
+    environment :: Map AST.Ident Int,
     nextLabel :: Int
   }
 
@@ -27,6 +30,7 @@ emptyGeneratorState :: GeneratorState
 emptyGeneratorState =
   GeneratorState
     { instructions = [],
+      environment = Map.empty,
       nextLabel = 0
     }
 
@@ -78,8 +82,15 @@ fromExpr = \case
     fromAssign ident expr
 
 fromVar :: AST.Ident -> Generator ()
-fromVar =
-  undefined
+fromVar ident = do
+  env <- gets environment
+  index <- case Map.lookup ident env of
+    Just index -> do
+      return index
+    Nothing -> do
+      let AST.Ident name = ident
+      throwError ("\"" <> name <> "\" is not defined")
+  push (L0 (I.Get index))
 
 fromInt :: Int -> Generator ()
 fromInt int =
@@ -100,7 +111,13 @@ fromBinOp op left right = do
 fromAssign :: AST.Ident -> AST.Expr -> Generator ()
 fromAssign ident expr = do
   fromExpr expr
-  undefined
+  env <- gets environment
+  case Map.lookup ident env of
+    Just index -> do
+      push (L0 (I.Set index))
+    Nothing -> do
+      let index = Map.size env
+      modify' \s -> s {environment = Map.insert ident index env}
 
 fromIf :: (AST.Expr, [AST.Stmt]) -> [(AST.Expr, [AST.Stmt])] -> Maybe [AST.Stmt] -> Generator ()
 fromIf a b c = do

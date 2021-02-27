@@ -28,8 +28,9 @@ data Expr
   | Assign Ident Expr
   deriving (Eq, Show)
 
-newtype Ident = Ident Text
-  deriving (Eq, Show)
+newtype Ident
+  = Ident Text
+  deriving (Eq, Ord, Show)
 
 data BinOp
   = Add
