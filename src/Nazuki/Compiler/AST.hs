@@ -26,6 +26,7 @@ data Expr
   | Char Char
   | String Text
   | BinOp BinOp Expr Expr
+  | Call Expr [Expr]
   deriving (Eq, Show)
 
 newtype Ident

@@ -110,6 +110,49 @@ spec = do
                     (Just [AST.Expr (AST.Var (AST.Ident "d"))])
                 ]
             )
+        ),
+        ( "\
+          \a(b + c)\n\
+          \a + b(c + d)\n\
+          \(a + b)(c + d)\n\
+          \a(b + c)(d + e)\n\
+          \",
+          Right
+            ( AST.Program
+                [ AST.Expr
+                    ( AST.Call
+                        (AST.Var (AST.Ident "a"))
+                        [ AST.BinOp AST.Add (AST.Var (AST.Ident "b")) (AST.Var (AST.Ident "c"))
+                        ]
+                    ),
+                  AST.Expr
+                    ( AST.BinOp
+                        AST.Add
+                        (AST.Var (AST.Ident "a"))
+                        ( AST.Call
+                            (AST.Var (AST.Ident "b"))
+                            [ AST.BinOp AST.Add (AST.Var (AST.Ident "c")) (AST.Var (AST.Ident "d"))
+                            ]
+                        )
+                    ),
+                  AST.Expr
+                    ( AST.Call
+                        (AST.BinOp AST.Add (AST.Var (AST.Ident "a")) (AST.Var (AST.Ident "b")))
+                        [ AST.BinOp AST.Add (AST.Var (AST.Ident "c")) (AST.Var (AST.Ident "d"))
+                        ]
+                    ),
+                  AST.Expr
+                    ( AST.Call
+                        ( AST.Call
+                            (AST.Var (AST.Ident "a"))
+                            [ AST.BinOp AST.Add (AST.Var (AST.Ident "b")) (AST.Var (AST.Ident "c"))
+                            ]
+                        )
+                        [ AST.BinOp AST.Add (AST.Var (AST.Ident "d")) (AST.Var (AST.Ident "e"))
+                        ]
+                    )
+                ]
+            )
         )
       ]
       \(source, expected) ->

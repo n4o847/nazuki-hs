@@ -80,10 +80,14 @@ pExpr =
 
 operatorTable :: [[Operator Parser AST.Expr]]
 operatorTable =
-  [ [ InfixL (AST.BinOp AST.Add <$ symbol "+"),
+  [ [ somePostfix (flip AST.Call <$> parens (pExpr `sepBy` symbol ","))
+    ],
+    [ InfixL (AST.BinOp AST.Add <$ symbol "+"),
       InfixL (AST.BinOp AST.Sub <$ symbol "-")
     ]
   ]
+  where
+    somePostfix op = Postfix $ foldr1 (flip (.)) <$> some op
 
 pAssign :: Parser AST.Stmt
 pAssign =
