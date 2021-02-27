@@ -70,7 +70,9 @@ pTerm =
   choice
     [ parens pExpr,
       AST.Var <$> pIdent,
-      AST.Int <$> intLiteral
+      AST.Int <$> intLiteral,
+      AST.Char <$> charLiteral,
+      AST.String <$> stringLiteral
     ]
 
 pExpr :: Parser AST.Expr
