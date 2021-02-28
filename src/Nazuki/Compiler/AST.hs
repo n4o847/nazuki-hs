@@ -36,6 +36,7 @@ newtype Ident
 data BinOp
   = Add
   | Sub
+  | Mul
   | Lt
   | Le
   | Gt

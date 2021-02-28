@@ -84,6 +84,8 @@ operatorTable :: [[Operator Parser AST.Expr]]
 operatorTable =
   [ [ somePostfix (flip AST.Call <$> parens (pExpr `sepBy` symbol ","))
     ],
+    [ InfixL (AST.BinOp AST.Mul <$ symbol "*")
+    ],
     [ InfixL (AST.BinOp AST.Add <$ symbol "+"),
       InfixL (AST.BinOp AST.Sub <$ symbol "-")
     ],

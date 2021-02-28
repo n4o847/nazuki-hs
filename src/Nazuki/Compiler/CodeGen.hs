@@ -109,6 +109,7 @@ fromBinOp op left right = do
   case op of
     AST.Add -> push (L0 I.Add)
     AST.Sub -> push (L0 I.Sub)
+    AST.Mul -> push (L0 I.Mul)
     AST.Lt -> push (L0 I.LtS)
     AST.Le -> push (L0 I.LeS)
     AST.Gt -> push (L0 I.GtS)
