@@ -59,9 +59,8 @@ fromProgram (AST.Program statements) =
 
 fromStmt :: AST.Stmt -> Generator ()
 fromStmt = \case
-  AST.Expr expr -> do
+  AST.Expr expr ->
     fromExpr expr
-    push (L0 I.Drop)
   AST.Assign ident expr ->
     fromAssign ident expr
   AST.If a b c ->
@@ -199,6 +198,13 @@ fromCall callee arguments =
         expr -> do
           fromExpr expr
           push (L0 I.Print)
+    AST.Var (AST.Ident "discard") ->
+      case arguments of
+        [a] -> do
+          fromExpr a
+          push (L0 I.Drop)
+        _ ->
+          throwError "invalid arguments"
     _ ->
       throwError "function call is not implemented"
 
