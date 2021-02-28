@@ -40,7 +40,7 @@ push i =
 
 append :: [Labeled Instruction] -> Generator ()
 append is =
-  modify' \s -> s {instructions = is ++ instructions s}
+  modify' \s -> s {instructions = reverse is ++ instructions s}
 
 createLabel :: Text -> Generator Text
 createLabel prefix = do
