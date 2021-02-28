@@ -159,6 +159,20 @@ fromCall callee arguments =
             ]
         _ ->
           throwError "invalid arguments"
+    AST.Var (AST.Ident "abs") ->
+      case arguments of
+        [a] -> do
+          fromExpr a
+          append
+            [ L0 (I.Get (-1)),
+              L0 (I.Const 0),
+              L0 I.LtS,
+              L0 (I.Jez 2),
+              L0 I.Not,
+              L0 I.Inc
+            ]
+        _ ->
+          throwError "invalid arguments"
     AST.Var (AST.Ident "scan") ->
       case arguments of
         [] ->
