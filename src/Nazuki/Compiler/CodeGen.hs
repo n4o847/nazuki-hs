@@ -122,6 +122,38 @@ fromBinOp op left right = do
 fromCall :: AST.Expr -> [AST.Expr] -> Generator ()
 fromCall callee arguments =
   case callee of
+    AST.Var (AST.Ident "min") ->
+      case arguments of
+        [a, b] -> do
+          fromExpr a
+          fromExpr b
+          append
+            [ L0 (I.Get (-2)),
+              L0 (I.Get (-2)),
+              L0 I.LeS,
+              L0 (I.Jez 2),
+              L0 I.Drop,
+              L0 (I.Jump 1),
+              L0 (I.Set (-1))
+            ]
+        _ ->
+          throwError "invalid arguments"
+    AST.Var (AST.Ident "max") ->
+      case arguments of
+        [a, b] -> do
+          fromExpr a
+          fromExpr b
+          append
+            [ L0 (I.Get (-2)),
+              L0 (I.Get (-2)),
+              L0 I.GeS,
+              L0 (I.Jez 2),
+              L0 I.Drop,
+              L0 (I.Jump 1),
+              L0 (I.Set (-1))
+            ]
+        _ ->
+          throwError "invalid arguments"
     AST.Var (AST.Ident "scan") ->
       case arguments of
         [] ->
