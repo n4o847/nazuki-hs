@@ -89,6 +89,15 @@ operatorTable =
     [ InfixL (AST.BinOp AST.Add <$ symbol "+"),
       InfixL (AST.BinOp AST.Sub <$ symbol "-")
     ],
+    [ InfixL (AST.BinOp AST.Shl <$ symbol "<<"),
+      InfixL (AST.BinOp AST.Shr <$ symbol ">>")
+    ],
+    [ InfixL (AST.BinOp AST.BitAnd <$ symbol "&")
+    ],
+    [ InfixL (AST.BinOp AST.BitAnd <$ symbol "^")
+    ],
+    [ InfixL (AST.BinOp AST.BitAnd <$ symbol "|")
+    ],
     [ InfixN (AST.BinOp AST.Le <$ symbol "<="),
       InfixN (AST.BinOp AST.Lt <$ symbol "<"),
       InfixN (AST.BinOp AST.Ge <$ symbol ">="),

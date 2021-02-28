@@ -107,6 +107,11 @@ fromBinOp op left right = do
   fromExpr left
   fromExpr right
   case op of
+    AST.Shl -> push (L0 I.Shl)
+    AST.Shr -> push (L0 I.ShrS)
+    AST.BitAnd -> push (L0 I.And)
+    AST.BitOr -> push (L0 I.Or)
+    AST.BitXor -> push (L0 I.Xor)
     AST.Add -> push (L0 I.Add)
     AST.Sub -> push (L0 I.Sub)
     AST.Mul -> push (L0 I.Mul)

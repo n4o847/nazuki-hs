@@ -34,7 +34,12 @@ newtype Ident
   deriving (Eq, Ord, Show)
 
 data BinOp
-  = Add
+  = Shl
+  | Shr
+  | BitAnd
+  | BitOr
+  | BitXor
+  | Add
   | Sub
   | Mul
   | Lt
