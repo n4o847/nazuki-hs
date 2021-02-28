@@ -59,8 +59,9 @@ fromProgram (AST.Program statements) =
 
 fromStmt :: AST.Stmt -> Generator ()
 fromStmt = \case
-  AST.Expr expr ->
+  AST.Expr expr -> do
     fromExpr expr
+    push (L0 I.Drop)
   AST.Assign ident expr ->
     fromAssign ident expr
   AST.If a b c ->
