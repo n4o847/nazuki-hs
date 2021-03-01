@@ -198,6 +198,13 @@ fromCall callee arguments =
         expr -> do
           fromExpr expr
           push (L0 I.Print)
+    AST.Var (AST.Ident "putc") ->
+      case arguments of
+        [a] -> do
+          fromExpr a
+          push (L0 I.Putc)
+        _ ->
+          throwError "invalid arguments"
     AST.Var (AST.Ident "discard") ->
       case arguments of
         [a] -> do
