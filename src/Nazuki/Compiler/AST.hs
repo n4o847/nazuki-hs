@@ -16,6 +16,7 @@ newtype Program
 data Stmt
   = Expr Expr
   | Assign Ident Expr
+  | AugAssign Ident BinOp Expr
   | If (Expr, [Stmt]) [(Expr, [Stmt])] (Maybe [Stmt])
   | While Expr [Stmt]
   deriving (Eq, Show)

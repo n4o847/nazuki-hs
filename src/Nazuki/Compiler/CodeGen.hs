@@ -63,6 +63,8 @@ fromStmt = \case
     fromExpr expr
   AST.Assign ident expr ->
     fromAssign ident expr
+  AST.AugAssign ident op expr ->
+    fromAugAssign ident op expr
   AST.If a b c ->
     fromIf a b c
   AST.While cond body ->
@@ -225,6 +227,10 @@ fromAssign ident expr = do
     Nothing -> do
       let index = Map.size env
       modify' \s -> s {environment = Map.insert ident index env}
+
+fromAugAssign :: AST.Ident -> AST.BinOp -> AST.Expr -> Generator ()
+fromAugAssign ident op expr = do
+  fromAssign ident (AST.BinOp op (AST.Var ident) expr)
 
 fromIf :: (AST.Expr, [AST.Stmt]) -> [(AST.Expr, [AST.Stmt])] -> Maybe [AST.Stmt] -> Generator ()
 fromIf a b c = do

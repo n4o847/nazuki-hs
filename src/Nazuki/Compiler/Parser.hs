@@ -117,6 +117,21 @@ pAssign :: Parser AST.Stmt
 pAssign =
   AST.Assign <$> pIdent <* symbol "=" <*> pExpr
 
+pAugAssign :: Parser AST.Stmt
+pAugAssign =
+  AST.AugAssign <$> pIdent
+    <*> choice
+      [ AST.Mul <$ symbol "*=",
+        AST.Add <$ symbol "+=",
+        AST.Sub <$ symbol "-=",
+        AST.Shl <$ symbol "<<=",
+        AST.Shr <$ symbol ">>=",
+        AST.BitAnd <$ symbol "&=",
+        AST.BitXor <$ symbol "^=",
+        AST.BitOr <$ symbol "|="
+      ]
+    <*> pExpr
+
 pIf :: Parser (AST.Expr, [AST.Stmt])
 pIf =
   L.indentBlock scn do
@@ -154,6 +169,7 @@ pStmt =
     [ AST.If <$> pIf <*> many pElif <*> optional pElse,
       pWhile,
       try pAssign <* scn,
+      try pAugAssign <* scn,
       AST.Expr <$> pExpr <* scn
     ]
     <?> "statement"
