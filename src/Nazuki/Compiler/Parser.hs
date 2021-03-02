@@ -140,20 +140,27 @@ pIf =
     symbol ":"
     return (L.IndentSome Nothing (return . (cond,)) pStmt)
 
-pElif :: Parser (AST.Expr, [AST.Stmt])
-pElif =
+pElif :: Pos -> Parser (AST.Expr, [AST.Stmt])
+pElif pos = do
   L.indentBlock scn do
+    L.indentGuard scn EQ pos
     pKeyword "elif"
     cond <- pExpr
     symbol ":"
     return (L.IndentSome Nothing (return . (cond,)) pStmt)
 
-pElse :: Parser [AST.Stmt]
-pElse =
+pElse :: Pos -> Parser [AST.Stmt]
+pElse pos = do
   L.indentBlock scn do
+    L.indentGuard scn EQ pos
     pKeyword "else"
     symbol ":"
     return (L.IndentSome Nothing return pStmt)
+
+pIfElifElse :: Parser AST.Stmt
+pIfElifElse = do
+  pos <- L.indentLevel
+  AST.If <$> pIf <*> many (pElif pos) <*> optional (pElse pos)
 
 pWhile :: Parser AST.Stmt
 pWhile =
@@ -166,17 +173,17 @@ pWhile =
 pStmt :: Parser AST.Stmt
 pStmt =
   choice
-    [ AST.If <$> pIf <*> many pElif <*> optional pElse,
+    [ pIfElifElse,
       pWhile,
-      try pAssign <* scn,
-      try pAugAssign <* scn,
-      AST.Expr <$> pExpr <* scn
+      try pAssign,
+      try pAugAssign,
+      AST.Expr <$> pExpr
     ]
     <?> "statement"
 
 pProgram :: Parser AST.Program
 pProgram =
-  AST.Program <$> many (L.nonIndented scn pStmt)
+  AST.Program <$> many (L.nonIndented scn pStmt <* scn)
     <?> "program"
 
 parse :: Text -> Either Text AST.Program
