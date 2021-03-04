@@ -12,6 +12,10 @@ export async function loadNazuki(): Promise<Nazuki> {
   const module = await WebAssembly.compile(bytes);
   Object.assign(req, { module });
   return {
+    async compile(source: string) {
+      const instance = await rts.newAsteriusInstance(req);
+      return instance.exports.compile(source);
+    },
     async assemble(source: string) {
       const instance = await rts.newAsteriusInstance(req);
       return instance.exports.assemble(source);
