@@ -6,22 +6,33 @@ import Col from 'react-bootstrap/Col';
 import Alert from 'react-bootstrap/Alert';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
+import ToggleButton from 'react-bootstrap/ToggleButton';
 import { Nazuki } from '../pkg/types';
 
-const defaultSource = `
+const defaultScriptSource = `\
+a = scan()
+b = scan()
+print(a + b)
+`;
+
+const defaultAssemblySource = `\
 scan
 scan
 add
 print
-`.slice(1);
+`;
 
-const defaultInput = `
+const defaultInput = `\
 10 20
-`.slice(1);
+`;
 
 export default function App () {
   const [nazuki, setNazuki] = useState<Nazuki>();
-  const [source, setSource] = useState(defaultSource);
+  const [mode, setMode] = useState<'script' | 'assembly'>('script');
+  const [scriptSource, setScriptSource] = useState(defaultScriptSource);
+  const [assemblySource, setAssemblySource] = useState(defaultAssemblySource);
+  const [compiling, setCompiling] = useState(false);
   const [assembling, setAssembling] = useState(false);
   const [result, setResult] = useState('');
   const [input, setInput] = useState(defaultInput);
@@ -35,17 +46,30 @@ export default function App () {
       const { loadNazuki } = await import('../pkg');
       const nazuki = await loadNazuki();
       setNazuki(nazuki);
-      const result = await nazuki.assemble(source);
+      const result = await nazuki.compile(scriptSource);
       setResult(result);
     })().catch((err) => {
       setAlerts([String(err)]);
     });
   }, []);
 
+  const compile = () => {
+    if (!nazuki) return;
+    setCompiling(true);
+    nazuki.compile(scriptSource).then((result) => {
+      setResult(result);
+      setAlerts([]);
+      setCompiling(false);
+    }).catch((error) => {
+      setAlerts([String(error)]);
+      setCompiling(false);
+    });
+  };
+
   const assemble = () => {
     if (!nazuki) return;
     setAssembling(true);
-    nazuki.assemble(source).then((result) => {
+    nazuki.assemble(assemblySource).then((result) => {
       setResult(result);
       setAlerts([]);
       setAssembling(false);
@@ -89,18 +113,48 @@ export default function App () {
           <Row>
             <Col>
               <Form.Group>
-                <Form.Control
-                  as="textarea"
-                  className="text-monospace"
-                  style={{ wordBreak: 'break-all' }}
-                  rows={10}
-                  spellCheck={false}
-                  value={source}
-                  onChange={(e) => setSource(e.target.value)}
-                />
+                {
+                  mode === 'script' ? (
+                    <Form.Control
+                      as="textarea"
+                      className="text-monospace"
+                      style={{ wordBreak: 'break-all' }}
+                      rows={10}
+                      spellCheck={false}
+                      value={scriptSource}
+                      onChange={(e) => setScriptSource(e.target.value)}
+                    />
+                  ) : (
+                    <Form.Control
+                      as="textarea"
+                      className="text-monospace"
+                      style={{ wordBreak: 'break-all' }}
+                      rows={10}
+                      spellCheck={false}
+                      value={assemblySource}
+                      onChange={(e) => setAssemblySource(e.target.value)}
+                    />
+                  )
+                }
               </Form.Group>
               <Form.Group>
-                <Button variant="primary" onClick={assemble}>{assembling ? 'Assembling...' : 'Assemble'}</Button>
+                <ToggleButtonGroup
+                  type="radio"
+                  name="mode"
+                  className="mr-2"
+                  onChange={(mode) => setMode(mode)}
+                  defaultValue={mode}
+                >
+                  <ToggleButton value="script" variant="secondary">Script</ToggleButton>
+                  <ToggleButton value="assembly" variant="secondary">Assembly</ToggleButton>
+                </ToggleButtonGroup>
+                {
+                  mode === 'script' ? (
+                    <Button variant="primary" onClick={compile}>{compiling ? 'Compiling...' : 'Compile'}</Button>
+                  ) : (
+                    <Button variant="primary" onClick={assemble}>{assembling ? 'Assembling...' : 'Assemble'}</Button>
+                  )
+                }
               </Form.Group>
             </Col>
             <Col>
