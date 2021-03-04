@@ -1,5 +1,6 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TupleSections #-}
 
 module Nazuki.Compiler.Parser
   ( parse,
@@ -69,7 +70,9 @@ pTerm =
   choice
     [ parens pExpr,
       AST.Var <$> pIdent,
-      AST.Int <$> intLiteral
+      AST.Int <$> intLiteral,
+      AST.Char <$> charLiteral,
+      AST.String <$> stringLiteral
     ]
 
 pExpr :: Parser AST.Expr
@@ -79,19 +82,108 @@ pExpr =
 
 operatorTable :: [[Operator Parser AST.Expr]]
 operatorTable =
-  [ [ InfixL (AST.BinOp AST.Add <$ symbol "+"),
+  [ [ somePostfix (flip AST.Call <$> parens (pExpr `sepBy` symbol ","))
+    ],
+    [ InfixL (AST.BinOp AST.Mul <$ symbol "*")
+    ],
+    [ InfixL (AST.BinOp AST.Add <$ symbol "+"),
       InfixL (AST.BinOp AST.Sub <$ symbol "-")
+    ],
+    [ InfixL (AST.BinOp AST.Shl <$ symbol "<<"),
+      InfixL (AST.BinOp AST.Shr <$ symbol ">>")
+    ],
+    [ InfixL (AST.BinOp AST.BitAnd <$ symbol "&")
+    ],
+    [ InfixL (AST.BinOp AST.BitXor <$ symbol "^")
+    ],
+    [ InfixL (AST.BinOp AST.BitOr <$ symbol "|")
+    ],
+    [ InfixN (AST.BinOp AST.Le <$ symbol "<="),
+      InfixN (AST.BinOp AST.Lt <$ symbol "<"),
+      InfixN (AST.BinOp AST.Ge <$ symbol ">="),
+      InfixN (AST.BinOp AST.Gt <$ symbol ">"),
+      InfixN (AST.BinOp AST.Eq <$ symbol "=="),
+      InfixN (AST.BinOp AST.Ne <$ symbol "!=")
+    ],
+    [ InfixL (AST.BinOp AST.And <$ pKeyword "and")
+    ],
+    [ InfixL (AST.BinOp AST.Or <$ pKeyword "or")
     ]
   ]
+  where
+    somePostfix op = Postfix $ foldr1 (flip (.)) <$> some op
+
+pAssign :: Parser AST.Stmt
+pAssign =
+  AST.Assign <$> pIdent <* symbol "=" <*> pExpr
+
+pAugAssign :: Parser AST.Stmt
+pAugAssign =
+  AST.AugAssign <$> pIdent
+    <*> choice
+      [ AST.Mul <$ symbol "*=",
+        AST.Add <$ symbol "+=",
+        AST.Sub <$ symbol "-=",
+        AST.Shl <$ symbol "<<=",
+        AST.Shr <$ symbol ">>=",
+        AST.BitAnd <$ symbol "&=",
+        AST.BitXor <$ symbol "^=",
+        AST.BitOr <$ symbol "|="
+      ]
+    <*> pExpr
+
+pIf :: Parser (AST.Expr, [AST.Stmt])
+pIf =
+  L.indentBlock scn do
+    pKeyword "if"
+    cond <- pExpr
+    symbol ":"
+    return (L.IndentSome Nothing (return . (cond,)) pStmt)
+
+pElif :: Pos -> Parser (AST.Expr, [AST.Stmt])
+pElif pos = do
+  L.indentBlock scn do
+    L.indentGuard scn EQ pos
+    pKeyword "elif"
+    cond <- pExpr
+    symbol ":"
+    return (L.IndentSome Nothing (return . (cond,)) pStmt)
+
+pElse :: Pos -> Parser [AST.Stmt]
+pElse pos = do
+  L.indentBlock scn do
+    L.indentGuard scn EQ pos
+    pKeyword "else"
+    symbol ":"
+    return (L.IndentSome Nothing return pStmt)
+
+pIfElifElse :: Parser AST.Stmt
+pIfElifElse = do
+  pos <- L.indentLevel
+  AST.If <$> pIf <*> many (pElif pos) <*> optional (pElse pos)
+
+pWhile :: Parser AST.Stmt
+pWhile =
+  L.indentBlock scn do
+    pKeyword "while"
+    cond <- pExpr
+    symbol ":"
+    return (L.IndentSome Nothing (return . AST.While cond) pStmt)
 
 pStmt :: Parser AST.Stmt
 pStmt =
-  AST.Expr <$> pExpr <* scn
+  choice
+    [ pIfElifElse,
+      pWhile,
+      try pAssign,
+      try pAugAssign,
+      AST.Expr <$> pExpr
+    ]
     <?> "statement"
 
 pProgram :: Parser AST.Program
 pProgram =
-  AST.Program <$> many pStmt
+  AST.Program <$> many (L.nonIndented scn pStmt <* scn)
     <?> "program"
 
 parse :: Text -> Either Text AST.Program
