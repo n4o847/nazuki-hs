@@ -18,9 +18,14 @@ import qualified Nazuki.Assembler.Instruction as I
 import Nazuki.Assembler.Label (Labeled (..))
 import qualified Nazuki.Compiler.AST as AST
 
+data Type
+  = TyUnit
+  | TyInt
+  deriving (Eq)
+
 data GeneratorState = GeneratorState
   { instructions :: [Labeled Instruction],
-    environment :: Map AST.Ident Int,
+    environment :: Map AST.Ident (Type, Int),
     nextLabel :: Int
   }
 
@@ -59,8 +64,11 @@ fromProgram (AST.Program statements) =
 
 fromStmt :: AST.Stmt -> Generator ()
 fromStmt = \case
-  AST.Expr expr ->
-    fromExpr expr
+  AST.Expr expr -> do
+    t0 <- fromExpr expr
+    case t0 of
+      TyUnit -> return ()
+      TyInt -> push (L0 I.Drop)
   AST.Assign ident expr ->
     fromAssign ident expr
   AST.AugAssign ident op expr ->
@@ -70,7 +78,7 @@ fromStmt = \case
   AST.While cond body ->
     fromWhile cond body
 
-fromExpr :: AST.Expr -> Generator ()
+fromExpr :: AST.Expr -> Generator Type
 fromExpr = \case
   AST.Var ident ->
     fromVar ident
@@ -85,29 +93,34 @@ fromExpr = \case
   AST.Call callee arguments ->
     fromCall callee arguments
 
-fromVar :: AST.Ident -> Generator ()
+fromVar :: AST.Ident -> Generator Type
 fromVar ident = do
   env <- gets environment
-  index <- case Map.lookup ident env of
-    Just index -> do
-      return index
+  (t0, index) <- case Map.lookup ident env of
+    Just item -> do
+      return item
     Nothing -> do
       let AST.Ident name = ident
       throwError ("\"" <> name <> "\" is not defined")
   push (L0 (I.Get index))
+  return t0
 
-fromInt :: Int -> Generator ()
-fromInt int =
+fromInt :: Int -> Generator Type
+fromInt int = do
   push (L0 (I.Const (fromIntegral int)))
+  return TyInt
 
-fromChar :: Char -> Generator ()
-fromChar char =
+fromChar :: Char -> Generator Type
+fromChar char = do
   push (L0 (I.Const (fromIntegral (fromEnum char))))
+  return TyInt
 
-fromBinOp :: AST.BinOp -> AST.Expr -> AST.Expr -> Generator ()
+fromBinOp :: AST.BinOp -> AST.Expr -> AST.Expr -> Generator Type
 fromBinOp op left right = do
-  fromExpr left
-  fromExpr right
+  t0 <- fromExpr left
+  t1 <- fromExpr right
+  when ((t0, t1) /= (TyInt, TyInt)) do
+    throwError "invalid types"
   case op of
     AST.Shl -> push (L0 I.Shl)
     AST.Shr -> push (L0 I.ShrS)
@@ -125,15 +138,18 @@ fromBinOp op left right = do
     AST.Ne -> append [L0 I.Eq, L0 (I.Const 1), L0 I.Xor]
     AST.And -> push (L0 I.And)
     AST.Or -> push (L0 I.Or)
+  return TyInt
 
-fromCall :: AST.Expr -> [AST.Expr] -> Generator ()
+fromCall :: AST.Expr -> [AST.Expr] -> Generator Type
 fromCall callee arguments =
   case callee of
     AST.Var (AST.Ident "min") ->
       case arguments of
         [a, b] -> do
-          fromExpr a
-          fromExpr b
+          t0 <- fromExpr a
+          t1 <- fromExpr b
+          when ((t0, t1) /= (TyInt, TyInt)) do
+            throwError "invalid types"
           append
             [ L0 (I.Get (-2)),
               L0 (I.Get (-2)),
@@ -143,13 +159,16 @@ fromCall callee arguments =
               L0 (I.Jump 1),
               L0 (I.Set (-1))
             ]
+          return TyInt
         _ ->
           throwError "invalid arguments"
     AST.Var (AST.Ident "max") ->
       case arguments of
         [a, b] -> do
-          fromExpr a
-          fromExpr b
+          t0 <- fromExpr a
+          t1 <- fromExpr b
+          when ((t0, t1) /= (TyInt, TyInt)) do
+            throwError "invalid types"
           append
             [ L0 (I.Get (-2)),
               L0 (I.Get (-2)),
@@ -159,12 +178,15 @@ fromCall callee arguments =
               L0 (I.Jump 1),
               L0 (I.Set (-1))
             ]
+          return TyInt
         _ ->
           throwError "invalid arguments"
     AST.Var (AST.Ident "abs") ->
       case arguments of
         [a] -> do
-          fromExpr a
+          t0 <- fromExpr a
+          when (t0 /= TyInt) do
+            throwError "invalid types"
           append
             [ L0 (I.Get (-1)),
               L0 (I.Const 0),
@@ -173,45 +195,47 @@ fromCall callee arguments =
               L0 I.Not,
               L0 I.Inc
             ]
+          return TyInt
         _ ->
           throwError "invalid arguments"
     AST.Var (AST.Ident "scan") ->
       case arguments of
-        [] ->
+        [] -> do
           push (L0 I.Scan)
+          return TyInt
         _ ->
           throwError "invalid arguments"
     AST.Var (AST.Ident "getc") ->
       case arguments of
-        [] ->
+        [] -> do
           push (L0 I.Getc)
+          return TyInt
         _ ->
           throwError "invalid arguments"
-    AST.Var (AST.Ident "print") ->
+    AST.Var (AST.Ident "print") -> do
       forM_ arguments \case
         AST.Int int -> do
-          fromInt int
+          _ <- fromInt int
           push (L0 I.Print)
         AST.Char char -> do
-          fromChar char
+          _ <- fromChar char
           push (L0 I.Putc)
         AST.String string -> do
           push (L0 (I.Write string))
         expr -> do
-          fromExpr expr
+          t0 <- fromExpr expr
+          when (t0 /= TyInt) do
+            throwError "invalid types"
           push (L0 I.Print)
+      return TyUnit
     AST.Var (AST.Ident "putc") ->
       case arguments of
         [a] -> do
-          fromExpr a
+          t0 <- fromExpr a
+          when (t0 /= TyInt) do
+            throwError "invalid types"
           push (L0 I.Putc)
-        _ ->
-          throwError "invalid arguments"
-    AST.Var (AST.Ident "discard") ->
-      case arguments of
-        [a] -> do
-          fromExpr a
-          push (L0 I.Drop)
+          return TyUnit
         _ ->
           throwError "invalid arguments"
     _ ->
@@ -219,14 +243,16 @@ fromCall callee arguments =
 
 fromAssign :: AST.Ident -> AST.Expr -> Generator ()
 fromAssign ident expr = do
-  fromExpr expr
+  t0 <- fromExpr expr
   env <- gets environment
   case Map.lookup ident env of
-    Just index -> do
+    Just (t1, index) -> do
+      when (t0 /= t1) do
+        throwError "mismatched types"
       push (L0 (I.Set index))
     Nothing -> do
       let index = Map.size env
-      modify' \s -> s {environment = Map.insert ident index env}
+      modify' \s -> s {environment = Map.insert ident (t0, index) env}
 
 fromAugAssign :: AST.Ident -> AST.BinOp -> AST.Expr -> Generator ()
 fromAugAssign ident op expr = do

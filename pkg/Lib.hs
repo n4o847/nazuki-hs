@@ -5,9 +5,16 @@ import Asterius.Types
 import qualified Data.Text as T
 import qualified Nazuki.Main as Nazuki
 
+foreign export javascript compile :: JSString -> JSString
+
 foreign export javascript assemble :: JSString -> JSString
 
 foreign export javascript run :: JSString -> JSString -> JSString
+
+compile :: JSString -> JSString
+compile source =
+  either (error . T.unpack) textToJSString $
+    Nazuki.compile (textFromJSString source)
 
 assemble :: JSString -> JSString
 assemble source =

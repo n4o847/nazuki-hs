@@ -9,5 +9,6 @@ ahc-link \
   --no-main \
   --browser \
   --ghc-option "-isrc" \
+  --export-function=compile \
   --export-function=assemble \
   --export-function=run
