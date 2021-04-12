@@ -115,7 +115,7 @@ operatorTable =
 
 pAssign :: Parser AST.Stmt
 pAssign =
-  AST.Assign <$> pIdent <* symbol "=" <*> pExpr
+  AST.Assign <$> (pIdent `sepBy1` symbol ",") <* symbol "=" <*> pExpr
 
 pAugAssign :: Parser AST.Stmt
 pAugAssign =
