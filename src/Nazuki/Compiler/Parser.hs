@@ -105,9 +105,9 @@ operatorTable =
       InfixN (AST.BinOp AST.Eq <$ symbol "=="),
       InfixN (AST.BinOp AST.Ne <$ symbol "!=")
     ],
-    [ InfixL (AST.BinOp AST.And <$ pKeyword "and")
+    [ InfixL (AST.BoolOp AST.And <$ pKeyword "and")
     ],
-    [ InfixL (AST.BinOp AST.Or <$ pKeyword "or")
+    [ InfixL (AST.BoolOp AST.Or <$ pKeyword "or")
     ]
   ]
   where

@@ -89,6 +89,8 @@ fromExpr = \case
     fromChar char
   AST.String string ->
     throwError "cannot use a string as a value"
+  AST.BoolOp op left right ->
+    fromBoolOp op left right
   AST.BinOp op left right ->
     fromBinOp op left right
   AST.Call callee arguments ->
@@ -116,6 +118,32 @@ fromChar char = do
   push (L0 (I.Const (fromIntegral (fromEnum char))))
   return TyInt
 
+fromBoolOp :: AST.BoolOp -> AST.Expr -> AST.Expr -> Generator Type
+fromBoolOp op left right = do
+  t0 <- fromExpr left
+  when (t0 /= TyInt) do
+    throwError "invalid types"
+  case op of
+    AST.And -> do
+      l0 <- createLabel "L"
+      push (L0 (I.Get (-1)))
+      push (L1 I.Jez l0)
+      push (L0 I.Drop)
+      t1 <- fromExpr right
+      when (t1 /= TyInt) do
+        throwError "invalid types"
+      push (Label l0)
+    AST.Or -> do
+      l0 <- createLabel "L"
+      push (L0 (I.Get (-1)))
+      push (L1 I.Jnz l0)
+      push (L0 I.Drop)
+      t1 <- fromExpr right
+      when (t1 /= TyInt) do
+        throwError "invalid types"
+      push (Label l0)
+  return TyInt
+
 fromBinOp :: AST.BinOp -> AST.Expr -> AST.Expr -> Generator Type
 fromBinOp op left right = do
   t0 <- fromExpr left
@@ -137,8 +165,6 @@ fromBinOp op left right = do
     AST.Ge -> push (L0 I.GeS)
     AST.Eq -> push (L0 I.Eq)
     AST.Ne -> append [L0 I.Eq, L0 (I.Const 1), L0 I.Xor]
-    AST.And -> push (L0 I.And)
-    AST.Or -> push (L0 I.Or)
   return TyInt
 
 fromCall :: AST.Expr -> [AST.Expr] -> Generator Type
