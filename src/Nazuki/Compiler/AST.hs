@@ -3,6 +3,7 @@ module Nazuki.Compiler.AST
     Stmt (..),
     Expr (..),
     Ident (..),
+    BoolOp (..),
     BinOp (..),
   )
 where
@@ -15,7 +16,7 @@ newtype Program
 
 data Stmt
   = Expr Expr
-  | Assign Ident Expr
+  | Assign [Ident] Expr
   | AugAssign Ident BinOp Expr
   | If (Expr, [Stmt]) [(Expr, [Stmt])] (Maybe [Stmt])
   | While Expr [Stmt]
@@ -26,13 +27,20 @@ data Expr
   | Int Int
   | Char Char
   | String Text
+  | BoolOp BoolOp Expr Expr
   | BinOp BinOp Expr Expr
   | Call Expr [Expr]
+  | Tuple [Expr]
   deriving (Eq, Show)
 
 newtype Ident
   = Ident Text
   deriving (Eq, Ord, Show)
+
+data BoolOp
+  = And
+  | Or
+  deriving (Eq, Show)
 
 data BinOp
   = Shl
@@ -49,6 +57,4 @@ data BinOp
   | Ge
   | Eq
   | Ne
-  | And
-  | Or
   deriving (Eq, Show)
