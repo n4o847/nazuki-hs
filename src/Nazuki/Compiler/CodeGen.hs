@@ -161,6 +161,24 @@ fromCall callee arguments =
               L0 (I.Set (-1))
             ]
           return TyInt
+        a : b : xs -> do
+          t0 <- fromExpr a
+          when (t0 /= TyInt) do
+            throwError "invalid types"
+          forM_ (b : xs) \b -> do
+            t1 <- fromExpr b
+            when (t1 /= TyInt) do
+              throwError "invalid types"
+            append
+              [ L0 (I.Get (-2)),
+                L0 (I.Get (-2)),
+                L0 I.LeS,
+                L0 (I.Jez 2),
+                L0 I.Drop,
+                L0 (I.Jump 1),
+                L0 (I.Set (-1))
+              ]
+          return TyInt
         _ ->
           throwError "invalid arguments"
     AST.Var (AST.Ident "max") ->
@@ -179,6 +197,24 @@ fromCall callee arguments =
               L0 (I.Jump 1),
               L0 (I.Set (-1))
             ]
+          return TyInt
+        a : b : xs -> do
+          t0 <- fromExpr a
+          when (t0 /= TyInt) do
+            throwError "invalid types"
+          forM_ (b : xs) \b -> do
+            t1 <- fromExpr b
+            when (t1 /= TyInt) do
+              throwError "invalid types"
+            append
+              [ L0 (I.Get (-2)),
+                L0 (I.Get (-2)),
+                L0 I.GeS,
+                L0 (I.Jez 2),
+                L0 I.Drop,
+                L0 (I.Jump 1),
+                L0 (I.Set (-1))
+              ]
           return TyInt
         _ ->
           throwError "invalid arguments"
