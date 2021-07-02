@@ -49,7 +49,7 @@ data Instruction
   | Putc
   | Write Text
   | Jump Int
-  | Jez Int
+  | Jz Int
   | Jnz Int
   | Jeq Int
   deriving (Eq, Ord, Show)
@@ -107,6 +107,6 @@ insToOper = \case
   Putc -> IO.doPutc
   Write s -> G.puts (G.mem 0) s
   Jump r -> I32.doJump r
-  Jez r -> I32.doJez r
+  Jz r -> I32.doJz r
   Jnz r -> I32.doJnz r
   Jeq r -> I32.doJeq r

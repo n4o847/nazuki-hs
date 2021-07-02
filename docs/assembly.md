@@ -55,3 +55,8 @@
 - `print`
 
 #### Control Instructions
+
+- `jump [l:label]`: jump to `l`
+- `jz [l:label]`: jump if zero
+- `jnz [l:label]`: jump if not zero
+- `jeq [l:label]`: jump if equal

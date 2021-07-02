@@ -33,7 +33,7 @@ module Nazuki.CodeGen.Arch232.Int32
     doScan,
     doPrint,
     doJump,
-    doJez,
+    doJz,
     doJnz,
     doJeq,
   )
@@ -734,8 +734,8 @@ _doJumpOnLsb rel = do
     doJump rel
   produce 0
 
-doJez :: Int -> Oper
-doJez rel = do
+doJz :: Int -> Oper
+doJz rel = do
   doEqz
   _doJumpOnLsb rel
 
