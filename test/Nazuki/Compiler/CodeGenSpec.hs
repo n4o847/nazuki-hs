@@ -30,7 +30,7 @@ spec = do
           \",
           Right
             [ I.Const 1,
-              I.Jez 3,
+              I.Jz 3,
               I.Const 1,
               I.Drop,
               I.Jump (-5)
@@ -42,7 +42,7 @@ spec = do
           \",
           Right
             [ I.Const 1,
-              I.Jez 2,
+              I.Jz 2,
               I.Const 1,
               I.Drop
             ]
@@ -55,7 +55,7 @@ spec = do
           \",
           Right
             [ I.Const 1,
-              I.Jez 3,
+              I.Jz 3,
               I.Const 1,
               I.Drop,
               I.Jump 2,
@@ -73,17 +73,17 @@ spec = do
           \",
           Right
             [ I.Const 1,
-              I.Jez 3,
+              I.Jz 3,
               I.Const 1,
               I.Drop,
               I.Jump 9,
               I.Const 2,
-              I.Jez 3,
+              I.Jz 3,
               I.Const 2,
               I.Drop,
               I.Jump 4,
               I.Const 3,
-              I.Jez 2,
+              I.Jz 2,
               I.Const 3,
               I.Drop
             ]
@@ -100,17 +100,17 @@ spec = do
           \",
           Right
             [ I.Const 1,
-              I.Jez 3,
+              I.Jz 3,
               I.Const 1,
               I.Drop,
               I.Jump 12,
               I.Const 2,
-              I.Jez 3,
+              I.Jz 3,
               I.Const 2,
               I.Drop,
               I.Jump 7,
               I.Const 3,
-              I.Jez 3,
+              I.Jz 3,
               I.Const 3,
               I.Drop,
               I.Jump 2,

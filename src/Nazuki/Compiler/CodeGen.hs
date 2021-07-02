@@ -127,7 +127,7 @@ fromBoolOp op left right = do
     AST.And -> do
       l0 <- createLabel "L"
       push (L0 (I.Get (-1)))
-      push (L1 I.Jez l0)
+      push (L1 I.Jz l0)
       push (L0 I.Drop)
       t1 <- fromExpr right
       when (t1 /= TyInt) do
@@ -181,7 +181,7 @@ fromCall callee arguments =
             [ L0 (I.Get (-2)),
               L0 (I.Get (-2)),
               L0 I.LeS,
-              L0 (I.Jez 2),
+              L0 (I.Jz 2),
               L0 I.Drop,
               L0 (I.Jump 1),
               L0 (I.Set (-1))
@@ -199,7 +199,7 @@ fromCall callee arguments =
               [ L0 (I.Get (-2)),
                 L0 (I.Get (-2)),
                 L0 I.LeS,
-                L0 (I.Jez 2),
+                L0 (I.Jz 2),
                 L0 I.Drop,
                 L0 (I.Jump 1),
                 L0 (I.Set (-1))
@@ -218,7 +218,7 @@ fromCall callee arguments =
             [ L0 (I.Get (-2)),
               L0 (I.Get (-2)),
               L0 I.GeS,
-              L0 (I.Jez 2),
+              L0 (I.Jz 2),
               L0 I.Drop,
               L0 (I.Jump 1),
               L0 (I.Set (-1))
@@ -236,7 +236,7 @@ fromCall callee arguments =
               [ L0 (I.Get (-2)),
                 L0 (I.Get (-2)),
                 L0 I.GeS,
-                L0 (I.Jez 2),
+                L0 (I.Jz 2),
                 L0 I.Drop,
                 L0 (I.Jump 1),
                 L0 (I.Set (-1))
@@ -254,7 +254,7 @@ fromCall callee arguments =
             [ L0 (I.Get (-1)),
               L0 (I.Const 0),
               L0 I.LtS,
-              L0 (I.Jez 2),
+              L0 (I.Jz 2),
               L0 I.Not,
               L0 I.Inc
             ]
@@ -278,7 +278,7 @@ fromCall callee arguments =
               L0 (I.Get (-4)),
               L0 (I.Get (-4)),
               L0 I.GeU,
-              L1 I.Jez l1,
+              L1 I.Jz l1,
               L0 (I.Get (-3)),
               L0 (I.Const 1),
               L0 I.Shl,
@@ -292,7 +292,7 @@ fromCall callee arguments =
               L0 (I.Get (-2)),
               L0 (I.Const 1),
               L0 I.GtU,
-              L1 I.Jez l2,
+              L1 I.Jz l2,
               L0 (I.Get (-3)),
               L0 (I.Const 1),
               L0 I.ShrU,
@@ -304,7 +304,7 @@ fromCall callee arguments =
               L0 (I.Get (-4)),
               L0 (I.Get (-4)),
               L0 I.GeU,
-              L1 I.Jez l1,
+              L1 I.Jz l1,
               L0 (I.Get (-4)),
               L0 (I.Get (-4)),
               L0 I.Sub,
@@ -408,7 +408,7 @@ fromIf a b c = do
   forM_ (init (a : b)) \(cond, body) -> do
     lNext <- createLabel "L"
     fromExpr cond
-    push (L1 I.Jez lNext)
+    push (L1 I.Jz lNext)
     mapM_ fromStmt body
     push (L1 I.Jump lEnd)
     push (Label lNext)
@@ -417,7 +417,7 @@ fromIf a b c = do
     Just d -> do
       lNext <- createLabel "L"
       fromExpr cond
-      push (L1 I.Jez lNext)
+      push (L1 I.Jz lNext)
       mapM_ fromStmt body
       push (L1 I.Jump lEnd)
       push (Label lNext)
@@ -425,7 +425,7 @@ fromIf a b c = do
       push (Label lEnd)
     Nothing -> do
       fromExpr cond
-      push (L1 I.Jez lEnd)
+      push (L1 I.Jz lEnd)
       mapM_ fromStmt body
       push (Label lEnd)
 
@@ -435,7 +435,7 @@ fromWhile cond body = do
   lEnd <- createLabel "L"
   push (Label lStart)
   fromExpr cond
-  push (L1 I.Jez lEnd)
+  push (L1 I.Jz lEnd)
   mapM_ fromStmt body
   push (L1 I.Jump lStart)
   push (Label lEnd)
