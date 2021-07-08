@@ -59,18 +59,19 @@ immediate op = do
 assemble :: Int -> State Asm () -> Oper
 assemble ssize asmState = do
   let Asm isa opcodes = execState asmState empty
-  let isize = logBase2 (Map.size isa - 1) + 2
-  putIsize isize
+  let csize = logBase2 (Map.size isa - 1) + 2
+  putCodeEntrySize csize
+  putStackEntrySize ssize
   let tmp = mem 0
   let cmd = mems [1 ..]
   bfDec
-  forward isize
+  forward csize
   forM_ opcodes \bits -> do
-    forM_ [0 .. isize - 2] \i -> do
+    forM_ [0 .. csize - 2] \i -> do
       when (Bits.testBit bits i) do
         add (cmd i) 1
-    forward isize
-  backward isize
+    forward csize
+  backward csize
   bfInc
   while tmp do
     sub tmp 1
@@ -86,49 +87,52 @@ assemble ssize asmState = do
                 )
             else do
               forM_ (Map.lookup bits isa) \op -> do
-                ipToSp ssize
+                codeToStack
                 op
-                spToIp ssize
-    seeBit (isize - 2) 0
+                stackToCode
+    seeBit (csize - 2) 0
     add tmp 1
-    backward isize
+    backward csize
     add tmp 1
 
-spToIp :: Int -> Oper
-spToIp ssize = do
-  isize <- getIsize
+stackToCode :: Oper
+stackToCode = do
+  csize <- getCodeEntrySize
+  ssize <- getStackEntrySize
   backward ssize
   bfOpn
   backward ssize
   bfCls
-  backward isize
+  backward csize
   bfOpn
-  backward isize
+  backward csize
   bfCls
 
-ipToSp :: Int -> Oper
-ipToSp ssize = do
-  isize <- getIsize
-  forward isize
+codeToStack :: Oper
+codeToStack = do
+  csize <- getCodeEntrySize
+  ssize <- getStackEntrySize
+  forward csize
   bfOpn
-  forward isize
+  forward csize
   bfCls
   forward ssize
   bfOpn
   forward ssize
   bfCls
 
-jump :: Int -> Int -> Oper
-jump ssize rel = do
-  isize <- getIsize
-  spToIp ssize
+jump :: Int -> Oper
+jump rel = do
+  csize <- getCodeEntrySize
+  ssize <- getStackEntrySize
+  stackToCode
   if rel >= 0
     then do
       replicateM_ rel do
         bfInc
-        backward isize
+        backward csize
     else do
       replicateM_ (negate rel) do
-        forward isize
+        forward csize
         bfDec
-  ipToSp ssize
+  codeToStack

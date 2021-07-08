@@ -4,8 +4,10 @@
 
 module Nazuki.CodeGen.Core
   ( Oper,
-    getIsize,
-    putIsize,
+    getCodeEntrySize,
+    putCodeEntrySize,
+    getStackEntrySize,
+    putStackEntrySize,
     bfNop,
     bfInc,
     bfDec,
@@ -36,7 +38,12 @@ data BfCmd
 
 data Gen = Gen
   { cmds :: [BfCmd],
-    isize :: Int
+    options :: GenOptions
+  }
+
+data GenOptions = GenOptions
+  { codeEntrySize :: Int,
+    stackEntrySize :: Int
   }
 
 type Oper = State Gen ()
@@ -44,17 +51,27 @@ type Oper = State Gen ()
 modifyCmds :: ([BfCmd] -> [BfCmd]) -> State Gen ()
 modifyCmds f = modify' \gen -> gen {cmds = f $ cmds gen}
 
-getIsize :: State Gen Int
-getIsize = gets isize
+getCodeEntrySize :: State Gen Int
+getCodeEntrySize = gets (codeEntrySize . options)
 
-putIsize :: Int -> State Gen ()
-putIsize isize = modify' \gen -> gen {isize = isize}
+putCodeEntrySize :: Int -> State Gen ()
+putCodeEntrySize codeEntrySize = modify' \gen -> gen {options = (options gen) {codeEntrySize = codeEntrySize}}
+
+getStackEntrySize :: State Gen Int
+getStackEntrySize = gets (stackEntrySize . options)
+
+putStackEntrySize :: Int -> State Gen ()
+putStackEntrySize stackEntrySize = modify' \gen -> gen {options = (options gen) {stackEntrySize = stackEntrySize}}
 
 empty :: Gen
 empty =
   Gen
     { cmds = [],
-      isize = 1
+      options =
+        GenOptions
+          { codeEntrySize = 1,
+            stackEntrySize = 1
+          }
     }
 
 bfNop :: Oper

@@ -721,7 +721,7 @@ doPrint = do
 
 doJump :: Int -> Oper
 doJump rel = do
-  jump 33 rel
+  jump rel
 
 _doJumpOnLsb :: Int -> Oper
 _doJumpOnLsb rel = do
