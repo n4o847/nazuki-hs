@@ -17,11 +17,7 @@ import qualified Data.Text as Text
 import Data.Word (Word8)
 
 data Cmd
-  = Inc
-  | Dec
-  | Fwd
-  | Bwd
-  | Plus Word8
+  = Plus Word8
   | Step Int
   | Get
   | Put
