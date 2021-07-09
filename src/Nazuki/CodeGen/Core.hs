@@ -1,5 +1,7 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE StrictData #-}
 
 module Nazuki.CodeGen.Core
@@ -13,6 +15,7 @@ module Nazuki.CodeGen.Core
     bfDec,
     bfFwd,
     bfBwd,
+    bfStep,
     bfOpn,
     bfCls,
     bfGet,
@@ -24,12 +27,14 @@ where
 import Control.Monad.State.Strict
 import Data.Text (Text)
 import qualified Data.Text as Text
+import qualified Data.Text.Lazy as Text.Lazy
+import Data.Text.Lazy.Builder (Builder)
+import qualified Data.Text.Lazy.Builder as Text.Lazy.Builder
 
 data BfCmd
   = Inc
   | Dec
-  | Fwd
-  | Bwd
+  | Step Int
   | Opn
   | Cls
   | Get
@@ -92,15 +97,24 @@ bfDec =
 
 bfFwd :: Oper
 bfFwd =
-  modifyCmds \case
-    Bwd : xs -> xs
-    xs -> Fwd : xs
+  bfStep 1
 
 bfBwd :: Oper
 bfBwd =
-  modifyCmds \case
-    Fwd : xs -> xs
-    xs -> Bwd : xs
+  bfStep (-1)
+
+bfStep :: Int -> Oper
+bfStep dx =
+  modifyCmds
+    ( \cmds ->
+        let (x, rest) = case cmds of
+              Step x : rest -> (x, rest)
+              rest -> (0, rest)
+            x' = x + dx
+         in if x' == 0
+              then rest
+              else Step x' : rest
+    )
 
 bfOpn :: Oper
 bfOpn =
@@ -118,17 +132,18 @@ bfPut :: Oper
 bfPut =
   modifyCmds (Put :)
 
-toChar :: BfCmd -> Char
-toChar = \case
-  Inc -> '+'
-  Dec -> '-'
-  Fwd -> '>'
-  Bwd -> '<'
-  Opn -> '['
-  Cls -> ']'
-  Get -> ','
-  Put -> '.'
+toBuilder :: BfCmd -> Builder
+toBuilder = \case
+  Inc -> Text.Lazy.Builder.singleton '+'
+  Dec -> Text.Lazy.Builder.singleton '-'
+  Step x -> Text.Lazy.Builder.fromText (if x >= 0 then Text.replicate x ">" else Text.replicate (negate x) "<")
+  Opn -> Text.Lazy.Builder.singleton '['
+  Cls -> Text.Lazy.Builder.singleton ']'
+  Get -> Text.Lazy.Builder.singleton ','
+  Put -> Text.Lazy.Builder.singleton '.'
 
 generate :: Oper -> Text
 generate oper =
-  Text.pack $ map toChar $ reverse $ cmds $ execState oper empty
+  let Gen {cmds} = execState oper empty
+      builder = foldr (\c b -> b <> toBuilder c) mempty cmds
+   in Text.Lazy.toStrict $ Text.Lazy.Builder.toLazyText builder

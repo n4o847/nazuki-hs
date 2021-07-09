@@ -56,18 +56,16 @@ raw =
   mapM_ fromChar . Text.unpack
 
 forward :: Int -> Oper
-forward a =
-  if a >= 0
-    then replicateM_ a bfFwd
-    else replicateM_ (negate a) bfBwd
+forward =
+  bfStep
 
 enter :: Ptr -> Oper
 enter (Ptr a) =
   forward a
 
 backward :: Int -> Oper
-backward a =
-  forward (negate a)
+backward =
+  bfStep . negate
 
 exit :: Ptr -> Oper
 exit (Ptr a) =
