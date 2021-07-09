@@ -60,8 +60,10 @@ assemble :: Int -> State Asm () -> Oper
 assemble ssize asmState = do
   let Asm isa opcodes = execState asmState empty
   let csize = logBase2 (Map.size isa - 1) + 2
+  let hsize = ssize
   putCodeEntrySize csize
   putStackEntrySize ssize
+  putHeapEntrySize hsize
   let tmp = mem 0
   let cmd = mems [1 ..]
   bfDec
@@ -95,27 +97,65 @@ assemble ssize asmState = do
     backward csize
     add tmp 1
 
+codeToStack :: Oper
+codeToStack = do
+  useHeap <- getUseHeap
+  csize <- getCodeEntrySize
+  ssize <- getStackEntrySize
+  forward csize
+  bfOpn
+  forward csize
+  bfCls
+  when useHeap do putScale 2
+  forward ssize
+  bfOpn
+  forward ssize
+  bfCls
+
 stackToCode :: Oper
 stackToCode = do
+  useHeap <- getUseHeap
   csize <- getCodeEntrySize
   ssize <- getStackEntrySize
   backward ssize
   bfOpn
   backward ssize
   bfCls
+  when useHeap do putScale 1
   backward csize
   bfOpn
   backward csize
   bfCls
 
-codeToStack :: Oper
-codeToStack = do
-  csize <- getCodeEntrySize
+stackToHeap :: Oper
+stackToHeap = do
+  useHeap <- getUseHeap
   ssize <- getStackEntrySize
-  forward csize
+  hsize <- getHeapEntrySize
+  backward ssize
   bfOpn
-  forward csize
+  backward ssize
   bfCls
+  when useHeap do putScale 1
+  bfFwd
+  when useHeap do putScale 2
+  forward hsize
+  bfOpn
+  forward hsize
+  bfCls
+
+heapToStack :: Oper
+heapToStack = do
+  useHeap <- getUseHeap
+  ssize <- getStackEntrySize
+  hsize <- getHeapEntrySize
+  backward hsize
+  bfOpn
+  backward hsize
+  bfCls
+  when useHeap do putScale 1
+  bfBwd
+  when useHeap do putScale 2
   forward ssize
   bfOpn
   forward ssize
