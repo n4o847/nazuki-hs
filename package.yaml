@@ -1,10 +1,10 @@
 name:                nazuki
 version:             0.1.0
 github:              "n4o847/nazuki-hs"
-license:             BSD3
-author:              "Author name here"
-maintainer:          "example@example.com"
-copyright:           "2019 Author name here"
+license:             MIT
+author:              "n4o847"
+maintainer:          "22975590+n4o847@users.noreply.github.com"
+copyright:           "2019 n4o847"
 
 extra-source-files:
 - README.md
