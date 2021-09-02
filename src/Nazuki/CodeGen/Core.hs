@@ -1,16 +1,26 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE StrictData #-}
 
 module Nazuki.CodeGen.Core
   ( Oper,
-    getIsize,
-    putIsize,
+    getUseHeap,
+    putUseHeap,
+    getCodeEntrySize,
+    putCodeEntrySize,
+    getStackEntrySize,
+    putStackEntrySize,
+    getHeapEntrySize,
+    putHeapEntrySize,
+    putScale,
     bfNop,
     bfInc,
     bfDec,
     bfFwd,
     bfBwd,
+    bfStep,
     bfOpn,
     bfCls,
     bfGet,
@@ -22,12 +32,14 @@ where
 import Control.Monad.State.Strict
 import Data.Text (Text)
 import qualified Data.Text as Text
+import qualified Data.Text.Lazy as Text.Lazy
+import Data.Text.Lazy.Builder (Builder)
+import qualified Data.Text.Lazy.Builder as Text.Lazy.Builder
 
 data BfCmd
   = Inc
   | Dec
-  | Fwd
-  | Bwd
+  | Step Int
   | Opn
   | Cls
   | Get
@@ -36,7 +48,15 @@ data BfCmd
 
 data Gen = Gen
   { cmds :: [BfCmd],
-    isize :: Int
+    options :: GenOptions,
+    scale :: Int
+  }
+
+data GenOptions = GenOptions
+  { useHeap :: Bool,
+    codeEntrySize :: Int,
+    stackEntrySize :: Int,
+    heapEntrySize :: Int
   }
 
 type Oper = State Gen ()
@@ -44,17 +64,48 @@ type Oper = State Gen ()
 modifyCmds :: ([BfCmd] -> [BfCmd]) -> State Gen ()
 modifyCmds f = modify' \gen -> gen {cmds = f $ cmds gen}
 
-getIsize :: State Gen Int
-getIsize = gets isize
+getUseHeap :: State Gen Bool
+getUseHeap = gets (useHeap . options)
 
-putIsize :: Int -> State Gen ()
-putIsize isize = modify' \gen -> gen {isize = isize}
+putUseHeap :: Bool -> State Gen ()
+putUseHeap useHeap = modify' \gen -> gen {options = (options gen) {useHeap = useHeap}}
+
+getCodeEntrySize :: State Gen Int
+getCodeEntrySize = gets (codeEntrySize . options)
+
+putCodeEntrySize :: Int -> State Gen ()
+putCodeEntrySize codeEntrySize = modify' \gen -> gen {options = (options gen) {codeEntrySize = codeEntrySize}}
+
+getStackEntrySize :: State Gen Int
+getStackEntrySize = gets (stackEntrySize . options)
+
+putStackEntrySize :: Int -> State Gen ()
+putStackEntrySize stackEntrySize = modify' \gen -> gen {options = (options gen) {stackEntrySize = stackEntrySize}}
+
+getHeapEntrySize :: State Gen Int
+getHeapEntrySize = gets (heapEntrySize . options)
+
+putHeapEntrySize :: Int -> State Gen ()
+putHeapEntrySize heapEntrySize = modify' \gen -> gen {options = (options gen) {heapEntrySize = heapEntrySize}}
+
+getScale :: State Gen Int
+getScale = gets scale
+
+putScale :: Int -> State Gen ()
+putScale scale = modify' \gen -> gen {scale = scale}
 
 empty :: Gen
 empty =
   Gen
     { cmds = [],
-      isize = 1
+      options =
+        GenOptions
+          { useHeap = False,
+            codeEntrySize = 1,
+            stackEntrySize = 1,
+            heapEntrySize = 1
+          },
+      scale = 1
     }
 
 bfNop :: Oper
@@ -75,15 +126,25 @@ bfDec =
 
 bfFwd :: Oper
 bfFwd =
-  modifyCmds \case
-    Bwd : xs -> xs
-    xs -> Fwd : xs
+  bfStep 1
 
 bfBwd :: Oper
 bfBwd =
-  modifyCmds \case
-    Fwd : xs -> xs
-    xs -> Bwd : xs
+  bfStep (-1)
+
+bfStep :: Int -> Oper
+bfStep dx = do
+  scale <- getScale
+  modifyCmds
+    ( \cmds ->
+        let (x, rest) = case cmds of
+              Step x : rest -> (x, rest)
+              rest -> (0, rest)
+            x' = x + dx * scale
+         in if x' == 0
+              then rest
+              else Step x' : rest
+    )
 
 bfOpn :: Oper
 bfOpn =
@@ -101,17 +162,18 @@ bfPut :: Oper
 bfPut =
   modifyCmds (Put :)
 
-toChar :: BfCmd -> Char
-toChar = \case
-  Inc -> '+'
-  Dec -> '-'
-  Fwd -> '>'
-  Bwd -> '<'
-  Opn -> '['
-  Cls -> ']'
-  Get -> ','
-  Put -> '.'
+toBuilder :: BfCmd -> Builder
+toBuilder = \case
+  Inc -> Text.Lazy.Builder.singleton '+'
+  Dec -> Text.Lazy.Builder.singleton '-'
+  Step x -> Text.Lazy.Builder.fromText (if x >= 0 then Text.replicate x ">" else Text.replicate (negate x) "<")
+  Opn -> Text.Lazy.Builder.singleton '['
+  Cls -> Text.Lazy.Builder.singleton ']'
+  Get -> Text.Lazy.Builder.singleton ','
+  Put -> Text.Lazy.Builder.singleton '.'
 
 generate :: Oper -> Text
 generate oper =
-  Text.pack $ map toChar $ reverse $ cmds $ execState oper empty
+  let Gen {cmds} = execState oper empty
+      builder = foldr (\c b -> b <> toBuilder c) mempty cmds
+   in Text.Lazy.toStrict $ Text.Lazy.Builder.toLazyText builder

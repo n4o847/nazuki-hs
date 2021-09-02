@@ -59,18 +59,21 @@ immediate op = do
 assemble :: Int -> State Asm () -> Oper
 assemble ssize asmState = do
   let Asm isa opcodes = execState asmState empty
-  let isize = logBase2 (Map.size isa - 1) + 2
-  putIsize isize
+  let csize = logBase2 (Map.size isa - 1) + 2
+  let hsize = ssize
+  putCodeEntrySize csize
+  putStackEntrySize ssize
+  putHeapEntrySize hsize
   let tmp = mem 0
   let cmd = mems [1 ..]
   bfDec
-  forward isize
+  forward csize
   forM_ opcodes \bits -> do
-    forM_ [0 .. isize - 2] \i -> do
+    forM_ [0 .. csize - 2] \i -> do
       when (Bits.testBit bits i) do
         add (cmd i) 1
-    forward isize
-  backward isize
+    forward csize
+  backward csize
   bfInc
   while tmp do
     sub tmp 1
@@ -86,49 +89,90 @@ assemble ssize asmState = do
                 )
             else do
               forM_ (Map.lookup bits isa) \op -> do
-                ipToSp ssize
+                codeToStack
                 op
-                spToIp ssize
-    seeBit (isize - 2) 0
+                stackToCode
+    seeBit (csize - 2) 0
     add tmp 1
-    backward isize
+    backward csize
     add tmp 1
 
-spToIp :: Int -> Oper
-spToIp ssize = do
-  isize <- getIsize
-  backward ssize
+codeToStack :: Oper
+codeToStack = do
+  useHeap <- getUseHeap
+  csize <- getCodeEntrySize
+  ssize <- getStackEntrySize
+  forward csize
   bfOpn
-  backward ssize
+  forward csize
   bfCls
-  backward isize
-  bfOpn
-  backward isize
-  bfCls
-
-ipToSp :: Int -> Oper
-ipToSp ssize = do
-  isize <- getIsize
-  forward isize
-  bfOpn
-  forward isize
-  bfCls
+  when useHeap do putScale 2
   forward ssize
   bfOpn
   forward ssize
   bfCls
 
-jump :: Int -> Int -> Oper
-jump ssize rel = do
-  isize <- getIsize
-  spToIp ssize
+stackToCode :: Oper
+stackToCode = do
+  useHeap <- getUseHeap
+  csize <- getCodeEntrySize
+  ssize <- getStackEntrySize
+  backward ssize
+  bfOpn
+  backward ssize
+  bfCls
+  when useHeap do putScale 1
+  backward csize
+  bfOpn
+  backward csize
+  bfCls
+
+stackToHeap :: Oper
+stackToHeap = do
+  useHeap <- getUseHeap
+  ssize <- getStackEntrySize
+  hsize <- getHeapEntrySize
+  backward ssize
+  bfOpn
+  backward ssize
+  bfCls
+  when useHeap do putScale 1
+  bfFwd
+  when useHeap do putScale 2
+  forward hsize
+  bfOpn
+  forward hsize
+  bfCls
+
+heapToStack :: Oper
+heapToStack = do
+  useHeap <- getUseHeap
+  ssize <- getStackEntrySize
+  hsize <- getHeapEntrySize
+  backward hsize
+  bfOpn
+  backward hsize
+  bfCls
+  when useHeap do putScale 1
+  bfBwd
+  when useHeap do putScale 2
+  forward ssize
+  bfOpn
+  forward ssize
+  bfCls
+
+jump :: Int -> Oper
+jump rel = do
+  csize <- getCodeEntrySize
+  ssize <- getStackEntrySize
+  stackToCode
   if rel >= 0
     then do
       replicateM_ rel do
         bfInc
-        backward isize
+        backward csize
     else do
       replicateM_ (negate rel) do
-        forward isize
+        forward csize
         bfDec
-  ipToSp ssize
+  codeToStack
