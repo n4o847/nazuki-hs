@@ -4,29 +4,29 @@
   "scripts": {
     "build": "npm run build:wasm && npm run build:site",
     "build:wasm": "./build.sh --docker",
-    "build:site": "rimraf dist && webpack",
-    "start": "rimraf dist && webpack serve"
+    "build:site": "rimraf dist && webpack --mode=production",
+    "start": "rimraf dist && webpack serve --mode=development"
   },
   "dependencies": {
-    "@types/react": "^17.0.11",
-    "@types/react-dom": "^17.0.8",
+    "@types/react": "^17.0.19",
+    "@types/react-dom": "^17.0.9",
     "bootstrap": "^4.6.0",
     "react": "^17.0.2",
     "react-bootstrap": "^1.6.1",
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "css-loader": "^5.2.6",
+    "css-loader": "^6.2.0",
     "css-minimizer-webpack-plugin": "^3.0.2",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.3.2",
-    "mini-css-extract-plugin": "^1.6.1",
+    "mini-css-extract-plugin": "^2.2.2",
     "rimraf": "^3.0.2",
-    "terser-webpack-plugin": "^5.1.4",
-    "ts-loader": "^9.2.3",
-    "typescript": "^4.3.4",
-    "webpack": "^5.40.0",
-    "webpack-cli": "^4.7.2",
-    "webpack-dev-server": "^3.11.2"
+    "terser-webpack-plugin": "^5.2.0",
+    "ts-loader": "^9.2.5",
+    "typescript": "^4.4.2",
+    "webpack": "^5.51.1",
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^4.1.0"
   }
 }
