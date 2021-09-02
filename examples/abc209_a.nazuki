@@ -1,0 +1,3 @@
+a = scan()
+b = scan()
+print(max(b - a + 1, 0))
