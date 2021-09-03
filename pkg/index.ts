@@ -1,5 +1,5 @@
 // @ts-ignore
-import * as rts from '../out/rts.mjs';
+import { newAsteriusInstance } from '../out/rts.mjs';
 // @ts-ignore
 import wasmURL from '../out/nazuki.wasm';
 // @ts-ignore
@@ -12,17 +12,21 @@ export async function loadNazuki(): Promise<Nazuki> {
   const module = await WebAssembly.compile(bytes);
   Object.assign(req, { module });
   return {
-    async compile(source: string) {
-      const instance = await rts.newAsteriusInstance(req);
+    async compile(source: string): Promise<string> {
+      const instance = await newAsteriusInstance(req);
       return instance.exports.compile(source);
     },
-    async assemble(source: string) {
-      const instance = await rts.newAsteriusInstance(req);
+    async assemble(source: string): Promise<string> {
+      const instance = await newAsteriusInstance(req);
       return instance.exports.assemble(source);
     },
-    async run(program: string, input: string) {
-      const instance = await rts.newAsteriusInstance(req);
+    async run(program: string, input: string): Promise<string> {
+      const instance = await newAsteriusInstance(req);
       return instance.exports.run(program, input);
+    },
+    async createBanner(source: string): Promise<string> {
+      const instance = await newAsteriusInstance(req);
+      return instance.exports.createBanner(source);
     },
   };
 }

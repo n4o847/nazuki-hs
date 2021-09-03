@@ -3,6 +3,7 @@ module Nazuki.Main
     assemble,
     run,
     debug,
+    createBanner,
   )
 where
 
@@ -13,6 +14,7 @@ import qualified Nazuki.Assembler.Parser as P
 import qualified Nazuki.Compiler.CodeGen as Compiler
 import qualified Nazuki.Compiler.Parser as Compiler
 import qualified Nazuki.Runtime.Runner as R
+import Nazuki.Util (createBanner)
 
 compile :: Text -> Either Text Text
 compile source =
