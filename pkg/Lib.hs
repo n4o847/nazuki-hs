@@ -11,6 +11,8 @@ foreign export javascript assemble :: JSString -> JSString
 
 foreign export javascript run :: JSString -> JSString -> JSString
 
+foreign export javascript createBanner :: JSString -> JSString
+
 compile :: JSString -> JSString
 compile source =
   either (error . T.unpack) textToJSString $
@@ -25,3 +27,7 @@ run :: JSString -> JSString -> JSString
 run program input =
   either (error . T.unpack) textToJSString $
     Nazuki.run (textFromJSString program) (textFromJSString input)
+
+createBanner :: JSString -> JSString
+createBanner source =
+  textToJSString (Nazuki.createBanner (textFromJSString source))

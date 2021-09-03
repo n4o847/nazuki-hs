@@ -11,4 +11,5 @@ ahc-link \
   --ghc-option "-isrc" \
   --export-function=compile \
   --export-function=assemble \
-  --export-function=run
+  --export-function=run \
+  --export-function=createBanner

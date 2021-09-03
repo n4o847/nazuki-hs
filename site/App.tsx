@@ -27,13 +27,15 @@ const defaultInput = `\
 10 20
 `;
 
-export default function App () {
+export default function App() {
   const [nazuki, setNazuki] = useState<Nazuki>();
   const [mode, setMode] = useState<'script' | 'assembly'>('script');
   const [scriptSource, setScriptSource] = useState(defaultScriptSource);
   const [assemblySource, setAssemblySource] = useState(defaultAssemblySource);
   const [compiling, setCompiling] = useState(false);
   const [assembling, setAssembling] = useState(false);
+  const [banner, setBanner] = useState('');
+  const [addBanner, setAddBanner] = useState(true);
   const [result, setResult] = useState('');
   const [input, setInput] = useState(defaultInput);
   const [running, setRunning] = useState(false);
@@ -48,50 +50,53 @@ export default function App () {
       setNazuki(nazuki);
       const result = await nazuki.compile(scriptSource);
       setResult(result);
-    })().catch((err) => {
-      setAlerts([String(err)]);
+      const banner = await nazuki.createBanner(scriptSource);
+      setBanner(banner);
+    })().catch((error) => {
+      setAlerts([String(error)]);
     });
   }, []);
 
-  const compile = () => {
+  const compile = async () => {
     if (!nazuki) return;
     setCompiling(true);
-    nazuki.compile(scriptSource).then((result) => {
+    await nazuki.compile(scriptSource).then((result) => {
       setResult(result);
       setAlerts([]);
-      setCompiling(false);
     }).catch((error) => {
       setAlerts([String(error)]);
-      setCompiling(false);
     });
+    setBanner(await nazuki.createBanner(scriptSource));
+    setCompiling(false);
   };
 
-  const assemble = () => {
+  const assemble = async () => {
     if (!nazuki) return;
     setAssembling(true);
-    nazuki.assemble(assemblySource).then((result) => {
+    await nazuki.assemble(assemblySource).then((result) => {
       setResult(result);
       setAlerts([]);
-      setAssembling(false);
     }).catch((error) => {
       setAlerts([String(error)]);
-      setAssembling(false);
     });
+    setBanner(await nazuki.createBanner(assemblySource));
+    setAssembling(false);
   };
 
-  const run = () => {
+  const run = async () => {
     if (!nazuki) return;
     setRunning(true);
-    nazuki.run(result, input).then((output) => {
+    await nazuki.run(result, input).then((output) => {
       setOutput(output);
       setError('');
-      setRunning(false);
     }).catch((error) => {
       setOutput('');
       setError(String(error));
-      setRunning(false);
     });
+    setRunning(false);
   };
+
+  const target = addBanner ? banner + '\n' + result : result;
 
   return (
     <>
@@ -166,9 +171,16 @@ export default function App () {
                   style={{ wordBreak: 'break-all' }}
                   rows={10}
                   spellCheck={false}
-                  value={result}
+                  value={target}
                 />
-                <p>{result.length}</p>
+                <p>{target.length}</p>
+                <Form.Check
+                  type="checkbox"
+                  id="add-banner"
+                  label="Banner"
+                  checked={addBanner}
+                  onChange={() => setAddBanner((addBanner) => !addBanner)}
+                />
               </Form.Group>
             </Col>
           </Row>
