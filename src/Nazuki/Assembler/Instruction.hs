@@ -10,6 +10,7 @@ import qualified Data.Maybe as Maybe
 import Data.Text (Text)
 import qualified Nazuki.CodeGen.Arch232.IO as IO
 import qualified Nazuki.CodeGen.Arch232.Int32 as I32
+import qualified Nazuki.CodeGen.Arch232.Memory as I
 import qualified Nazuki.CodeGen.Core as G
 import qualified Nazuki.CodeGen.Util as G
 import qualified Nazuki.CodeGen.VirtualMachine as G
@@ -48,6 +49,8 @@ data Instruction
   | Getc
   | Putc
   | Write Text
+  | Load
+  | Store
   | Jump Int
   | Jz Int
   | Jnz Int
@@ -106,6 +109,8 @@ insToOper = \case
   Getc -> IO.doGetc
   Putc -> IO.doPutc
   Write s -> G.puts (G.mem 0) s
+  Load -> I.doLoad
+  Store -> I.doStore
   Jump r -> I32.doJump r
   Jz r -> I32.doJz r
   Jnz r -> I32.doJnz r

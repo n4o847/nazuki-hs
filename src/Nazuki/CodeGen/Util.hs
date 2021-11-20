@@ -11,6 +11,8 @@ module Nazuki.CodeGen.Util
     backward,
     exit,
     at,
+    inc,
+    dec,
     add,
     sub,
     getc,
@@ -76,6 +78,14 @@ at p oper = do
   enter p
   oper
   exit p
+
+inc :: Ptr -> Oper
+inc p =
+  at p bfInc
+
+dec :: Ptr -> Oper
+dec p =
+  at p bfDec
 
 add :: Ptr -> Int -> Oper
 add p x =
