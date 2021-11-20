@@ -93,14 +93,15 @@ plus :: Word8 -> Tape Word8 -> Tape Word8
 plus x (Tape ls a rs) = Tape ls (a + x) rs
 
 step :: Int -> Tape Word8 -> Tape Word8
-step x tape
-  | x == 0 = tape
-  | x > 0 = step (x - 1) case tape of
-    Tape ls a [] -> Tape (a : ls) 0 []
-    Tape ls a (r : rs) -> Tape (a : ls) r rs
-  | x < 0 = step (x + 1) case tape of
-    Tape [] a rs -> Tape [] 0 (a : rs)
-    Tape (l : ls) a rs -> Tape ls l (a : rs)
+step x tape =
+  case compare x 0 of
+    EQ -> tape
+    GT -> step (x - 1) case tape of
+      Tape ls a [] -> Tape (a : ls) 0 []
+      Tape ls a (r : rs) -> Tape (a : ls) r rs
+    LT -> step (x + 1) case tape of
+      Tape [] a rs -> Tape [] 0 (a : rs)
+      Tape (l : ls) a rs -> Tape ls l (a : rs)
 
 incCnt :: Runner ()
 incCnt = do
@@ -144,7 +145,7 @@ inspect state =
                 <> decimal (cnt state)
                 <> "\n"
                 <> "out: "
-                <> TLB.fromLazyText (TL.fromChunks (map hex out))
+                <> TLB.fromLazyText (TL.unwords $ TL.fromStrict . hex <$> out)
                 <> "\n"
                 <> "out: "
                 <> TLB.fromText (decode out)
