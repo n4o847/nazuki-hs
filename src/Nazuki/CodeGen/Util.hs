@@ -32,6 +32,7 @@ import Data.Char (ord)
 import Data.Text (Text)
 import qualified Data.Text as Text
 import Nazuki.CodeGen.Core
+import Nazuki.Util
 
 newtype Ptr = Ptr Int
 
@@ -182,7 +183,7 @@ decs p =
 
 puts :: Ptr -> Text -> Oper
 puts p s =
-  forM_ (Text.unpack s) \c -> do
-    add p (ord c)
+  forM_ (encode s) \c -> do
+    add p (fromIntegral c)
     putc p
-    sub p (ord c)
+    sub p (fromIntegral c)

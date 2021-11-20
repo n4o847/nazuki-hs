@@ -19,6 +19,7 @@ import qualified Data.Text.Lazy.Builder as TLB
 import Data.Text.Lazy.Builder.Int (decimal)
 import Data.Word (Word8)
 import Nazuki.Runtime.Parser
+import Nazuki.Util
 import Text.Printf
 
 data Tape a = Tape [a] a [a]
@@ -157,11 +158,3 @@ debug program input = parse program >>= flip exec (encode input) >>= inspect
 
 run :: Text -> Text -> Either Text Text
 run program input = parse program >>= flip exec (encode input) <&> decode . reverse . output
-
-encode :: Text -> [Word8]
-encode =
-  BS.unpack . TE.encodeUtf8
-
-decode :: [Word8] -> Text
-decode =
-  TE.decodeUtf8 . BS.pack
