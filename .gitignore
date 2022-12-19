@@ -5,7 +5,7 @@
 /**/*.hi
 /**/*.o
 
-/node_modules/
+node_modules/
 /dist/
 
 /.vscode/
