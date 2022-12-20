@@ -1,13 +1,13 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Nazuki.Compiler.CodeGenSpec (spec) where
+module Nazuki.Script.CodeGenSpec (spec) where
 
 import Control.Monad
 import qualified Nazuki.Assembler.Instruction as I
 import qualified Nazuki.Assembler.Label as L
-import Nazuki.Compiler.CodeGen (generate)
-import Nazuki.Compiler.Parser (parse)
+import Nazuki.Script.CodeGen (generate)
+import Nazuki.Script.Parser (parse)
 import Test.Hspec
 
 spec :: Spec

@@ -1,4 +1,4 @@
-module Nazuki.Compiler.AST
+module Nazuki.Script.AST
   ( Program (..),
     Stmt (..),
     Expr (..),

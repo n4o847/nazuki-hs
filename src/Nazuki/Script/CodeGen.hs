@@ -2,7 +2,7 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Nazuki.Compiler.CodeGen
+module Nazuki.Script.CodeGen
   ( generate,
   )
 where
@@ -16,7 +16,7 @@ import qualified Data.Text as Text
 import Nazuki.Assembler.Instruction (Instruction)
 import qualified Nazuki.Assembler.Instruction as I
 import Nazuki.Assembler.Label (Labeled (..))
-import qualified Nazuki.Compiler.AST as AST
+import qualified Nazuki.Script.AST as AST
 
 data Type
   = TyUnit
@@ -384,17 +384,17 @@ fromAssign targets expr = do
       case t0 of
         TyTuple elements
           | length targets == length elements -> do
-            forM_ (zip targets elements) \(ident, t1) -> do
-              env <- gets environment
-              case Map.lookup ident env of
-                Just _ -> do
-                  let AST.Ident name = ident
-                  throwError ("\"" <> name <> "\" is already defined")
-                Nothing -> do
-                  let index = Map.size env
-                  modify' \s -> s {environment = Map.insert ident (t1, index) env}
+              forM_ (zip targets elements) \(ident, t1) -> do
+                env <- gets environment
+                case Map.lookup ident env of
+                  Just _ -> do
+                    let AST.Ident name = ident
+                    throwError ("\"" <> name <> "\" is already defined")
+                  Nothing -> do
+                    let index = Map.size env
+                    modify' \s -> s {environment = Map.insert ident (t1, index) env}
           | otherwise ->
-            throwError "invalid types"
+              throwError "invalid types"
         _ ->
           throwError "invalid types"
 

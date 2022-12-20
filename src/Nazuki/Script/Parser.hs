@@ -2,7 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TupleSections #-}
 
-module Nazuki.Compiler.Parser
+module Nazuki.Script.Parser
   ( parse,
   )
 where
@@ -13,7 +13,7 @@ import Control.Monad.Combinators.Expr (Operator (..), makeExprParser)
 import Data.Text (Text)
 import qualified Data.Text as Text
 import Data.Void (Void)
-import qualified Nazuki.Compiler.AST as AST
+import qualified Nazuki.Script.AST as AST
 import Text.Megaparsec hiding (parse)
 import Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L
@@ -119,7 +119,8 @@ pAssign =
 
 pAugAssign :: Parser AST.Stmt
 pAugAssign =
-  AST.AugAssign <$> pIdent
+  AST.AugAssign
+    <$> pIdent
     <*> choice
       [ AST.Mul <$ symbol "*=",
         AST.Add <$ symbol "+=",

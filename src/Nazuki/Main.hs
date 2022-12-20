@@ -11,14 +11,14 @@ import Data.Text (Text)
 import qualified Nazuki.Assembler.Instruction as I
 import qualified Nazuki.Assembler.Label as L
 import qualified Nazuki.Assembler.Parser as P
-import qualified Nazuki.Compiler.CodeGen as Compiler
-import qualified Nazuki.Compiler.Parser as Compiler
 import qualified Nazuki.Runtime.Runner as R
+import qualified Nazuki.Script.CodeGen as Script
+import qualified Nazuki.Script.Parser as Script
 import Nazuki.Util (createBanner)
 
 compile :: Text -> Either Text Text
 compile source =
-  I.generate <$> (L.resolveLabels =<< Compiler.generate =<< Compiler.parse source)
+  I.generate <$> (L.resolveLabels =<< Script.generate =<< Script.parse source)
 
 assemble :: Text -> Either Text Text
 assemble source =

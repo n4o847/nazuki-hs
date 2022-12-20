@@ -1,11 +1,11 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Nazuki.Compiler.ParserSpec (spec) where
+module Nazuki.Script.ParserSpec (spec) where
 
 import Control.Monad
-import qualified Nazuki.Compiler.AST as AST
-import Nazuki.Compiler.Parser (parse)
+import qualified Nazuki.Script.AST as AST
+import Nazuki.Script.Parser (parse)
 import Test.Hspec
 
 spec :: Spec
