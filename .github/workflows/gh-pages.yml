@@ -25,7 +25,7 @@ jobs:
           entrypoint: ./entrypoint.sh
 
       - run: npm ci
-      - run: npm run build:site
+      - run: npm run build:playground
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
