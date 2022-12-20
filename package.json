@@ -1,32 +1,12 @@
 {
   "name": "nazuki",
-  "private": true,
   "scripts": {
-    "build": "npm run build:wasm && npm run build:site",
+    "dev": "npm run dev --workspace=playground",
+    "build": "npm run build:wasm && npm run build:playground",
     "build:wasm": "./build.sh --docker",
-    "build:site": "rimraf dist && webpack --mode=production",
-    "start": "rimraf dist && webpack serve --mode=development"
+    "build:playground": "npm run build --workspace=playground"
   },
-  "dependencies": {
-    "@types/react": "^17.0.19",
-    "@types/react-dom": "^17.0.9",
-    "bootstrap": "^4.6.0",
-    "react": "^17.0.2",
-    "react-bootstrap": "^1.6.1",
-    "react-dom": "^17.0.2"
-  },
-  "devDependencies": {
-    "css-loader": "^6.2.0",
-    "css-minimizer-webpack-plugin": "^3.0.2",
-    "file-loader": "^6.2.0",
-    "html-webpack-plugin": "^5.3.2",
-    "mini-css-extract-plugin": "^2.2.2",
-    "rimraf": "^3.0.2",
-    "terser-webpack-plugin": "^5.2.0",
-    "ts-loader": "^9.2.5",
-    "typescript": "^4.4.2",
-    "webpack": "^5.51.1",
-    "webpack-cli": "^4.8.0",
-    "webpack-dev-server": "^4.1.0"
-  }
+  "workspaces": [
+    "playground"
+  ]
 }

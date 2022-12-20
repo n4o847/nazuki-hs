@@ -85,6 +85,8 @@ pOperator =
       L0 I.Print <$ pKeyword "print",
       L0 I.Putc <$ pKeyword "putc",
       L0 . I.Write <$ pKeyword "write" <*> pString,
+      L0 I.Load <$ pKeyword "load",
+      L0 I.Store <$ pKeyword "store",
       L1 I.Jump <$ pKeyword "jump" <*> pLabelWithoutColon,
       L1 I.Jz <$ pKeyword "jz" <*> pLabelWithoutColon,
       L1 I.Jnz <$ pKeyword "jnz" <*> pLabelWithoutColon,

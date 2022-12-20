@@ -6,11 +6,16 @@ module Nazuki.Util
     quoteSingleLine,
     quoteMultipleLines,
     createBanner,
+    encode,
+    decode,
   )
 where
 
+import qualified Data.ByteString as ByteString
 import Data.Text (Text)
 import qualified Data.Text as Text
+import qualified Data.Text.Encoding as Text.Encoding
+import Data.Word (Word8)
 
 -- wrap `text` into a ignorable brainfuck code
 getQuotations :: Text -> (Text, Text)
@@ -54,3 +59,11 @@ createBanner code =
       "\n",
       quoteMultipleLines code
     ]
+
+encode :: Text -> [Word8]
+encode =
+  ByteString.unpack . Text.Encoding.encodeUtf8
+
+decode :: [Word8] -> Text
+decode =
+  Text.Encoding.decodeUtf8 . ByteString.pack

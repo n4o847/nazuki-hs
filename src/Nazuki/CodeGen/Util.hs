@@ -11,6 +11,8 @@ module Nazuki.CodeGen.Util
     backward,
     exit,
     at,
+    inc,
+    dec,
     add,
     sub,
     getc,
@@ -30,6 +32,7 @@ import Data.Char (ord)
 import Data.Text (Text)
 import qualified Data.Text as Text
 import Nazuki.CodeGen.Core
+import Nazuki.Util
 
 newtype Ptr = Ptr Int
 
@@ -76,6 +79,14 @@ at p oper = do
   enter p
   oper
   exit p
+
+inc :: Ptr -> Oper
+inc p =
+  at p bfInc
+
+dec :: Ptr -> Oper
+dec p =
+  at p bfDec
 
 add :: Ptr -> Int -> Oper
 add p x =
@@ -172,7 +183,7 @@ decs p =
 
 puts :: Ptr -> Text -> Oper
 puts p s =
-  forM_ (Text.unpack s) \c -> do
-    add p (ord c)
+  forM_ (encode s) \c -> do
+    add p (fromIntegral c)
     putc p
-    sub p (ord c)
+    sub p (fromIntegral c)

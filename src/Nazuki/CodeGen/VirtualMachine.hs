@@ -5,6 +5,8 @@ module Nazuki.CodeGen.VirtualMachine
   ( assemble,
     register,
     immediate,
+    stackToHeap,
+    heapToStack,
     jump,
   )
 where
