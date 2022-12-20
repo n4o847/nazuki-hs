@@ -12,7 +12,7 @@
 --   - A negative number is represented by the ten's complement
 --     of the absolute value.
 
-module Nazuki.VM.Arch1010.Int10
+module Nazuki.VM.Decimal10.Int10
   ( doConst,
     doInc,
     doNeg,
