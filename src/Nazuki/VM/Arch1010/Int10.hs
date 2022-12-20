@@ -12,7 +12,7 @@
 --   - A negative number is represented by the ten's complement
 --     of the absolute value.
 
-module Nazuki.CodeGen.Arch1010.Int10
+module Nazuki.VM.Arch1010.Int10
   ( doConst,
     doInc,
     doNeg,
@@ -23,8 +23,8 @@ where
 import Control.Monad
 import Data.Int (Int32)
 import qualified Data.Text as Text
-import Nazuki.CodeGen.Core
-import Nazuki.CodeGen.Util
+import Nazuki.VM.Core
+import Nazuki.VM.Util
 
 consume :: Int -> Oper
 consume a =

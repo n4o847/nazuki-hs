@@ -1,6 +1,6 @@
 {-# LANGUAGE BlockArguments #-}
 
-module Nazuki.CodeGen.Arch232.Memory
+module Nazuki.VM.Arch232.Memory
   ( doLoad,
     doStore,
   )
@@ -8,10 +8,10 @@ where
 
 import Control.Monad
 import qualified Data.Bits as Bits
-import Nazuki.CodeGen.Arch232.Common
-import Nazuki.CodeGen.Core
-import Nazuki.CodeGen.Util
-import Nazuki.CodeGen.VirtualMachine
+import Nazuki.VM.Arch232.Common
+import Nazuki.VM.Core
+import Nazuki.VM.Util
+import Nazuki.VM.VirtualMachine
 
 incHeapPointer :: Oper
 incHeapPointer = do

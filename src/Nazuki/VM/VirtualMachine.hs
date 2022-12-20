@@ -1,7 +1,7 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE StrictData #-}
 
-module Nazuki.CodeGen.VirtualMachine
+module Nazuki.VM.VirtualMachine
   ( assemble,
     register,
     immediate,
@@ -16,8 +16,8 @@ import Control.Monad.State.Strict
 import qualified Data.Bits as Bits
 import Data.Map (Map)
 import qualified Data.Map as Map
-import Nazuki.CodeGen.Core
-import Nazuki.CodeGen.Util
+import Nazuki.VM.Core
+import Nazuki.VM.Util
 
 type Isa = Map Int Oper
 

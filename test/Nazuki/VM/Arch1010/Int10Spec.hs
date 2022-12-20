@@ -1,13 +1,13 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Nazuki.CodeGen.Arch1010.Int10Spec (spec) where
+module Nazuki.VM.Arch1010.Int10Spec (spec) where
 
 import Control.Monad
 import qualified Data.Text as Text
-import qualified Nazuki.CodeGen.Arch1010.Int10 as Int10
-import Nazuki.CodeGen.Core (generate)
 import Nazuki.Runtime.Runner (run)
+import qualified Nazuki.VM.Arch1010.Int10 as Int10
+import Nazuki.VM.Core (generate)
 import Test.Hspec
 
 spec :: Spec

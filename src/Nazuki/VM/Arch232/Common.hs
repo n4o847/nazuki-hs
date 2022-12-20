@@ -1,11 +1,11 @@
-module Nazuki.CodeGen.Arch232.Common
+module Nazuki.VM.Arch232.Common
   ( consume,
     produce,
   )
 where
 
-import Nazuki.CodeGen.Core
-import Nazuki.CodeGen.Util
+import Nazuki.VM.Core
+import Nazuki.VM.Util
 
 consume :: Int -> Oper
 consume a =

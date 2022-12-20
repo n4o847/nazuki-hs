@@ -1,7 +1,7 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Nazuki.CodeGen.Arch232.Int32
+module Nazuki.VM.Arch232.Int32
   ( doConst,
     doDup,
     doGet,
@@ -43,10 +43,10 @@ import Control.Monad
 import qualified Data.Bits as Bits
 import Data.Int (Int32)
 import Data.Word (Word32)
-import Nazuki.CodeGen.Arch232.Common
-import Nazuki.CodeGen.Core
-import Nazuki.CodeGen.Util
-import Nazuki.CodeGen.VirtualMachine
+import Nazuki.VM.Arch232.Common
+import Nazuki.VM.Core
+import Nazuki.VM.Util
+import Nazuki.VM.VirtualMachine
 
 doConst :: Int32 -> Oper
 doConst x = do
@@ -69,106 +69,106 @@ doGet :: Int -> Oper
 doGet x
   -- non-negative indices count from the front of the stack
   | x >= 0 = do
-    let a = mem 0
-    let a_ = mems [1 .. 32]
-    let b = mem 0
-    let b_ = mems [1 .. 32]
-    let toFront = backward 33 >> bfOpn >> backward 33 >> bfCls
-    let toBack = forward 33 >> bfOpn >> forward 33 >> bfCls
-    consume 0
-    toFront
-    forward 33
-    replicateM_ x do
-      bfDec
+      let a = mem 0
+      let a_ = mems [1 .. 32]
+      let b = mem 0
+      let b_ = mems [1 .. 32]
+      let toFront = backward 33 >> bfOpn >> backward 33 >> bfCls
+      let toBack = forward 33 >> bfOpn >> forward 33 >> bfCls
+      consume 0
+      toFront
       forward 33
-    bfDec
-    forM_ [0 .. 31] \i -> do
-      while (a_ i) do
-        sub (a_ i) 1
-        toBack
-        add (b_ i) 1
-        toFront
-        add a 1
-      while a do
-        sub a 1
-        add (a_ i) 1
-    bfInc
-    replicateM_ x do
-      backward 33
+      replicateM_ x do
+        bfDec
+        forward 33
+      bfDec
+      forM_ [0 .. 31] \i -> do
+        while (a_ i) do
+          sub (a_ i) 1
+          toBack
+          add (b_ i) 1
+          toFront
+          add a 1
+        while a do
+          sub a 1
+          add (a_ i) 1
       bfInc
-    backward 33
-    toBack
-    add b 1
-    produce 1
+      replicateM_ x do
+        backward 33
+        bfInc
+      backward 33
+      toBack
+      add b 1
+      produce 1
   -- negative indices count from the back of the stack
   | x < 0 = do
-    let a = mem (33 * x)
-    let a_ = mems [33 * x + 1 .. 33 * x + 32]
-    let b = mem 0
-    let b_ = mems [1 .. 32]
-    consume 0
-    forM_ [0 .. 31] \i -> do
-      while (a_ i) do
-        sub (a_ i) 1
-        add b 1
-        add (b_ i) 1
-      while b do
-        sub b 1
-        add (a_ i) 1
-    add b 1
-    produce 1
+      let a = mem (33 * x)
+      let a_ = mems [33 * x + 1 .. 33 * x + 32]
+      let b = mem 0
+      let b_ = mems [1 .. 32]
+      consume 0
+      forM_ [0 .. 31] \i -> do
+        while (a_ i) do
+          sub (a_ i) 1
+          add b 1
+          add (b_ i) 1
+        while b do
+          sub b 1
+          add (a_ i) 1
+      add b 1
+      produce 1
 
 doSet :: Int -> Oper
 doSet x
   -- non-negative indices count from the front of the stack
   | x >= 0 = do
-    let a = mem 0
-    let a_ = mems [1 .. 32]
-    let b = mem 0
-    let b_ = mems [1 .. 32]
-    let toFront = backward 33 >> bfOpn >> backward 33 >> bfCls
-    let toBack = forward 33 >> bfOpn >> forward 33 >> bfCls
-    consume 1
-    sub b 1
-    toFront
-    forward 33
-    replicateM_ x do
-      bfDec
+      let a = mem 0
+      let a_ = mems [1 .. 32]
+      let b = mem 0
+      let b_ = mems [1 .. 32]
+      let toFront = backward 33 >> bfOpn >> backward 33 >> bfCls
+      let toBack = forward 33 >> bfOpn >> forward 33 >> bfCls
+      consume 1
+      sub b 1
+      toFront
       forward 33
-    bfDec
-    forM_ [0 .. 31] \i -> do
-      while (a_ i) do
-        sub (a_ i) 1
-    toBack
-    forM_ [0 .. 31] \i -> do
-      while (b_ i) do
-        sub (b_ i) 1
-        toFront
-        add (a_ i) 1
-        toBack
-    toFront
-    bfInc
-    replicateM_ x do
-      backward 33
+      replicateM_ x do
+        bfDec
+        forward 33
+      bfDec
+      forM_ [0 .. 31] \i -> do
+        while (a_ i) do
+          sub (a_ i) 1
+      toBack
+      forM_ [0 .. 31] \i -> do
+        while (b_ i) do
+          sub (b_ i) 1
+          toFront
+          add (a_ i) 1
+          toBack
+      toFront
       bfInc
-    backward 33
-    toBack
-    produce 0
+      replicateM_ x do
+        backward 33
+        bfInc
+      backward 33
+      toBack
+      produce 0
   -- negative indices count from the back of the stack
   | x < 0 = do
-    let a = mem (33 * x)
-    let a_ = mems [33 * x + 1 .. 33 * x + 32]
-    let b = mem 0
-    let b_ = mems [1 .. 32]
-    consume 1
-    sub b 1
-    forM_ [0 .. 31] \i -> do
-      while (a_ i) do
-        sub (a_ i) 1
-      while (b_ i) do
-        sub (b_ i) 1
-        add (a_ i) 1
-    produce 0
+      let a = mem (33 * x)
+      let a_ = mems [33 * x + 1 .. 33 * x + 32]
+      let b = mem 0
+      let b_ = mems [1 .. 32]
+      consume 1
+      sub b 1
+      forM_ [0 .. 31] \i -> do
+        while (a_ i) do
+          sub (a_ i) 1
+        while (b_ i) do
+          sub (b_ i) 1
+          add (a_ i) 1
+      produce 0
 
 doDrop :: Oper
 doDrop = do

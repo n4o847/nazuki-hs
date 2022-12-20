@@ -1,14 +1,14 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Nazuki.CodeGen.Arch232.IOSpec (spec) where
+module Nazuki.VM.Arch232.IOSpec (spec) where
 
 import Control.Monad
 import qualified Data.Text as Text
-import qualified Nazuki.CodeGen.Arch232.IO as IO
-import qualified Nazuki.CodeGen.Arch232.Int32 as Int32
-import Nazuki.CodeGen.Core (generate)
 import Nazuki.Runtime.Runner (run)
+import qualified Nazuki.VM.Arch232.IO as IO
+import qualified Nazuki.VM.Arch232.Int32 as Int32
+import Nazuki.VM.Core (generate)
 import Test.Hspec
 
 spec :: Spec

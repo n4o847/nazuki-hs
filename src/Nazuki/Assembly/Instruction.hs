@@ -8,12 +8,12 @@ import Data.Int (Int32)
 import qualified Data.Map as Map
 import qualified Data.Maybe as Maybe
 import Data.Text (Text)
-import qualified Nazuki.CodeGen.Arch232.IO as IO
-import qualified Nazuki.CodeGen.Arch232.Int32 as I32
-import qualified Nazuki.CodeGen.Arch232.Memory as I
-import qualified Nazuki.CodeGen.Core as G
-import qualified Nazuki.CodeGen.Util as G
-import qualified Nazuki.CodeGen.VirtualMachine as G
+import qualified Nazuki.VM.Arch232.IO as IO
+import qualified Nazuki.VM.Arch232.Int32 as I32
+import qualified Nazuki.VM.Arch232.Memory as I
+import qualified Nazuki.VM.Core as G
+import qualified Nazuki.VM.Util as G
+import qualified Nazuki.VM.VirtualMachine as G
 
 data Instruction
   = Const Int32

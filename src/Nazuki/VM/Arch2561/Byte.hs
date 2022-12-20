@@ -1,6 +1,6 @@
 {-# LANGUAGE BlockArguments #-}
 
-module Nazuki.CodeGen.Arch2561.Byte
+module Nazuki.VM.Arch2561.Byte
   ( doConst,
     doDup,
     doDrop,
@@ -16,8 +16,8 @@ where
 
 import Control.Monad
 import qualified Data.Text as T
-import Nazuki.CodeGen.Core
-import Nazuki.CodeGen.Util
+import Nazuki.VM.Core
+import Nazuki.VM.Util
 
 consume :: Int -> Oper
 consume a =

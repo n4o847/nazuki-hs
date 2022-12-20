@@ -24,4 +24,4 @@
 --   - The decoded value is
 --       f[6] . f[5] ... f[0]
 
-module Nazuki.CodeGen.Arch1010.Float10 where
+module Nazuki.VM.Arch1010.Float10 where

@@ -2,7 +2,7 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Nazuki.CodeGen.Util
+module Nazuki.VM.Util
   ( mem,
     mems,
     raw,
@@ -31,8 +31,8 @@ import Control.Monad
 import Data.Char (ord)
 import Data.Text (Text)
 import qualified Data.Text as Text
-import Nazuki.CodeGen.Core
 import Nazuki.Util
+import Nazuki.VM.Core
 
 newtype Ptr = Ptr Int
 

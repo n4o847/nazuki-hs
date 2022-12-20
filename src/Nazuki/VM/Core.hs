@@ -4,7 +4,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE StrictData #-}
 
-module Nazuki.CodeGen.Core
+module Nazuki.VM.Core
   ( Oper,
     getUseHeap,
     putUseHeap,
