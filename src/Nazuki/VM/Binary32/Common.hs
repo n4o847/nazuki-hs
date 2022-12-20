@@ -1,4 +1,4 @@
-module Nazuki.VM.Arch232.Common
+module Nazuki.VM.Binary32.Common
   ( consume,
     produce,
   )

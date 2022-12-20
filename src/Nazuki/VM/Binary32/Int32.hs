@@ -1,7 +1,7 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Nazuki.VM.Arch232.Int32
+module Nazuki.VM.Binary32.Int32
   ( doConst,
     doDup,
     doGet,
@@ -43,7 +43,7 @@ import Control.Monad
 import qualified Data.Bits as Bits
 import Data.Int (Int32)
 import Data.Word (Word32)
-import Nazuki.VM.Arch232.Common
+import Nazuki.VM.Binary32.Common
 import Nazuki.VM.Core
 import Nazuki.VM.Util
 import Nazuki.VM.VirtualMachine

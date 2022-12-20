@@ -1,6 +1,6 @@
 {-# LANGUAGE BlockArguments #-}
 
-module Nazuki.VM.Arch232.Memory
+module Nazuki.VM.Binary32.Memory
   ( doLoad,
     doStore,
   )
@@ -8,7 +8,7 @@ where
 
 import Control.Monad
 import qualified Data.Bits as Bits
-import Nazuki.VM.Arch232.Common
+import Nazuki.VM.Binary32.Common
 import Nazuki.VM.Core
 import Nazuki.VM.Util
 import Nazuki.VM.VirtualMachine

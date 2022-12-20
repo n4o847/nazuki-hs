@@ -1,13 +1,13 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Nazuki.VM.Arch232.IOSpec (spec) where
+module Nazuki.VM.Binary32.IOSpec (spec) where
 
 import Control.Monad
 import qualified Data.Text as Text
 import Nazuki.Runtime.Runner (run)
-import qualified Nazuki.VM.Arch232.IO as IO
-import qualified Nazuki.VM.Arch232.Int32 as Int32
+import qualified Nazuki.VM.Binary32.IO as IO
+import qualified Nazuki.VM.Binary32.Int32 as Int32
 import Nazuki.VM.Core (generate)
 import Test.Hspec
 

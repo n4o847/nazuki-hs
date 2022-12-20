@@ -8,9 +8,9 @@ import Data.Int (Int32)
 import qualified Data.Map as Map
 import qualified Data.Maybe as Maybe
 import Data.Text (Text)
-import qualified Nazuki.VM.Arch232.IO as IO
-import qualified Nazuki.VM.Arch232.Int32 as I32
-import qualified Nazuki.VM.Arch232.Memory as I
+import qualified Nazuki.VM.Binary32.IO as IO
+import qualified Nazuki.VM.Binary32.Int32 as I32
+import qualified Nazuki.VM.Binary32.Memory as I
 import qualified Nazuki.VM.Core as G
 import qualified Nazuki.VM.Util as G
 import qualified Nazuki.VM.VirtualMachine as G

@@ -1,7 +1,7 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Nazuki.VM.Arch232.IO
+module Nazuki.VM.Binary32.IO
   ( doGetc,
     doPutc,
   )
@@ -9,7 +9,7 @@ where
 
 import Control.Monad
 import qualified Data.Bits as Bits
-import Nazuki.VM.Arch232.Common
+import Nazuki.VM.Binary32.Common
 import Nazuki.VM.Core
 import Nazuki.VM.Util
 
