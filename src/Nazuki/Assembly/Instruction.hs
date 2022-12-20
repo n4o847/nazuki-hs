@@ -1,7 +1,7 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE LambdaCase #-}
 
-module Nazuki.Assembler.Instruction where
+module Nazuki.Assembly.Instruction where
 
 import Control.Monad
 import Data.Int (Int32)

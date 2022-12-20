@@ -1,8 +1,8 @@
 {-# LANGUAGE BlockArguments #-}
 
-module Nazuki.Assembler.Complex where
+module Nazuki.Assembly.Complex where
 
-import qualified Nazuki.Assembler.Instruction as I
+import qualified Nazuki.Assembly.Instruction as I
 
 ifThen :: [I.Instruction] -> [I.Instruction] -> [I.Instruction]
 ifThen cond cons =

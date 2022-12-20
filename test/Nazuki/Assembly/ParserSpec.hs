@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Nazuki.Assembler.ParserSpec (spec) where
+module Nazuki.Assembly.ParserSpec (spec) where
 
-import qualified Nazuki.Assembler.Instruction as I
-import Nazuki.Assembler.Label (resolveLabels)
-import Nazuki.Assembler.Parser (parse)
+import qualified Nazuki.Assembly.Instruction as I
+import Nazuki.Assembly.Label (resolveLabels)
+import Nazuki.Assembly.Parser (parse)
 import Test.Hspec
 
 spec :: Spec

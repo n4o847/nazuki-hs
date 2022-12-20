@@ -4,8 +4,8 @@
 module Nazuki.Script.CodeGenSpec (spec) where
 
 import Control.Monad
-import qualified Nazuki.Assembler.Instruction as I
-import qualified Nazuki.Assembler.Label as L
+import qualified Nazuki.Assembly.Instruction as I
+import qualified Nazuki.Assembly.Label as L
 import Nazuki.Script.CodeGen (generate)
 import Nazuki.Script.Parser (parse)
 import Test.Hspec

@@ -1,7 +1,7 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Nazuki.Assembler.Parser
+module Nazuki.Assembly.Parser
   ( parse,
   )
 where
@@ -11,8 +11,8 @@ import Data.Int (Int32)
 import Data.Text (Text)
 import qualified Data.Text as Text
 import Data.Void (Void)
-import Nazuki.Assembler.Instruction as I
-import Nazuki.Assembler.Label (Labeled (..))
+import Nazuki.Assembly.Instruction as I
+import Nazuki.Assembly.Label (Labeled (..))
 import Text.Megaparsec hiding (Label, parse)
 import Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L

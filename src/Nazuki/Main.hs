@@ -8,9 +8,9 @@ module Nazuki.Main
 where
 
 import Data.Text (Text)
-import qualified Nazuki.Assembler.Instruction as I
-import qualified Nazuki.Assembler.Label as L
-import qualified Nazuki.Assembler.Parser as P
+import qualified Nazuki.Assembly.Instruction as I
+import qualified Nazuki.Assembly.Label as L
+import qualified Nazuki.Assembly.Parser as P
 import qualified Nazuki.Runtime.Runner as R
 import qualified Nazuki.Script.CodeGen as Script
 import qualified Nazuki.Script.Parser as Script

@@ -13,9 +13,9 @@ import Data.Map (Map)
 import qualified Data.Map as Map
 import Data.Text (Text)
 import qualified Data.Text as Text
-import Nazuki.Assembler.Instruction (Instruction)
-import qualified Nazuki.Assembler.Instruction as I
-import Nazuki.Assembler.Label (Labeled (..))
+import Nazuki.Assembly.Instruction (Instruction)
+import qualified Nazuki.Assembly.Instruction as I
+import Nazuki.Assembly.Label (Labeled (..))
 import qualified Nazuki.Script.AST as AST
 
 data Type

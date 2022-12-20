@@ -1,7 +1,7 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Nazuki.Assembler.Label
+module Nazuki.Assembly.Label
   ( Labeled (..),
     resolveLabels,
   )
