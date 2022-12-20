@@ -1,7 +1,7 @@
 // @ts-ignore
 import { newAsteriusInstance } from '../out/rts.mjs';
 // @ts-ignore
-import wasmURL from '../out/nazuki.wasm';
+import wasmURL from '../out/nazuki.wasm?url';
 // @ts-ignore
 import req from '../out/nazuki.req.mjs';
 import { Nazuki } from './types';

@@ -8,7 +8,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
-import { Nazuki } from '../pkg/types';
+import { Nazuki } from '../../pkg/types';
 
 const defaultScriptSource = `\
 a = scan()
@@ -45,7 +45,7 @@ export default function App() {
 
   useEffect(() => {
     (async () => {
-      const { loadNazuki } = await import('../pkg');
+      const { loadNazuki } = await import('../../pkg');
       const nazuki = await loadNazuki();
       setNazuki(nazuki);
       const result = await nazuki.compile(scriptSource);
