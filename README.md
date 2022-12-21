@@ -1,5 +1,7 @@
 # nazuki-hs
 
+[![CI](https://github.com/n4o847/nazuki-hs/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/n4o847/nazuki-hs/actions/workflows/ci.yml)
+
 Nazuki は、Brainfuck をターゲットとするコンパイラおよびツール群です。Haskell で実装されています。
 
 ## 各レイヤーの説明
