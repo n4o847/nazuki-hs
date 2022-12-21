@@ -1,12 +1,12 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Nazuki.VM.Arch2561.ByteSpec (spec) where
+module Nazuki.VM.Word1.ByteSpec (spec) where
 
 import qualified Data.Text as T
 import Nazuki.Runtime.Runner (run)
-import Nazuki.VM.Arch2561.Byte
 import Nazuki.VM.Core (generate)
+import Nazuki.VM.Word1.Byte
 import Test.Hspec
 
 spec :: Spec

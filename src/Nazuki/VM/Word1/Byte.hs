@@ -1,6 +1,6 @@
 {-# LANGUAGE BlockArguments #-}
 
-module Nazuki.VM.Arch2561.Byte
+module Nazuki.VM.Word1.Byte
   ( doConst,
     doDup,
     doDrop,
