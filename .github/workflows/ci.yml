@@ -11,6 +11,7 @@ on:
       - 'package.yaml'
       - 'stack.yaml'
       - 'stack.yaml.lock'
+      - '*.cabal'
   push:
     branches:
       - main
@@ -23,6 +24,7 @@ on:
       - 'package.yaml'
       - 'stack.yaml'
       - 'stack.yaml.lock'
+      - '*.cabal'
   workflow_dispatch:
 
 jobs:
