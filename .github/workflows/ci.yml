@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  pull_request:
+    paths:
+      - 'app/**'
+      - 'bench/**'
+      - 'src/**'
+      - 'test/**'
+      - 'hie.yaml'
+      - 'package.yaml'
+      - 'stack.yaml'
+      - 'stack.yaml.lock'
+  push:
+    branches:
+      - main
+    paths:
+      - 'app/**'
+      - 'bench/**'
+      - 'src/**'
+      - 'test/**'
+      - 'hie.yaml'
+      - 'package.yaml'
+      - 'stack.yaml'
+      - 'stack.yaml.lock'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        ghc-version: [9.0.2]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: haskell/actions/setup@v2
+        with:
+          ghc-version: ${{ matrix.ghc-version }}
+          enable-stack: true
+
+      - uses: actions/cache@v3
+        name: Cache ~/.stack
+        with:
+          path: ~/.stack
+          key: ${{ runner.os }}-stack-global-${{ hashFiles('stack.yaml') }}-${{ hashFiles('package.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-stack-global-
+
+      - uses: actions/cache@v3
+        name: Cache .stack-work
+        with:
+          path: .stack-work
+          key: ${{ runner.os }}-stack-work-${{ hashFiles('stack.yaml') }}-${{ hashFiles('package.yaml') }}-${{ hashFiles('**/*.hs') }}
+          restore-keys: |
+            ${{ runner.os }}-stack-work-
+
+      - run: stack --system-ghc test
