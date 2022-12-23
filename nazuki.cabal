@@ -4,10 +4,10 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 03b4417836d26caff7272e2a5e33aafee85360a574c7844589af410a7778397e
+-- hash: c3309dad81ecd978f2c8d5a27e1ef0905897c336b5c71c1857d6bd9c8c9da899
 
 name:           nazuki
-version:        0.1.0
+version:        0.1.0.0
 description:    Please see the README on GitHub at <https://github.com/n4o847/nazuki-hs>
 homepage:       https://github.com/n4o847/nazuki-hs#readme
 bug-reports:    https://github.com/n4o847/nazuki-hs/issues
