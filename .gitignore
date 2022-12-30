@@ -1,9 +1,11 @@
 /.stack-work/
-/*.cabal
+/dist-newstyle/
 
 /out/
 /**/*.hi
 /**/*.o
+
+*.prof
 
 node_modules/
 /dist/
