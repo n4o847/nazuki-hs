@@ -1,0 +1,131 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.35.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: a8dbdf1c11d03beaf37c1b199f40414fb47ec3252121595a8d3e8038e9ce7bb9
+
+name:           nazuki
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/n4o847/nazuki-hs>
+homepage:       https://github.com/n4o847/nazuki-hs#readme
+bug-reports:    https://github.com/n4o847/nazuki-hs/issues
+author:         n4o847
+maintainer:     22975590+n4o847@users.noreply.github.com
+copyright:      2019 n4o847
+license:        MIT
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+
+source-repository head
+  type: git
+  location: https://github.com/n4o847/nazuki-hs
+
+library
+  exposed-modules:
+      Nazuki.Assembler.Complex
+      Nazuki.Assembler.Instruction
+      Nazuki.Assembler.Label
+      Nazuki.Assembler.Parser
+      Nazuki.CodeGen.Arch1010.Float10
+      Nazuki.CodeGen.Arch1010.Int10
+      Nazuki.CodeGen.Arch232.Common
+      Nazuki.CodeGen.Arch232.Decimal32.BID
+      Nazuki.CodeGen.Arch232.Decimal32.DPD
+      Nazuki.CodeGen.Arch232.Int32
+      Nazuki.CodeGen.Arch232.IO
+      Nazuki.CodeGen.Arch232.Memory
+      Nazuki.CodeGen.Arch2561.Byte
+      Nazuki.CodeGen.Core
+      Nazuki.CodeGen.Util
+      Nazuki.CodeGen.VirtualMachine
+      Nazuki.Compiler.AST
+      Nazuki.Compiler.CodeGen
+      Nazuki.Compiler.Parser
+      Nazuki.Main
+      Nazuki.Paths
+      Nazuki.Runtime.Parser
+      Nazuki.Runtime.Runner
+      Nazuki.Util
+  other-modules:
+      Paths_nazuki
+  hs-source-dirs:
+      src
+  build-depends:
+      base
+    , bytestring
+    , containers
+    , megaparsec
+    , mtl
+    , parser-combinators
+    , text
+  default-language: Haskell2010
+
+executable nazuki
+  main-is: Main.hs
+  other-modules:
+      Paths_nazuki
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base
+    , bytestring
+    , containers
+    , megaparsec
+    , mtl
+    , nazuki
+    , parser-combinators
+    , text
+  default-language: Haskell2010
+
+test-suite nazuki-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Nazuki.Assembler.ParserSpec
+      Nazuki.CodeGen.Arch1010.Int10Spec
+      Nazuki.CodeGen.Arch232.Int32Spec
+      Nazuki.CodeGen.Arch232.IOSpec
+      Nazuki.CodeGen.Arch2561.ByteSpec
+      Nazuki.Compiler.CodeGenSpec
+      Nazuki.Compiler.ParserSpec
+      Nazuki.UtilSpec
+      Paths_nazuki
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base
+    , bytestring
+    , containers
+    , hspec
+    , megaparsec
+    , mtl
+    , nazuki
+    , parser-combinators
+    , text
+  default-language: Haskell2010
+
+benchmark nazuki-bench
+  type: exitcode-stdio-1.0
+  main-is: Main.hs
+  other-modules:
+      Paths_nazuki
+  hs-source-dirs:
+      bench
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base
+    , bytestring
+    , containers
+    , criterion
+    , megaparsec
+    , mtl
+    , nazuki
+    , parser-combinators
+    , text
+  default-language: Haskell2010
