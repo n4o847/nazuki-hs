@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: a8dbdf1c11d03beaf37c1b199f40414fb47ec3252121595a8d3e8038e9ce7bb9
+-- hash: 350f22966d9bd556a99b8ef99277ad85f4e99007c29c912e9afed7b6b171fecb
 
 name:           nazuki
 version:        0.1.0.0
@@ -26,30 +26,30 @@ source-repository head
 
 library
   exposed-modules:
-      Nazuki.Assembler.Complex
-      Nazuki.Assembler.Instruction
-      Nazuki.Assembler.Label
-      Nazuki.Assembler.Parser
-      Nazuki.CodeGen.Arch1010.Float10
-      Nazuki.CodeGen.Arch1010.Int10
-      Nazuki.CodeGen.Arch232.Common
-      Nazuki.CodeGen.Arch232.Decimal32.BID
-      Nazuki.CodeGen.Arch232.Decimal32.DPD
-      Nazuki.CodeGen.Arch232.Int32
-      Nazuki.CodeGen.Arch232.IO
-      Nazuki.CodeGen.Arch232.Memory
-      Nazuki.CodeGen.Arch2561.Byte
-      Nazuki.CodeGen.Core
-      Nazuki.CodeGen.Util
-      Nazuki.CodeGen.VirtualMachine
-      Nazuki.Compiler.AST
-      Nazuki.Compiler.CodeGen
-      Nazuki.Compiler.Parser
+      Nazuki.Assembly.Complex
+      Nazuki.Assembly.Instruction
+      Nazuki.Assembly.Label
+      Nazuki.Assembly.Parser
       Nazuki.Main
       Nazuki.Paths
       Nazuki.Runtime.Parser
       Nazuki.Runtime.Runner
+      Nazuki.Script.AST
+      Nazuki.Script.CodeGen
+      Nazuki.Script.Parser
       Nazuki.Util
+      Nazuki.VM.Binary32.Common
+      Nazuki.VM.Binary32.Decimal32.BID
+      Nazuki.VM.Binary32.Decimal32.DPD
+      Nazuki.VM.Binary32.Int32
+      Nazuki.VM.Binary32.IO
+      Nazuki.VM.Binary32.Memory
+      Nazuki.VM.Core
+      Nazuki.VM.Decimal10.Float10
+      Nazuki.VM.Decimal10.Int10
+      Nazuki.VM.Util
+      Nazuki.VM.VirtualMachine
+      Nazuki.VM.Word1.Byte
   other-modules:
       Paths_nazuki
   hs-source-dirs:
@@ -86,14 +86,14 @@ test-suite nazuki-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Nazuki.Assembler.ParserSpec
-      Nazuki.CodeGen.Arch1010.Int10Spec
-      Nazuki.CodeGen.Arch232.Int32Spec
-      Nazuki.CodeGen.Arch232.IOSpec
-      Nazuki.CodeGen.Arch2561.ByteSpec
-      Nazuki.Compiler.CodeGenSpec
-      Nazuki.Compiler.ParserSpec
+      Nazuki.Assembly.ParserSpec
+      Nazuki.Script.CodeGenSpec
+      Nazuki.Script.ParserSpec
       Nazuki.UtilSpec
+      Nazuki.VM.Binary32.Int32Spec
+      Nazuki.VM.Binary32.IOSpec
+      Nazuki.VM.Decimal10.Int10Spec
+      Nazuki.VM.Word1.ByteSpec
       Paths_nazuki
   hs-source-dirs:
       test
