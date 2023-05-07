@@ -9,6 +9,7 @@ module Nazuki.Runtime.Parser
   )
 where
 
+import Control.Monad (when)
 import Control.Monad.Except
 import Control.Monad.State.Strict
 import Data.Functor ((<&>))

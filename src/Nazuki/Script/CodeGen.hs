@@ -7,6 +7,7 @@ module Nazuki.Script.CodeGen
   )
 where
 
+import Control.Monad (forM_, when)
 import Control.Monad.Except
 import Control.Monad.State.Strict
 import Data.Map (Map)

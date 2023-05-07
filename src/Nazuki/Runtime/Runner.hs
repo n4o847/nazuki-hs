@@ -7,6 +7,7 @@ module Nazuki.Runtime.Runner
   )
 where
 
+import Control.Monad (when)
 import Control.Monad.Except
 import Control.Monad.State.Strict
 import qualified Data.ByteString as BS
