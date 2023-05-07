@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.35.0.
+-- This file has been generated from package.yaml by hpack version 0.35.1.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 350f22966d9bd556a99b8ef99277ad85f4e99007c29c912e9afed7b6b171fecb
+-- hash: 25c30650657e2f9c98671aed130c751ad7ba5fac00c0f7e0e741f8ca6e0fa14e
 
 name:           nazuki
 version:        0.1.0.0
@@ -70,7 +70,7 @@ executable nazuki
       Paths_nazuki
   hs-source-dirs:
       app
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -rtsopts -with-rtsopts=-N
   build-depends:
       base
     , bytestring
