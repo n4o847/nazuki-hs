@@ -5,6 +5,8 @@
 /**/*.hi
 /**/*.o
 
+/out-ghc-wasm/
+
 *.prof
 
 node_modules/
