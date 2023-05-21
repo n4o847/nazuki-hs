@@ -1,4 +1,6 @@
 import {
+  AssembleRequest,
+  AssembleResponse,
   CompileRequest,
   CompileResponse,
   NazukiRequest,
@@ -34,3 +36,7 @@ worker.addEventListener("message", (event: MessageEvent<NazukiResponse>) => {
 });
 
 export const compile = createMethod<CompileRequest, CompileResponse>("compile");
+
+export const assemble = createMethod<AssembleRequest, AssembleResponse>(
+  "assemble"
+);

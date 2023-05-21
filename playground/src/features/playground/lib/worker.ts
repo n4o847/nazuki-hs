@@ -1,5 +1,11 @@
 import { WASI, init } from "@wasmer/wasi";
-import { CompileRequest, CompileResponse, NazukiRequest } from "./types";
+import {
+  AssembleRequest,
+  AssembleResponse,
+  CompileRequest,
+  CompileResponse,
+  NazukiRequest,
+} from "./types";
 
 const WASM_URL = new URL(
   "../../../../../out-ghc-wasm/nazuki.wasm",
@@ -28,6 +34,9 @@ self.addEventListener("message", async (event: MessageEvent<NazukiRequest>) => {
   if (event.data.method === "compile") {
     const result = await compile(event.data.params);
     self.postMessage({ result, id: event.data.id });
+  } else if (event.data.method === "assemble") {
+    const result = await assemble(event.data.params);
+    self.postMessage({ result, id: event.data.id });
   }
 });
 
@@ -39,6 +48,21 @@ const compile = async ({
     args: ["nio", "c", "/a.nazuki", "/a.bf"],
   });
   wasi.fs.open("/a.nazuki", { write: true, create: true }).writeString(source);
+  const instance = wasi.instantiate(await modulePromise);
+  wasi.start(instance);
+  return {
+    output: wasi.fs.open("/a.bf", {}).readString(),
+  };
+};
+
+const assemble = async ({
+  source,
+}: AssembleRequest["params"]): Promise<AssembleResponse["result"]> => {
+  await init();
+  const wasi = new WASI({
+    args: ["nio", "asm", "/a.nasm", "/a.bf"],
+  });
+  wasi.fs.open("/a.nasm", { write: true, create: true }).writeString(source);
   const instance = wasi.instantiate(await modulePromise);
   wasi.start(instance);
   return {
