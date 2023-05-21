@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 25c30650657e2f9c98671aed130c751ad7ba5fac00c0f7e0e741f8ca6e0fa14e
+-- hash: 6c833196c24cc5ac5ec081ec6db8146f54c8a2978f444f647f85fbb33079d5fc
 
 name:           nazuki
 version:        0.1.0.0
@@ -70,7 +70,24 @@ executable nazuki
       Paths_nazuki
   hs-source-dirs:
       app
-  ghc-options: -rtsopts -with-rtsopts=-N
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base
+    , bytestring
+    , containers
+    , megaparsec
+    , mtl
+    , nazuki
+    , parser-combinators
+    , text
+  default-language: Haskell2010
+
+executable nazuki-wasm
+  main-is: Main.hs
+  other-modules:
+      Paths_nazuki
+  hs-source-dirs:
+      app
   build-depends:
       base
     , bytestring

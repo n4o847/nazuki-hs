@@ -28,9 +28,15 @@ executables:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
-    # - -threaded
+    - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+    dependencies:
+    - nazuki
+
+  nazuki-wasm:
+    main:                Main.hs
+    source-dirs:         app
     dependencies:
     - nazuki
 
