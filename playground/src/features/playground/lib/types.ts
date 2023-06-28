@@ -1,3 +1,16 @@
+export interface NazukiInstance extends WebAssembly.Instance {
+  readonly exports: NazukiExports;
+}
+
+export interface NazukiExports extends WebAssembly.Exports {
+  readonly _initialize: () => void;
+  readonly compile: (inputPtr: number, inputLen: number) => number;
+  readonly malloc: (size: number) => number;
+  readonly free: (ptr: number) => void;
+  readonly hs_init: (argc: number, argv: number) => void;
+  readonly memory: WebAssembly.Memory;
+}
+
 export interface Request<Method extends string, Params> {
   method: Method;
   params: Params;
@@ -13,9 +26,15 @@ export type NazukiRequest = CompileRequest | AssembleRequest;
 
 export type NazukiResponse = CompileResponse | AssembleResponse;
 
-export type CompileRequest = Request<"compile", { source: string }>;
+export type CompileParams = { source: string };
 
-export type CompileResponse = Response<{ output: string }>;
+export type CompileRequest = Request<"compile", CompileParams>;
+
+export type CompileResult =
+  | { status: "success"; output: string }
+  | { status: "error"; message: string };
+
+export type CompileResponse = Response<CompileResult>;
 
 export type AssembleRequest = Request<"assemble", { source: string }>;
 

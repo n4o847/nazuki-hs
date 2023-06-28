@@ -2,8 +2,9 @@ import { WASI, init } from "@wasmer/wasi";
 import {
   AssembleRequest,
   AssembleResponse,
-  CompileRequest,
-  CompileResponse,
+  CompileParams,
+  CompileResult,
+  NazukiInstance,
   NazukiRequest,
 } from "./types";
 
@@ -40,19 +41,53 @@ self.addEventListener("message", async (event: MessageEvent<NazukiRequest>) => {
   }
 });
 
-const compile = async ({
-  source,
-}: CompileRequest["params"]): Promise<CompileResponse["result"]> => {
+const compile = async ({ source }: CompileParams): Promise<CompileResult> => {
   await init();
-  const wasi = new WASI({
-    args: ["nio", "c", "/a.nazuki", "/a.bf"],
-  });
-  wasi.fs.open("/a.nazuki", { write: true, create: true }).writeString(source);
-  const instance = wasi.instantiate(await modulePromise);
-  wasi.start(instance);
-  return {
-    output: wasi.fs.open("/a.bf", {}).readString(),
-  };
+  const wasi = new WASI({});
+  const instance = wasi.instantiate(await modulePromise) as NazukiInstance;
+  instance.exports._initialize();
+  instance.exports.hs_init(0, 0);
+  const encoder = new TextEncoder();
+  const decoder = new TextDecoder();
+  const sourceBytes = encoder.encode(source);
+  const sourceLen = sourceBytes.byteLength;
+  const sourcePtr = instance.exports.malloc(sourceLen);
+  encoder.encodeInto(
+    source,
+    new Uint8Array(instance.exports.memory.buffer, sourcePtr, sourceLen)
+  );
+  const resultPtr = instance.exports.compile(sourcePtr, sourceLen);
+  const resultView = new DataView(
+    instance.exports.memory.buffer,
+    resultPtr,
+    12
+  );
+  const status = resultView.getUint32(0, true);
+  if (status === 0) {
+    const outputPtr = resultView.getUint32(4, true);
+    const outputLen = resultView.getUint32(8, true);
+    const outputView = new DataView(
+      instance.exports.memory.buffer,
+      outputPtr,
+      outputLen
+    );
+    const output = decoder.decode(outputView);
+    instance.exports.free(outputPtr);
+    instance.exports.free(resultPtr);
+    return { status: "success", output };
+  } else {
+    const messagePtr = resultView.getUint32(4, true);
+    const messageLen = resultView.getUint32(8, true);
+    const messageView = new DataView(
+      instance.exports.memory.buffer,
+      messagePtr,
+      messageLen
+    );
+    const message = decoder.decode(messageView);
+    instance.exports.free(messagePtr);
+    instance.exports.free(resultPtr);
+    return { status: "error", message };
+  }
 };
 
 const assemble = async ({

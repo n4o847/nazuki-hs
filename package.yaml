@@ -36,7 +36,11 @@ executables:
 
   nazuki-wasm:
     main:                Main.hs
-    source-dirs:         app
+    source-dirs:         wasm
+    ghc-options:
+    - -no-hs-main
+    - -optl-mexec-model=reactor
+    - -optl-Wl,--export=hs_init,--export=malloc,--export=free,--export=compile
     dependencies:
     - nazuki
 

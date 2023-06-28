@@ -9,6 +9,7 @@ import Button from 'react-bootstrap/Button';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import { Nazuki } from '../../pkg/types';
+import * as nazuki2 from './features/playground/lib/nazuki';
 
 const defaultScriptSource = `\
 a = scan()
@@ -48,8 +49,12 @@ export default function App() {
       const { loadNazuki } = await import('../../pkg');
       const nazuki = await loadNazuki();
       setNazuki(nazuki);
-      const result = await nazuki.compile(scriptSource);
-      setResult(result);
+      const result = await nazuki2.compile({ source: scriptSource });
+      if (result.status === 'success') {
+        setResult(result.output);
+      } else {
+        setAlerts([result.message]);
+      }
       const banner = await nazuki.createBanner(scriptSource);
       setBanner(banner);
     })().catch((error) => {
@@ -60,9 +65,13 @@ export default function App() {
   const compile = async () => {
     if (!nazuki) return;
     setCompiling(true);
-    await nazuki.compile(scriptSource).then((result) => {
-      setResult(result);
-      setAlerts([]);
+    await nazuki2.compile({ source: scriptSource }).then((result) => {
+      if (result.status === 'success') {
+        setResult(result.output);
+        setAlerts([]);
+      } else {
+        setAlerts([result.message]);
+      }
     }).catch((error) => {
       setAlerts([String(error)]);
     });
@@ -73,8 +82,8 @@ export default function App() {
   const assemble = async () => {
     if (!nazuki) return;
     setAssembling(true);
-    await nazuki.assemble(assemblySource).then((result) => {
-      setResult(result);
+    await nazuki2.assemble({ source: assemblySource }).then((result) => {
+      setResult(result.output);
       setAlerts([]);
     }).catch((error) => {
       setAlerts([String(error)]);
