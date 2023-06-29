@@ -31,17 +31,13 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        ghc-version: [9.0.2]
-
     steps:
       - uses: actions/checkout@v3
 
       - uses: haskell/actions/setup@v2
         with:
-          ghc-version: ${{ matrix.ghc-version }}
           enable-stack: true
+          stack-no-global: true
 
       - uses: actions/cache@v3
         name: Cache ~/.stack
@@ -59,4 +55,4 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-stack-work-
 
-      - run: stack --system-ghc test
+      - run: stack test
