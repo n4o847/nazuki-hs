@@ -13,7 +13,7 @@
     "react": "^18.2.0",
     "react-bootstrap": "^1.6.4",
     "react-dom": "^18.2.0",
-    "vite": "^4.0.2"
+    "vite": "^4.0.5"
   },
   "devDependencies": {
     "@types/react": "^18.0.26",
