@@ -7,6 +7,7 @@ on:
       - 'bench/**'
       - 'src/**'
       - 'test/**'
+      - 'wasm/**'
       - 'hie.yaml'
       - 'package.yaml'
       - 'stack.yaml'
@@ -20,6 +21,7 @@ on:
       - 'bench/**'
       - 'src/**'
       - 'test/**'
+      - 'wasm/**'
       - 'hie.yaml'
       - 'package.yaml'
       - 'stack.yaml'
@@ -59,4 +61,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-stack-work-
 
-      - run: stack --system-ghc test
+      - run: |
+          sed -i -e '/NAZUKI_WASM_BEGIN/,/NAZUKI_WASM_END/d' package.yaml
+          stack --system-ghc test

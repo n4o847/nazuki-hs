@@ -34,6 +34,9 @@ executables:
     dependencies:
     - nazuki
 
+# Since Stack forces all executables to be built once,
+# disable the wasm build here during CI.
+# NAZUKI_WASM_BEGIN
   nazuki-wasm:
     main:                Main.hs
     source-dirs:         wasm
@@ -43,6 +46,7 @@ executables:
     - -optl-Wl,--export=hs_init,--export=malloc,--export=free,--export=compile
     dependencies:
     - nazuki
+# NAZUKI_WASM_END
 
 tests:
   nazuki-test:
