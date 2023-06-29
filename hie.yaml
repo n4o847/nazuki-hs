@@ -1,10 +1,21 @@
 cradle:
-  stack:
-    - path: ./src
-      component: "nazuki:lib"
-    - path: ./app/Main.hs
-      component: "nazuki:exe:nazuki"
-    - path: ./test
-      component: "nazuki:test:nazuki-test"
+  # stack:
+  #   - path: "./src"
+  #     component: "nazuki:lib"
+  #   - path: "./app/Main.hs"
+  #     component: "nazuki:exe:nazuki"
+  #   - path: "./test"
+  #     component: "nazuki:test:nazuki-test"
+  #   - path: "./bench/Main.hs"
+  #     component: "nazuki:bench:nazuki-bench"
+  cabal:
+    - path: "./src"
+      component: "lib:nazuki"
+    - path: "./app/Main.hs"
+      component: "exe:nazuki"
+    - path: "./wasm/Main.hs"
+      component: "exe:nazuki-wasm"
+    - path: "./test"
+      component: "test:nazuki-test"
     - path: "./bench/Main.hs"
-      component: "nazuki:bench:nazuki-bench"
+      component: "bench:nazuki-bench"
