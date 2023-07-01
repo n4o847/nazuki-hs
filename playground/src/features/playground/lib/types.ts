@@ -12,6 +12,7 @@ export interface NazukiExports extends WebAssembly.Exports {
     inputPtr: number,
     inputLen: number
   ) => number;
+  readonly createBanner: (sourcePtr: number, sourceLen: number) => number;
   readonly malloc: (size: number) => number;
   readonly free: (ptr: number) => void;
   readonly hs_init: (argc: number, argv: number) => void;
@@ -29,9 +30,17 @@ export interface Response<Result> {
   id: number;
 }
 
-export type NazukiRequest = CompileRequest | AssembleRequest | RunRequest;
+export type NazukiRequest =
+  | CompileRequest
+  | AssembleRequest
+  | RunRequest
+  | CreateBannerRequest;
 
-export type NazukiResponse = CompileResponse | AssembleResponse | RunResponse;
+export type NazukiResponse =
+  | CompileResponse
+  | AssembleResponse
+  | RunResponse
+  | CreateBannerResponse;
 
 export type CompileParams = { source: string };
 export type CompileRequest = Request<"compile", CompileParams>;
@@ -53,3 +62,8 @@ export type RunResult =
   | { status: "success"; output: string }
   | { status: "error"; message: string };
 export type RunResponse = Response<RunResult>;
+
+export type CreateBannerParams = { source: string };
+export type CreateBannerRequest = Request<"createBanner", CreateBannerParams>;
+export type CreateBannerResult = { output: string };
+export type CreateBannerResponse = Response<CreateBannerResult>;

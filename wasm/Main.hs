@@ -17,6 +17,8 @@ main = mempty
 
 type CompileResult = Either Text Text
 
+type CreateBannerResult = Text
+
 receiveText :: Ptr CChar -> Int -> IO Text
 receiveText ptr len =
   decodeUtf8 <$> unsafePackMallocCStringLen (ptr, len)
@@ -44,6 +46,14 @@ sendCompileResult result = do
       poke (plusPtr ptr 8) outputLen
   return ptr
 
+sendCreateBannerResult :: CreateBannerResult -> IO (Ptr CreateBannerResult)
+sendCreateBannerResult result = do
+  ptr <- mallocBytes 8 :: IO (Ptr CreateBannerResult)
+  (resultPtr, resultLen) <- sendText result
+  poke (plusPtr ptr 0) resultPtr
+  poke (plusPtr ptr 4) resultLen
+  return ptr
+
 foreign export ccall compile :: Ptr CChar -> Int -> IO (Ptr CompileResult)
 
 compile :: Ptr CChar -> Int -> IO (Ptr CompileResult)
@@ -68,3 +78,11 @@ run programPtr programLen inputPtr inputLen = do
   input <- receiveText inputPtr inputLen
   let result = Nazuki.run program input
   sendCompileResult result
+
+foreign export ccall createBanner :: Ptr CChar -> Int -> IO (Ptr CreateBannerResult)
+
+createBanner :: Ptr CChar -> Int -> IO (Ptr CreateBannerResult)
+createBanner sourcePtr sourceLen = do
+  source <- receiveText sourcePtr sourceLen
+  let result = Nazuki.createBanner source
+  sendCreateBannerResult result

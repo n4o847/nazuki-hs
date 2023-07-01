@@ -55,8 +55,8 @@ export default function App() {
       } else {
         setAlerts([result.message]);
       }
-      const banner = await nazuki.createBanner(scriptSource);
-      setBanner(banner);
+      const banner = await nazuki2.createBanner({ source: scriptSource });
+      setBanner(banner.output);
     })().catch((error) => {
       setAlerts([String(error)]);
     });
@@ -75,7 +75,8 @@ export default function App() {
     }).catch((error) => {
       setAlerts([String(error)]);
     });
-    setBanner(await nazuki.createBanner(scriptSource));
+    const banner = await nazuki2.createBanner({ source: scriptSource });
+    setBanner(banner.output);
     setCompiling(false);
   };
 
@@ -92,7 +93,8 @@ export default function App() {
     }).catch((error) => {
       setAlerts([String(error)]);
     });
-    setBanner(await nazuki.createBanner(assemblySource));
+    const banner = await nazuki2.createBanner({ source: assemblySource });
+    setBanner(banner.output);
     setAssembling(false);
   };
 

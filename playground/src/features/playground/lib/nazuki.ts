@@ -3,6 +3,8 @@ import {
   AssembleResponse,
   CompileRequest,
   CompileResponse,
+  CreateBannerRequest,
+  CreateBannerResponse,
   NazukiRequest,
   NazukiResponse,
   RunRequest,
@@ -44,3 +46,8 @@ export const assemble = createMethod<AssembleRequest, AssembleResponse>(
 );
 
 export const run = createMethod<RunRequest, RunResponse>("run");
+
+export const createBanner = createMethod<
+  CreateBannerRequest,
+  CreateBannerResponse
+>("createBanner");

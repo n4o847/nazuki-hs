@@ -1,4 +1,4 @@
-import { CompileResult } from "./types";
+import { CompileResult, CreateBannerResult } from "./types";
 
 export class Receiver {
   constructor(
@@ -32,5 +32,14 @@ export class Receiver {
     } else {
       throw new Error(`invalid status ${status}`);
     }
+  }
+
+  receiveCreateBannerResult(ptr: number): CreateBannerResult {
+    const resultView = new DataView(this.memory.buffer, ptr, 8);
+    const outputPtr = resultView.getUint32(0, true);
+    const outputLen = resultView.getUint32(4, true);
+    const output = this.receiveString(outputPtr, outputLen);
+    this.free(ptr);
+    return { output };
   }
 }

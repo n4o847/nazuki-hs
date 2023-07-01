@@ -4,6 +4,8 @@ import {
   AssembleResult,
   CompileParams,
   CompileResult,
+  CreateBannerParams,
+  CreateBannerResult,
   NazukiInstance,
   NazukiRequest,
   RunParams,
@@ -44,6 +46,9 @@ self.addEventListener("message", async (event: MessageEvent<NazukiRequest>) => {
     self.postMessage({ result, id: event.data.id });
   } else if (event.data.method === "run") {
     const result = await run(event.data.params);
+    self.postMessage({ result, id: event.data.id });
+  } else if (event.data.method === "createBanner") {
+    const result = await createBanner(event.data.params);
     self.postMessage({ result, id: event.data.id });
   }
 });
@@ -95,5 +100,21 @@ const run = async ({ program, input }: RunParams): Promise<RunResult> => {
     inputLen
   );
   const result = receiver.receiveCompileResult(resultPtr);
+  return result;
+};
+
+const createBanner = async ({
+  source,
+}: CreateBannerParams): Promise<CreateBannerResult> => {
+  await init();
+  const wasi = new WASI({});
+  const instance = wasi.instantiate(await modulePromise) as NazukiInstance;
+  instance.exports._initialize();
+  instance.exports.hs_init(0, 0);
+  const sender = new Sender(instance.exports.memory, instance.exports.malloc);
+  const receiver = new Receiver(instance.exports.memory, instance.exports.free);
+  const [sourcePtr, sourceLen] = sender.sendString(source);
+  const resultPtr = instance.exports.createBanner(sourcePtr, sourceLen);
+  const result = receiver.receiveCreateBannerResult(resultPtr);
   return result;
 };

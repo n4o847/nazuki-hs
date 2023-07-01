@@ -50,7 +50,8 @@ executables:
       --export=free,\
       --export=compile,\
       --export=assemble,\
-      --export=run"
+      --export=run,\
+      --export=createBanner"
     dependencies:
     - nazuki
 # NAZUKI_WASM_END
