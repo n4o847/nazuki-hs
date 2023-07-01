@@ -11,9 +11,9 @@ import {
   RunResponse,
 } from "./types";
 
-const WORKER_URL = new URL("./worker.ts", import.meta.url);
-
-const worker = new Worker(WORKER_URL, { type: "module" });
+const worker = new Worker(new URL("./worker.ts", import.meta.url), {
+  type: "module",
+});
 
 let globalId = 0;
 
