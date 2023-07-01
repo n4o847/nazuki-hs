@@ -83,8 +83,12 @@ export default function App() {
     if (!nazuki) return;
     setAssembling(true);
     await nazuki2.assemble({ source: assemblySource }).then((result) => {
-      setResult(result.output);
-      setAlerts([]);
+      if (result.status === 'success') {
+        setResult(result.output);
+        setAlerts([]);
+      } else {
+        setAlerts([result.message]);
+      }
     }).catch((error) => {
       setAlerts([String(error)]);
     });

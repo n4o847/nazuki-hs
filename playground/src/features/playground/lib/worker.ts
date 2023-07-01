@@ -1,7 +1,7 @@
 import { WASI, init } from "@wasmer/wasi";
 import {
-  AssembleRequest,
-  AssembleResponse,
+  AssembleParams,
+  AssembleResult,
   CompileParams,
   CompileResult,
   NazukiInstance,
@@ -59,15 +59,16 @@ const compile = async ({ source }: CompileParams): Promise<CompileResult> => {
 
 const assemble = async ({
   source,
-}: AssembleRequest["params"]): Promise<AssembleResponse["result"]> => {
+}: AssembleParams): Promise<AssembleResult> => {
   await init();
-  const wasi = new WASI({
-    args: ["nio", "asm", "/a.nasm", "/a.bf"],
-  });
-  wasi.fs.open("/a.nasm", { write: true, create: true }).writeString(source);
-  const instance = wasi.instantiate(await modulePromise);
-  wasi.start(instance);
-  return {
-    output: wasi.fs.open("/a.bf", {}).readString(),
-  };
+  const wasi = new WASI({});
+  const instance = wasi.instantiate(await modulePromise) as NazukiInstance;
+  instance.exports._initialize();
+  instance.exports.hs_init(0, 0);
+  const sender = new Sender(instance.exports.memory, instance.exports.malloc);
+  const receiver = new Receiver(instance.exports.memory, instance.exports.free);
+  const [sourcePtr, sourceLen] = sender.sendString(source);
+  const resultPtr = instance.exports.assemble(sourcePtr, sourceLen);
+  const result = receiver.receiveCompileResult(resultPtr);
+  return result;
 };

@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.35.1.
+-- This file has been generated from package.yaml by hpack version 0.35.2.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8658e995b9b3150109e7affcc7dbb937d92c812e7ec9972cdb99a75b92a1e200
+-- hash: 61d865420edcb1e2bb0c2da02e3ea114eb4840b82a072b0f72ec662d3203d48a
 
 name:           nazuki
 version:        0.1.0.0
@@ -88,7 +88,7 @@ executable nazuki-wasm
       Paths_nazuki
   hs-source-dirs:
       wasm
-  ghc-options: -no-hs-main -optl-mexec-model=reactor -optl-Wl,--export=hs_init,--export=malloc,--export=free,--export=compile
+  ghc-options: -no-hs-main -optl-mexec-model=reactor -optl-Wl,--export=hs_init,--export=malloc,--export=free,--export=compile,--export=assemble
   build-depends:
       base
     , bytestring
