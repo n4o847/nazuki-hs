@@ -1,9 +1,7 @@
 /.stack-work/
 /dist-newstyle/
 
-/out/
-/**/*.hi
-/**/*.o
+/out-ghc-wasm/
 
 *.prof
 

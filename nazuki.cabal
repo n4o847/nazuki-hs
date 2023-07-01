@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.35.0.
+-- This file has been generated from package.yaml by hpack version 0.35.2.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 350f22966d9bd556a99b8ef99277ad85f4e99007c29c912e9afed7b6b171fecb
+-- hash: 51b1b5093f71aa92a20c18b0bf7a614b1520169ea014c62aec606cbe822151d9
 
 name:           nazuki
 version:        0.1.0.0
@@ -71,6 +71,24 @@ executable nazuki
   hs-source-dirs:
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base
+    , bytestring
+    , containers
+    , megaparsec
+    , mtl
+    , nazuki
+    , parser-combinators
+    , text
+  default-language: Haskell2010
+
+executable nazuki-wasm
+  main-is: Main.hs
+  other-modules:
+      Paths_nazuki
+  hs-source-dirs:
+      wasm
+  ghc-options: -no-hs-main -optl-mexec-model=reactor -optl-Wl,--export=hs_init,--export=malloc,--export=free,--export=compile,--export=assemble,--export=run,--export=createBanner
   build-depends:
       base
     , bytestring
