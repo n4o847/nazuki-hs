@@ -99,9 +99,14 @@ export default function App() {
   const run = async () => {
     if (!nazuki) return;
     setRunning(true);
-    await nazuki.run(result, input).then((output) => {
-      setOutput(output);
-      setError('');
+    await nazuki2.run({ program: result, input }).then((result) => {
+      if (result.status === 'success') {
+        setOutput(result.output);
+        setError('');
+      } else {
+        setOutput('');
+        setError(result.message);
+      }
     }).catch((error) => {
       setOutput('');
       setError(String(error));

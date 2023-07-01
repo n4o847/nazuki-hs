@@ -59,3 +59,12 @@ assemble inputPtr inputLen = do
   input <- receiveText inputPtr inputLen
   let result = Nazuki.assemble input
   sendCompileResult result
+
+foreign export ccall run :: Ptr CChar -> Int -> Ptr CChar -> Int -> IO (Ptr CompileResult)
+
+run :: Ptr CChar -> Int -> Ptr CChar -> Int -> IO (Ptr CompileResult)
+run programPtr programLen inputPtr inputLen = do
+  program <- receiveText programPtr programLen
+  input <- receiveText inputPtr inputLen
+  let result = Nazuki.run program input
+  sendCompileResult result

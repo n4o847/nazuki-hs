@@ -6,6 +6,12 @@ export interface NazukiExports extends WebAssembly.Exports {
   readonly _initialize: () => void;
   readonly compile: (inputPtr: number, inputLen: number) => number;
   readonly assemble: (inputPtr: number, inputLen: number) => number;
+  readonly run: (
+    programPtr: number,
+    programLen: number,
+    inputPtr: number,
+    inputLen: number
+  ) => number;
   readonly malloc: (size: number) => number;
   readonly free: (ptr: number) => void;
   readonly hs_init: (argc: number, argv: number) => void;
@@ -23,26 +29,27 @@ export interface Response<Result> {
   id: number;
 }
 
-export type NazukiRequest = CompileRequest | AssembleRequest;
+export type NazukiRequest = CompileRequest | AssembleRequest | RunRequest;
 
-export type NazukiResponse = CompileResponse | AssembleResponse;
+export type NazukiResponse = CompileResponse | AssembleResponse | RunResponse;
 
 export type CompileParams = { source: string };
-
 export type CompileRequest = Request<"compile", CompileParams>;
-
 export type CompileResult =
   | { status: "success"; output: string }
   | { status: "error"; message: string };
-
 export type CompileResponse = Response<CompileResult>;
 
 export type AssembleParams = { source: string };
-
 export type AssembleRequest = Request<"assemble", AssembleParams>;
-
 export type AssembleResult =
   | { status: "success"; output: string }
   | { status: "error"; message: string };
-
 export type AssembleResponse = Response<AssembleResult>;
+
+export type RunParams = { program: string; input: string };
+export type RunRequest = Request<"run", RunParams>;
+export type RunResult =
+  | { status: "success"; output: string }
+  | { status: "error"; message: string };
+export type RunResponse = Response<RunResult>;

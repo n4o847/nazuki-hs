@@ -5,6 +5,8 @@ import {
   CompileResponse,
   NazukiRequest,
   NazukiResponse,
+  RunRequest,
+  RunResponse,
 } from "./types";
 
 const WORKER_URL = new URL("./worker.ts", import.meta.url);
@@ -40,3 +42,5 @@ export const compile = createMethod<CompileRequest, CompileResponse>("compile");
 export const assemble = createMethod<AssembleRequest, AssembleResponse>(
   "assemble"
 );
+
+export const run = createMethod<RunRequest, RunResponse>("run");

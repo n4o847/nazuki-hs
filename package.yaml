@@ -49,7 +49,8 @@ executables:
       --export=malloc,\
       --export=free,\
       --export=compile,\
-      --export=assemble"
+      --export=assemble,\
+      --export=run"
     dependencies:
     - nazuki
 # NAZUKI_WASM_END

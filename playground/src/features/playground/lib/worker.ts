@@ -6,6 +6,8 @@ import {
   CompileResult,
   NazukiInstance,
   NazukiRequest,
+  RunParams,
+  RunResult,
 } from "./types";
 import { Sender } from "./sender";
 import { Receiver } from "./receiver";
@@ -40,6 +42,9 @@ self.addEventListener("message", async (event: MessageEvent<NazukiRequest>) => {
   } else if (event.data.method === "assemble") {
     const result = await assemble(event.data.params);
     self.postMessage({ result, id: event.data.id });
+  } else if (event.data.method === "run") {
+    const result = await run(event.data.params);
+    self.postMessage({ result, id: event.data.id });
   }
 });
 
@@ -69,6 +74,26 @@ const assemble = async ({
   const receiver = new Receiver(instance.exports.memory, instance.exports.free);
   const [sourcePtr, sourceLen] = sender.sendString(source);
   const resultPtr = instance.exports.assemble(sourcePtr, sourceLen);
+  const result = receiver.receiveCompileResult(resultPtr);
+  return result;
+};
+
+const run = async ({ program, input }: RunParams): Promise<RunResult> => {
+  await init();
+  const wasi = new WASI({});
+  const instance = wasi.instantiate(await modulePromise) as NazukiInstance;
+  instance.exports._initialize();
+  instance.exports.hs_init(0, 0);
+  const sender = new Sender(instance.exports.memory, instance.exports.malloc);
+  const receiver = new Receiver(instance.exports.memory, instance.exports.free);
+  const [programPtr, programLen] = sender.sendString(program);
+  const [inputPtr, inputLen] = sender.sendString(input);
+  const resultPtr = instance.exports.run(
+    programPtr,
+    programLen,
+    inputPtr,
+    inputLen
+  );
   const result = receiver.receiveCompileResult(resultPtr);
   return result;
 };
