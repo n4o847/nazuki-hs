@@ -9,7 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@wasmer/wasi": "^1.2.2",
     "bootstrap": "^4.6.1",
     "react": "^18.2.0",
     "react-bootstrap": "^1.6.4",

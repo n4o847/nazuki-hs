@@ -14,10 +14,7 @@ import {
 import { Sender } from "./sender";
 import { Receiver } from "./receiver";
 
-const WASM_URL = new URL(
-  "../../../../../out-ghc-wasm/nazuki.wasm",
-  import.meta.url
-);
+const WASM_URL = new URL("../../out-ghc-wasm/nazuki.wasm", import.meta.url);
 
 const modulePromise = WebAssembly.compileStreaming(fetch(WASM_URL));
 
