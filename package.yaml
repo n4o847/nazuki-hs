@@ -43,7 +43,13 @@ executables:
     ghc-options:
     - -no-hs-main
     - -optl-mexec-model=reactor
-    - -optl-Wl,--export=hs_init,--export=malloc,--export=free,--export=compile,--export=assemble
+    - "\
+      -optl-Wl,\
+      --export=hs_init,\
+      --export=malloc,\
+      --export=free,\
+      --export=compile,\
+      --export=assemble"
     dependencies:
     - nazuki
 # NAZUKI_WASM_END
