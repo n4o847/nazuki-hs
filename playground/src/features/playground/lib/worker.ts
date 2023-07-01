@@ -7,6 +7,8 @@ import {
   NazukiInstance,
   NazukiRequest,
 } from "./types";
+import { Sender } from "./sender";
+import { Receiver } from "./receiver";
 
 const WASM_URL = new URL(
   "../../../../../out-ghc-wasm/nazuki.wasm",
@@ -47,47 +49,12 @@ const compile = async ({ source }: CompileParams): Promise<CompileResult> => {
   const instance = wasi.instantiate(await modulePromise) as NazukiInstance;
   instance.exports._initialize();
   instance.exports.hs_init(0, 0);
-  const encoder = new TextEncoder();
-  const decoder = new TextDecoder();
-  const sourceBytes = encoder.encode(source);
-  const sourceLen = sourceBytes.byteLength;
-  const sourcePtr = instance.exports.malloc(sourceLen);
-  encoder.encodeInto(
-    source,
-    new Uint8Array(instance.exports.memory.buffer, sourcePtr, sourceLen)
-  );
+  const sender = new Sender(instance.exports.memory, instance.exports.malloc);
+  const receiver = new Receiver(instance.exports.memory, instance.exports.free);
+  const [sourcePtr, sourceLen] = sender.sendString(source);
   const resultPtr = instance.exports.compile(sourcePtr, sourceLen);
-  const resultView = new DataView(
-    instance.exports.memory.buffer,
-    resultPtr,
-    12
-  );
-  const status = resultView.getUint32(0, true);
-  if (status === 0) {
-    const outputPtr = resultView.getUint32(4, true);
-    const outputLen = resultView.getUint32(8, true);
-    const outputView = new DataView(
-      instance.exports.memory.buffer,
-      outputPtr,
-      outputLen
-    );
-    const output = decoder.decode(outputView);
-    instance.exports.free(outputPtr);
-    instance.exports.free(resultPtr);
-    return { status: "success", output };
-  } else {
-    const messagePtr = resultView.getUint32(4, true);
-    const messageLen = resultView.getUint32(8, true);
-    const messageView = new DataView(
-      instance.exports.memory.buffer,
-      messagePtr,
-      messageLen
-    );
-    const message = decoder.decode(messageView);
-    instance.exports.free(messagePtr);
-    instance.exports.free(resultPtr);
-    return { status: "error", message };
-  }
+  const result = receiver.receiveCompileResult(resultPtr);
+  return result;
 };
 
 const assemble = async ({
