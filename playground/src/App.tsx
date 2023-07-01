@@ -8,8 +8,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
-import { Nazuki } from '../../pkg/types';
-import * as nazuki2 from './features/playground/lib/nazuki';
+import * as nazuki from './features/playground/lib/nazuki';
 
 const defaultScriptSource = `\
 a = scan()
@@ -29,7 +28,6 @@ const defaultInput = `\
 `;
 
 export default function App() {
-  const [nazuki, setNazuki] = useState<Nazuki>();
   const [mode, setMode] = useState<'script' | 'assembly'>('script');
   const [scriptSource, setScriptSource] = useState(defaultScriptSource);
   const [assemblySource, setAssemblySource] = useState(defaultAssemblySource);
@@ -46,16 +44,13 @@ export default function App() {
 
   useEffect(() => {
     (async () => {
-      const { loadNazuki } = await import('../../pkg');
-      const nazuki = await loadNazuki();
-      setNazuki(nazuki);
-      const result = await nazuki2.compile({ source: scriptSource });
+      const result = await nazuki.compile({ source: scriptSource });
       if (result.status === 'success') {
         setResult(result.output);
       } else {
         setAlerts([result.message]);
       }
-      const banner = await nazuki2.createBanner({ source: scriptSource });
+      const banner = await nazuki.createBanner({ source: scriptSource });
       setBanner(banner.output);
     })().catch((error) => {
       setAlerts([String(error)]);
@@ -63,9 +58,8 @@ export default function App() {
   }, []);
 
   const compile = async () => {
-    if (!nazuki) return;
     setCompiling(true);
-    await nazuki2.compile({ source: scriptSource }).then((result) => {
+    await nazuki.compile({ source: scriptSource }).then((result) => {
       if (result.status === 'success') {
         setResult(result.output);
         setAlerts([]);
@@ -75,15 +69,14 @@ export default function App() {
     }).catch((error) => {
       setAlerts([String(error)]);
     });
-    const banner = await nazuki2.createBanner({ source: scriptSource });
+    const banner = await nazuki.createBanner({ source: scriptSource });
     setBanner(banner.output);
     setCompiling(false);
   };
 
   const assemble = async () => {
-    if (!nazuki) return;
     setAssembling(true);
-    await nazuki2.assemble({ source: assemblySource }).then((result) => {
+    await nazuki.assemble({ source: assemblySource }).then((result) => {
       if (result.status === 'success') {
         setResult(result.output);
         setAlerts([]);
@@ -93,15 +86,14 @@ export default function App() {
     }).catch((error) => {
       setAlerts([String(error)]);
     });
-    const banner = await nazuki2.createBanner({ source: assemblySource });
+    const banner = await nazuki.createBanner({ source: assemblySource });
     setBanner(banner.output);
     setAssembling(false);
   };
 
   const run = async () => {
-    if (!nazuki) return;
     setRunning(true);
-    await nazuki2.run({ program: result, input }).then((result) => {
+    await nazuki.run({ program: result, input }).then((result) => {
       if (result.status === 'success') {
         setOutput(result.output);
         setError('');
