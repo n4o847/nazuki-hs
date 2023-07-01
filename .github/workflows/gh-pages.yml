@@ -18,10 +18,15 @@ jobs:
           node-version: '16'
           cache: 'npm'
 
+      - name: Setup ghc-wasm-meta
+        run: |
+          git clone https://gitlab.haskell.org/ghc/ghc-wasm-meta.git
+          cd ghc-wasm-meta
+          FLAVOUR=9.6 ./setup.sh
+
       - name: Build WebAssembly
-        uses: docker://terrorjack/asterius:201023
-        with:
-          entrypoint: ./entrypoint.sh
+        run: |
+          ./build-ghc-wasm.sh --local
 
       - run: npm ci
       - run: npm run build:playground
