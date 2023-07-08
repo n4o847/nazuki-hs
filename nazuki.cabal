@@ -38,7 +38,6 @@ library
     Nazuki.Assembly.Label
     Nazuki.Assembly.Parser
     Nazuki.Main
-    Nazuki.Paths
     Nazuki.Runtime.Parser
     Nazuki.Runtime.Runner
     Nazuki.Script.AST
