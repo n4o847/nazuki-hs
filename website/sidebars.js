@@ -2,7 +2,7 @@
 
 /** @type {import('@docusaurus/plugin-content-docs').SidebarsConfig} */
 const sidebars = {
-  docs: ["introduction"],
+  docs: ["introduction", "vm", "assembly", "script"],
 };
 
 module.exports = sidebars;

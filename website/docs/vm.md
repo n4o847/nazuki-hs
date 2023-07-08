@@ -24,16 +24,18 @@ The trade-off is that the data width is 33/5 times larger, but a properly optimi
 - A data cell takes values `0` or `1`.
 - 32 data cells are grouped to represent a value.
 
-> **Note**
-> `binary32` is formaly named `arch232`.
+:::note
+`binary32` is formaly named `arch232`.
+:::
 
 ### `decimal10`
 
 - A data cell takes values from `0` to `9`.
 - 10 data cells are grouped to represent a value.
 
-> **Note**
-> `decimal10` is formaly named `arch1010`.
+:::note
+`decimal10` is formaly named `arch1010`.
+:::
 
 ### `word4`
 
@@ -45,5 +47,6 @@ The trade-off is that the data width is 33/5 times larger, but a properly optimi
 - A data cell takes values from `0` to `255`.
 - A single data cell represents a value.
 
-> **Note**
-> `word1` is formaly named `arch2561`.
+:::note
+`word1` is formaly named `arch2561`.
+:::
