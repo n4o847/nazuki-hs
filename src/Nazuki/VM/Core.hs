@@ -31,10 +31,10 @@ where
 
 import Control.Monad.State.Strict
 import Data.Text (Text)
-import qualified Data.Text as Text
-import qualified Data.Text.Lazy as Text.Lazy
+import Data.Text qualified as Text
+import Data.Text.Lazy qualified as Text.Lazy
 import Data.Text.Lazy.Builder (Builder)
-import qualified Data.Text.Lazy.Builder as Text.Lazy.Builder
+import Data.Text.Lazy.Builder qualified as Text.Lazy.Builder
 
 data BfCmd
   = Inc

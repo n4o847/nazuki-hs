@@ -4,9 +4,9 @@
 module Nazuki.VM.Binary32.Int32Spec (spec) where
 
 import Control.Monad
-import qualified Data.Text as Text
+import Data.Text qualified as Text
 import Nazuki.Runtime.Runner (run)
-import qualified Nazuki.VM.Binary32.Int32 as Int32
+import Nazuki.VM.Binary32.Int32 qualified as Int32
 import Nazuki.VM.Core (generate)
 import Test.Hspec
 

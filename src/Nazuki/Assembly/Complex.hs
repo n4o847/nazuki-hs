@@ -2,7 +2,7 @@
 
 module Nazuki.Assembly.Complex where
 
-import qualified Nazuki.Assembly.Instruction as I
+import Nazuki.Assembly.Instruction qualified as I
 
 ifThen :: [I.Instruction] -> [I.Instruction] -> [I.Instruction]
 ifThen cond cons =

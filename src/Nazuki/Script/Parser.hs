@@ -11,12 +11,12 @@ import Control.Arrow (left)
 import Control.Monad (void)
 import Control.Monad.Combinators.Expr (Operator (..), makeExprParser)
 import Data.Text (Text)
-import qualified Data.Text as Text
+import Data.Text qualified as Text
 import Data.Void (Void)
-import qualified Nazuki.Script.AST as AST
+import Nazuki.Script.AST qualified as AST
 import Text.Megaparsec hiding (parse)
 import Text.Megaparsec.Char
-import qualified Text.Megaparsec.Char.Lexer as L
+import Text.Megaparsec.Char.Lexer qualified as L
 
 type Parser = Parsec Void Text
 

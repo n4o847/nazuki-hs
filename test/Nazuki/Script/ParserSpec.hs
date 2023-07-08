@@ -4,7 +4,7 @@
 module Nazuki.Script.ParserSpec (spec) where
 
 import Control.Monad
-import qualified Nazuki.Script.AST as AST
+import Nazuki.Script.AST qualified as AST
 import Nazuki.Script.Parser (parse)
 import Test.Hspec
 

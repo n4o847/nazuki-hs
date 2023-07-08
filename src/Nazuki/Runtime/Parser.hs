@@ -14,7 +14,7 @@ import Control.Monad.Except
 import Control.Monad.State.Strict
 import Data.Functor ((<&>))
 import Data.Text (Text)
-import qualified Data.Text as Text
+import Data.Text qualified as Text
 import Data.Word (Word8)
 
 data Cmd

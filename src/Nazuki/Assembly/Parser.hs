@@ -9,13 +9,13 @@ where
 import Control.Arrow (left)
 import Data.Int (Int32)
 import Data.Text (Text)
-import qualified Data.Text as Text
+import Data.Text qualified as Text
 import Data.Void (Void)
 import Nazuki.Assembly.Instruction as I
 import Nazuki.Assembly.Label (Labeled (..))
 import Text.Megaparsec hiding (Label, parse)
 import Text.Megaparsec.Char
-import qualified Text.Megaparsec.Char.Lexer as L
+import Text.Megaparsec.Char.Lexer qualified as L
 
 type Parser = Parsec Void Text
 

@@ -40,7 +40,7 @@ module Nazuki.VM.Binary32.Int32
 where
 
 import Control.Monad
-import qualified Data.Bits as Bits
+import Data.Bits qualified as Bits
 import Data.Int (Int32)
 import Data.Word (Word32)
 import Nazuki.VM.Binary32.Common

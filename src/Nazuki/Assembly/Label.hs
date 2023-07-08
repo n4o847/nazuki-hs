@@ -9,7 +9,7 @@ where
 
 import Control.Monad
 import Data.Map (Map)
-import qualified Data.Map as Map
+import Data.Map qualified as Map
 import Data.Text (Text)
 
 data Labeled a

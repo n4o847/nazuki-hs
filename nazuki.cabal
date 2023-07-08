@@ -28,8 +28,10 @@ common deps
     , parser-combinators
     , text
 
+  default-language: GHC2021
+
 library
-  import:           deps
+  import:          deps
 
   -- cabal-fmt: expand src
   exposed-modules:
@@ -57,30 +59,27 @@ library
     Nazuki.VM.VirtualMachine
     Nazuki.VM.Word1.Byte
 
-  other-modules:    Paths_nazuki
-  hs-source-dirs:   src
-  default-language: Haskell2010
+  other-modules:   Paths_nazuki
+  hs-source-dirs:  src
 
 executable nazuki
-  import:           deps
-  main-is:          Main.hs
-  other-modules:    Paths_nazuki
-  hs-source-dirs:   app
-  ghc-options:      -threaded -rtsopts -with-rtsopts=-N
-  build-depends:    nazuki
-  default-language: Haskell2010
+  import:         deps
+  main-is:        Main.hs
+  other-modules:  Paths_nazuki
+  hs-source-dirs: app
+  ghc-options:    -threaded -rtsopts -with-rtsopts=-N
+  build-depends:  nazuki
 
 executable nazuki-wasm
-  import:           deps
-  main-is:          Main.hs
-  other-modules:    Paths_nazuki
-  hs-source-dirs:   wasm
+  import:         deps
+  main-is:        Main.hs
+  other-modules:  Paths_nazuki
+  hs-source-dirs: wasm
   ghc-options:
     -no-hs-main -optl-mexec-model=reactor
     "-optl-Wl,--export=hs_init,--export=malloc,--export=free,--export=compile,--export=assemble,--export=run,--export=createBanner"
 
-  build-depends:    nazuki
-  default-language: Haskell2010
+  build-depends:  nazuki
 
 test-suite nazuki-test
   import:             deps
@@ -106,17 +105,13 @@ test-suite nazuki-test
     , hspec
     , nazuki
 
-  default-language:   Haskell2010
-
 benchmark nazuki-bench
-  import:           deps
-  type:             exitcode-stdio-1.0
-  main-is:          Main.hs
-  other-modules:    Paths_nazuki
-  hs-source-dirs:   bench
-  ghc-options:      -threaded -rtsopts -with-rtsopts=-N
+  import:         deps
+  type:           exitcode-stdio-1.0
+  main-is:        Main.hs
+  other-modules:  Paths_nazuki
+  hs-source-dirs: bench
+  ghc-options:    -threaded -rtsopts -with-rtsopts=-N
   build-depends:
     , criterion
     , nazuki
-
-  default-language: Haskell2010
