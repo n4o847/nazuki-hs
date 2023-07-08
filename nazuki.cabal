@@ -19,6 +19,7 @@ source-repository head
   location: https://github.com/n4o847/nazuki-hs
 
 library
+  -- cabal-fmt: expand src
   exposed-modules:
     Nazuki.Assembly.Complex
     Nazuki.Assembly.Instruction
@@ -98,6 +99,8 @@ executable nazuki-wasm
 test-suite nazuki-test
   type:               exitcode-stdio-1.0
   main-is:            Spec.hs
+
+  -- cabal-fmt: expand test -Spec
   other-modules:
     Nazuki.Assembly.ParserSpec
     Nazuki.Script.CodeGenSpec
