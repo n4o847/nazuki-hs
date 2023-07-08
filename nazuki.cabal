@@ -1,11 +1,4 @@
 cabal-version:      1.12
-
--- This file has been generated from package.yaml by hpack version 0.35.2.
---
--- see: https://github.com/sol/hpack
---
--- hash: 05a9ffbff76d0456c0b9ea668a419b1226d04d459de6e33bc2543fcb97868203
-
 name:               nazuki
 version:            0.1.0.0
 description:
