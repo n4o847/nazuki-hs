@@ -67,6 +67,8 @@ tests:
     dependencies:
     - nazuki
     - hspec
+    build-tools:
+    - hspec-discover:hspec-discover
 
 benchmarks:
   nazuki-bench:

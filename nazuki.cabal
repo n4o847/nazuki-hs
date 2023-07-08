@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 51b1b5093f71aa92a20c18b0bf7a614b1520169ea014c62aec606cbe822151d9
+-- hash: 05a9ffbff76d0456c0b9ea668a419b1226d04d459de6e33bc2543fcb97868203
 
 name:           nazuki
 version:        0.1.0.0
@@ -116,6 +116,8 @@ test-suite nazuki-test
   hs-source-dirs:
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-tool-depends:
+      hspec-discover:hspec-discover
   build-depends:
       base
     , bytestring
