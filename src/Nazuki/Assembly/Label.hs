@@ -17,7 +17,7 @@ data Labeled a
   | L1 (Int -> a) Text
   | Label Text
 
-insertLookup :: Ord k => k -> a -> Map k a -> (Maybe a, Map k a)
+insertLookup :: (Ord k) => k -> a -> Map k a -> (Maybe a, Map k a)
 insertLookup = Map.insertLookupWithKey (\_ a _ -> a)
 
 resolveLabels :: [Labeled a] -> Either Text [a]

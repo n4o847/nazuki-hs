@@ -45,7 +45,7 @@ stringLiteral =
   lexeme (char '\"' >> Text.pack <$> manyTill L.charLiteral (char '\"'))
     <?> "string"
 
-intLiteral :: Num a => Parser a
+intLiteral :: (Num a) => Parser a
 intLiteral =
   lexeme (L.signed sc L.decimal)
     <?> "integer"

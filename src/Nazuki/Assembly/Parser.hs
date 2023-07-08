@@ -37,7 +37,7 @@ pString =
   lexeme (char '"' >> Text.pack <$> manyTill L.charLiteral (char '"'))
     <?> "string"
 
-pInt :: Num a => Parser a
+pInt :: (Num a) => Parser a
 pInt = lexeme (L.signed sc L.decimal) <?> "integer"
 
 pKeyword :: Text -> Parser Text

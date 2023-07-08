@@ -42,7 +42,7 @@ empty =
       opcodes = []
     }
 
-logBase2 :: Bits.FiniteBits b => b -> Int
+logBase2 :: (Bits.FiniteBits b) => b -> Int
 logBase2 x = Bits.finiteBitSize x - 1 - Bits.countLeadingZeros x
 
 register :: Oper -> State Asm (State Asm ())
