@@ -4,10 +4,10 @@
 module Nazuki.VM.Decimal10.Int10Spec (spec) where
 
 import Control.Monad
-import qualified Data.Text as Text
+import Data.Text qualified as Text
 import Nazuki.Runtime.Runner (run)
 import Nazuki.VM.Core (generate)
-import qualified Nazuki.VM.Decimal10.Int10 as Int10
+import Nazuki.VM.Decimal10.Int10 qualified as Int10
 import Test.Hspec
 
 spec :: Spec

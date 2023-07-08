@@ -9,8 +9,6 @@ on:
       - 'src/**'
       - 'test/**'
       - 'wasm/**'
-      - 'hie.yaml'
-      - 'package.yaml'
       - 'stack.yaml'
       - 'stack.yaml.lock'
       - '*.cabal'
@@ -24,15 +22,37 @@ on:
       - 'src/**'
       - 'test/**'
       - 'wasm/**'
-      - 'hie.yaml'
-      - 'package.yaml'
       - 'stack.yaml'
       - 'stack.yaml.lock'
       - '*.cabal'
   workflow_dispatch:
 
 jobs:
-  test:
+  cabal-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: haskell/actions/setup@v2
+        id: setup
+        with:
+          ghc-version: '9.6'
+
+      - name: Cache ~/.cabal/packages, ~/.cabal/store and dist-newstyle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cabal/packages
+            ~/.cabal/store
+            dist-newstyle
+          key: ${{ runner.os }}-ghc-${{ steps.setup.outputs.ghc-version }}-cabal-${{ steps.setup.outputs.cabal-version }}-${{ hashFiles('**/*.cabal', '**/cabal.project', '**/cabal.project.freeze') }}
+          restore-keys: ${{ runner.os }}-ghc-${{ steps.setup.outputs.ghc-version }}-cabal-${{ steps.setup.outputs.cabal-version }}-
+
+      - run: |
+          cabal test --test-show-detail=direct
+
+  stack-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -47,7 +67,7 @@ jobs:
         name: Cache ~/.stack
         with:
           path: ~/.stack
-          key: ${{ runner.os }}-stack-global-${{ hashFiles('stack.yaml') }}-${{ hashFiles('package.yaml') }}
+          key: ${{ runner.os }}-stack-global-${{ hashFiles('stack.yaml') }}-${{ hashFiles('*.cabal') }}
           restore-keys: |
             ${{ runner.os }}-stack-global-
 
@@ -55,10 +75,9 @@ jobs:
         name: Cache .stack-work
         with:
           path: .stack-work
-          key: ${{ runner.os }}-stack-work-${{ hashFiles('stack.yaml') }}-${{ hashFiles('package.yaml') }}-${{ hashFiles('**/*.hs') }}
+          key: ${{ runner.os }}-stack-work-${{ hashFiles('stack.yaml') }}-${{ hashFiles('*.cabal') }}-${{ hashFiles('**/*.hs') }}
           restore-keys: |
             ${{ runner.os }}-stack-work-
 
       - run: |
-          sed -i -e '/NAZUKI_WASM_BEGIN/,/NAZUKI_WASM_END/d' package.yaml
           stack test

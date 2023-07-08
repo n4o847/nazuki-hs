@@ -10,7 +10,7 @@ import Foreign.Marshal.Alloc (mallocBytes)
 import Foreign.Marshal.Utils (copyBytes)
 import Foreign.Ptr (Ptr, plusPtr)
 import Foreign.Storable (Storable (poke))
-import qualified Nazuki.Main as Nazuki
+import Nazuki.Main qualified as Nazuki
 
 main :: IO ()
 main = mempty

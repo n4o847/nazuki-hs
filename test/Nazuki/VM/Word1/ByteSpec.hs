@@ -3,7 +3,7 @@
 
 module Nazuki.VM.Word1.ByteSpec (spec) where
 
-import qualified Data.Text as T
+import Data.Text qualified as T
 import Nazuki.Runtime.Runner (run)
 import Nazuki.VM.Core (generate)
 import Nazuki.VM.Word1.Byte

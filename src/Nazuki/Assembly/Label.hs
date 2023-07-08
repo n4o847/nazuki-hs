@@ -9,7 +9,7 @@ where
 
 import Control.Monad
 import Data.Map (Map)
-import qualified Data.Map as Map
+import Data.Map qualified as Map
 import Data.Text (Text)
 
 data Labeled a
@@ -17,7 +17,7 @@ data Labeled a
   | L1 (Int -> a) Text
   | Label Text
 
-insertLookup :: Ord k => k -> a -> Map k a -> (Maybe a, Map k a)
+insertLookup :: (Ord k) => k -> a -> Map k a -> (Maybe a, Map k a)
 insertLookup = Map.insertLookupWithKey (\_ a _ -> a)
 
 resolveLabels :: [Labeled a] -> Either Text [a]

@@ -22,7 +22,7 @@ where
 
 import Control.Monad
 import Data.Int (Int32)
-import qualified Data.Text as Text
+import Data.Text qualified as Text
 import Nazuki.VM.Core
 import Nazuki.VM.Util
 

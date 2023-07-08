@@ -15,7 +15,7 @@ module Nazuki.VM.Word1.Byte
 where
 
 import Control.Monad
-import qualified Data.Text as T
+import Data.Text qualified as T
 import Nazuki.VM.Core
 import Nazuki.VM.Util
 

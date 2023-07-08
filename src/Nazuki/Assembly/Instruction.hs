@@ -5,15 +5,15 @@ module Nazuki.Assembly.Instruction where
 
 import Control.Monad
 import Data.Int (Int32)
-import qualified Data.Map as Map
-import qualified Data.Maybe as Maybe
+import Data.Map qualified as Map
+import Data.Maybe qualified as Maybe
 import Data.Text (Text)
-import qualified Nazuki.VM.Binary32.IO as IO
-import qualified Nazuki.VM.Binary32.Int32 as I32
-import qualified Nazuki.VM.Binary32.Memory as I
-import qualified Nazuki.VM.Core as G
-import qualified Nazuki.VM.Util as G
-import qualified Nazuki.VM.VirtualMachine as G
+import Nazuki.VM.Binary32.IO qualified as IO
+import Nazuki.VM.Binary32.Int32 qualified as I32
+import Nazuki.VM.Binary32.Memory qualified as I
+import Nazuki.VM.Core qualified as G
+import Nazuki.VM.Util qualified as G
+import Nazuki.VM.VirtualMachine qualified as G
 
 data Instruction
   = Const Int32

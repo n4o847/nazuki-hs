@@ -11,13 +11,13 @@ import Control.Monad (forM_, when)
 import Control.Monad.Except
 import Control.Monad.State.Strict
 import Data.Map (Map)
-import qualified Data.Map as Map
+import Data.Map qualified as Map
 import Data.Text (Text)
-import qualified Data.Text as Text
+import Data.Text qualified as Text
 import Nazuki.Assembly.Instruction (Instruction)
-import qualified Nazuki.Assembly.Instruction as I
+import Nazuki.Assembly.Instruction qualified as I
 import Nazuki.Assembly.Label (Labeled (..))
-import qualified Nazuki.Script.AST as AST
+import Nazuki.Script.AST qualified as AST
 
 data Type
   = TyUnit

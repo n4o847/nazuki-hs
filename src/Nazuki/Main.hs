@@ -8,12 +8,12 @@ module Nazuki.Main
 where
 
 import Data.Text (Text)
-import qualified Nazuki.Assembly.Instruction as I
-import qualified Nazuki.Assembly.Label as L
-import qualified Nazuki.Assembly.Parser as P
-import qualified Nazuki.Runtime.Runner as R
-import qualified Nazuki.Script.CodeGen as Script
-import qualified Nazuki.Script.Parser as Script
+import Nazuki.Assembly.Instruction qualified as I
+import Nazuki.Assembly.Label qualified as L
+import Nazuki.Assembly.Parser qualified as P
+import Nazuki.Runtime.Runner qualified as R
+import Nazuki.Script.CodeGen qualified as Script
+import Nazuki.Script.Parser qualified as Script
 import Nazuki.Util (createBanner)
 
 compile :: Text -> Either Text Text
