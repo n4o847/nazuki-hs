@@ -73,9 +73,11 @@ executable nazuki-wasm
   import:         deps
   main-is:        Main.hs
   hs-source-dirs: wasm
-  ghc-options:
-    -no-hs-main -optl-mexec-model=reactor
-    "-optl-Wl,--export=hs_init,--export=malloc,--export=free,--export=compile,--export=assemble,--export=run,--export=createBanner"
+
+  if (arch(wasm32) && os(wasi))
+    ghc-options:
+      -no-hs-main -optl-mexec-model=reactor
+      "-optl-Wl,--export=hs_init,--export=malloc,--export=free,--export=compile,--export=assemble,--export=run,--export=createBanner"
 
   build-depends:  nazuki
 
