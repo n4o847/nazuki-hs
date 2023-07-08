@@ -1,4 +1,4 @@
-cabal-version: 1.12
+cabal-version:      1.12
 
 -- This file has been generated from package.yaml by hpack version 0.35.2.
 --
@@ -6,54 +6,54 @@ cabal-version: 1.12
 --
 -- hash: 05a9ffbff76d0456c0b9ea668a419b1226d04d459de6e33bc2543fcb97868203
 
-name:           nazuki
-version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/n4o847/nazuki-hs>
-homepage:       https://github.com/n4o847/nazuki-hs#readme
-bug-reports:    https://github.com/n4o847/nazuki-hs/issues
-author:         n4o847
-maintainer:     22975590+n4o847@users.noreply.github.com
-copyright:      2019 n4o847
-license:        MIT
-license-file:   LICENSE
-build-type:     Simple
-extra-source-files:
-    README.md
+name:               nazuki
+version:            0.1.0.0
+description:
+  Please see the README on GitHub at <https://github.com/n4o847/nazuki-hs>
+
+homepage:           https://github.com/n4o847/nazuki-hs#readme
+bug-reports:        https://github.com/n4o847/nazuki-hs/issues
+author:             n4o847
+maintainer:         22975590+n4o847@users.noreply.github.com
+copyright:          2019 n4o847
+license:            MIT
+license-file:       LICENSE
+build-type:         Simple
+extra-source-files: README.md
 
 source-repository head
-  type: git
+  type:     git
   location: https://github.com/n4o847/nazuki-hs
 
 library
   exposed-modules:
-      Nazuki.Assembly.Complex
-      Nazuki.Assembly.Instruction
-      Nazuki.Assembly.Label
-      Nazuki.Assembly.Parser
-      Nazuki.Main
-      Nazuki.Paths
-      Nazuki.Runtime.Parser
-      Nazuki.Runtime.Runner
-      Nazuki.Script.AST
-      Nazuki.Script.CodeGen
-      Nazuki.Script.Parser
-      Nazuki.Util
-      Nazuki.VM.Binary32.Common
-      Nazuki.VM.Binary32.Decimal32.BID
-      Nazuki.VM.Binary32.Decimal32.DPD
-      Nazuki.VM.Binary32.Int32
-      Nazuki.VM.Binary32.IO
-      Nazuki.VM.Binary32.Memory
-      Nazuki.VM.Core
-      Nazuki.VM.Decimal10.Float10
-      Nazuki.VM.Decimal10.Int10
-      Nazuki.VM.Util
-      Nazuki.VM.VirtualMachine
-      Nazuki.VM.Word1.Byte
-  other-modules:
-      Paths_nazuki
-  hs-source-dirs:
-      src
+    Nazuki.Assembly.Complex
+    Nazuki.Assembly.Instruction
+    Nazuki.Assembly.Label
+    Nazuki.Assembly.Parser
+    Nazuki.Main
+    Nazuki.Paths
+    Nazuki.Runtime.Parser
+    Nazuki.Runtime.Runner
+    Nazuki.Script.AST
+    Nazuki.Script.CodeGen
+    Nazuki.Script.Parser
+    Nazuki.Util
+    Nazuki.VM.Binary32.Common
+    Nazuki.VM.Binary32.Decimal32.BID
+    Nazuki.VM.Binary32.Decimal32.DPD
+    Nazuki.VM.Binary32.Int32
+    Nazuki.VM.Binary32.IO
+    Nazuki.VM.Binary32.Memory
+    Nazuki.VM.Core
+    Nazuki.VM.Decimal10.Float10
+    Nazuki.VM.Decimal10.Int10
+    Nazuki.VM.Util
+    Nazuki.VM.VirtualMachine
+    Nazuki.VM.Word1.Byte
+
+  other-modules:    Paths_nazuki
+  hs-source-dirs:   src
   build-depends:
       base
     , bytestring
@@ -62,15 +62,14 @@ library
     , mtl
     , parser-combinators
     , text
+
   default-language: Haskell2010
 
 executable nazuki
-  main-is: Main.hs
-  other-modules:
-      Paths_nazuki
-  hs-source-dirs:
-      app
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  main-is:          Main.hs
+  other-modules:    Paths_nazuki
+  hs-source-dirs:   app
+  ghc-options:      -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base
     , bytestring
@@ -80,15 +79,17 @@ executable nazuki
     , nazuki
     , parser-combinators
     , text
+
   default-language: Haskell2010
 
 executable nazuki-wasm
-  main-is: Main.hs
-  other-modules:
-      Paths_nazuki
-  hs-source-dirs:
-      wasm
-  ghc-options: -no-hs-main -optl-mexec-model=reactor -optl-Wl,--export=hs_init,--export=malloc,--export=free,--export=compile,--export=assemble,--export=run,--export=createBanner
+  main-is:          Main.hs
+  other-modules:    Paths_nazuki
+  hs-source-dirs:   wasm
+  ghc-options:
+    -no-hs-main -optl-mexec-model=reactor
+    "-optl-Wl,--export=hs_init,--export=malloc,--export=free,--export=compile,--export=assemble,--export=run,--export=createBanner"
+
   build-depends:
       base
     , bytestring
@@ -98,26 +99,26 @@ executable nazuki-wasm
     , nazuki
     , parser-combinators
     , text
+
   default-language: Haskell2010
 
 test-suite nazuki-test
-  type: exitcode-stdio-1.0
-  main-is: Spec.hs
+  type:               exitcode-stdio-1.0
+  main-is:            Spec.hs
   other-modules:
-      Nazuki.Assembly.ParserSpec
-      Nazuki.Script.CodeGenSpec
-      Nazuki.Script.ParserSpec
-      Nazuki.UtilSpec
-      Nazuki.VM.Binary32.Int32Spec
-      Nazuki.VM.Binary32.IOSpec
-      Nazuki.VM.Decimal10.Int10Spec
-      Nazuki.VM.Word1.ByteSpec
-      Paths_nazuki
-  hs-source-dirs:
-      test
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
-  build-tool-depends:
-      hspec-discover:hspec-discover
+    Nazuki.Assembly.ParserSpec
+    Nazuki.Script.CodeGenSpec
+    Nazuki.Script.ParserSpec
+    Nazuki.UtilSpec
+    Nazuki.VM.Binary32.Int32Spec
+    Nazuki.VM.Binary32.IOSpec
+    Nazuki.VM.Decimal10.Int10Spec
+    Nazuki.VM.Word1.ByteSpec
+    Paths_nazuki
+
+  hs-source-dirs:     test
+  ghc-options:        -threaded -rtsopts -with-rtsopts=-N
+  build-tool-depends: hspec-discover:hspec-discover
   build-depends:
       base
     , bytestring
@@ -128,16 +129,15 @@ test-suite nazuki-test
     , nazuki
     , parser-combinators
     , text
-  default-language: Haskell2010
+
+  default-language:   Haskell2010
 
 benchmark nazuki-bench
-  type: exitcode-stdio-1.0
-  main-is: Main.hs
-  other-modules:
-      Paths_nazuki
-  hs-source-dirs:
-      bench
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  type:             exitcode-stdio-1.0
+  main-is:          Main.hs
+  other-modules:    Paths_nazuki
+  hs-source-dirs:   bench
+  ghc-options:      -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base
     , bytestring
@@ -148,4 +148,5 @@ benchmark nazuki-bench
     , nazuki
     , parser-combinators
     , text
+
   default-language: Haskell2010
