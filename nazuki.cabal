@@ -1,4 +1,4 @@
-cabal-version:      1.12
+cabal-version:      2.2
 name:               nazuki
 version:            0.1.0.0
 description:
@@ -18,7 +18,19 @@ source-repository head
   type:     git
   location: https://github.com/n4o847/nazuki-hs
 
+common deps
+  build-depends:
+    , base
+    , bytestring
+    , containers
+    , megaparsec
+    , mtl
+    , parser-combinators
+    , text
+
 library
+  import:           deps
+
   -- cabal-fmt: expand src
   exposed-modules:
     Nazuki.Assembly.Complex
@@ -48,35 +60,19 @@ library
 
   other-modules:    Paths_nazuki
   hs-source-dirs:   src
-  build-depends:
-      base
-    , bytestring
-    , containers
-    , megaparsec
-    , mtl
-    , parser-combinators
-    , text
-
   default-language: Haskell2010
 
 executable nazuki
+  import:           deps
   main-is:          Main.hs
   other-modules:    Paths_nazuki
   hs-source-dirs:   app
   ghc-options:      -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-      base
-    , bytestring
-    , containers
-    , megaparsec
-    , mtl
-    , nazuki
-    , parser-combinators
-    , text
-
+  build-depends:    nazuki
   default-language: Haskell2010
 
 executable nazuki-wasm
+  import:           deps
   main-is:          Main.hs
   other-modules:    Paths_nazuki
   hs-source-dirs:   wasm
@@ -84,19 +80,11 @@ executable nazuki-wasm
     -no-hs-main -optl-mexec-model=reactor
     "-optl-Wl,--export=hs_init,--export=malloc,--export=free,--export=compile,--export=assemble,--export=run,--export=createBanner"
 
-  build-depends:
-      base
-    , bytestring
-    , containers
-    , megaparsec
-    , mtl
-    , nazuki
-    , parser-combinators
-    , text
-
+  build-depends:    nazuki
   default-language: Haskell2010
 
 test-suite nazuki-test
+  import:             deps
   type:               exitcode-stdio-1.0
   main-is:            Spec.hs
 
@@ -116,33 +104,20 @@ test-suite nazuki-test
   ghc-options:        -threaded -rtsopts -with-rtsopts=-N
   build-tool-depends: hspec-discover:hspec-discover
   build-depends:
-      base
-    , bytestring
-    , containers
     , hspec
-    , megaparsec
-    , mtl
     , nazuki
-    , parser-combinators
-    , text
 
   default-language:   Haskell2010
 
 benchmark nazuki-bench
+  import:           deps
   type:             exitcode-stdio-1.0
   main-is:          Main.hs
   other-modules:    Paths_nazuki
   hs-source-dirs:   bench
   ghc-options:      -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base
-    , bytestring
-    , containers
     , criterion
-    , megaparsec
-    , mtl
     , nazuki
-    , parser-combinators
-    , text
 
   default-language: Haskell2010
