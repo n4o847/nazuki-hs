@@ -9,7 +9,8 @@ on:
       - 'src/**'
       - 'test/**'
       - 'wasm/**'
-      - 'hie.yaml'
+      - 'stack.yaml'
+      - 'stack.yaml.lock'
       - '*.cabal'
   push:
     branches:
@@ -21,12 +22,13 @@ on:
       - 'src/**'
       - 'test/**'
       - 'wasm/**'
-      - 'hie.yaml'
+      - 'stack.yaml'
+      - 'stack.yaml.lock'
       - '*.cabal'
   workflow_dispatch:
 
 jobs:
-  test:
+  cabal-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -49,3 +51,33 @@ jobs:
 
       - run: |
           cabal test --test-show-detail=direct
+
+  stack-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: haskell/actions/setup@v2
+        with:
+          enable-stack: true
+          stack-no-global: true
+
+      - uses: actions/cache@v3
+        name: Cache ~/.stack
+        with:
+          path: ~/.stack
+          key: ${{ runner.os }}-stack-global-${{ hashFiles('stack.yaml') }}-${{ hashFiles('*.cabal') }}
+          restore-keys: |
+            ${{ runner.os }}-stack-global-
+
+      - uses: actions/cache@v3
+        name: Cache .stack-work
+        with:
+          path: .stack-work
+          key: ${{ runner.os }}-stack-work-${{ hashFiles('stack.yaml') }}-${{ hashFiles('*.cabal') }}-${{ hashFiles('**/*.hs') }}
+          restore-keys: |
+            ${{ runner.os }}-stack-work-
+
+      - run: |
+          stack test
