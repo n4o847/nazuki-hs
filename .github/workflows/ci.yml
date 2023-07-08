@@ -10,9 +10,6 @@ on:
       - 'test/**'
       - 'wasm/**'
       - 'hie.yaml'
-      - 'package.yaml'
-      - 'stack.yaml'
-      - 'stack.yaml.lock'
       - '*.cabal'
   push:
     branches:
@@ -25,9 +22,6 @@ on:
       - 'test/**'
       - 'wasm/**'
       - 'hie.yaml'
-      - 'package.yaml'
-      - 'stack.yaml'
-      - 'stack.yaml.lock'
       - '*.cabal'
   workflow_dispatch:
 
@@ -39,26 +33,19 @@ jobs:
       - uses: actions/checkout@v3
 
       - uses: haskell/actions/setup@v2
+        id: setup
         with:
-          enable-stack: true
-          stack-no-global: true
+          ghc-version: '9.6'
 
-      - uses: actions/cache@v3
-        name: Cache ~/.stack
+      - name: Cache ~/.cabal/packages, ~/.cabal/store and dist-newstyle
+        uses: actions/cache@v3
         with:
-          path: ~/.stack
-          key: ${{ runner.os }}-stack-global-${{ hashFiles('stack.yaml') }}-${{ hashFiles('package.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-stack-global-
-
-      - uses: actions/cache@v3
-        name: Cache .stack-work
-        with:
-          path: .stack-work
-          key: ${{ runner.os }}-stack-work-${{ hashFiles('stack.yaml') }}-${{ hashFiles('package.yaml') }}-${{ hashFiles('**/*.hs') }}
-          restore-keys: |
-            ${{ runner.os }}-stack-work-
+          path: |
+            ~/.cabal/packages
+            ~/.cabal/store
+            dist-newstyle
+          key: ${{ runner.os }}-ghc-${{ steps.setup.outputs.ghc-version }}-cabal-${{ steps.setup.outputs.cabal-version }}-${{ hashFiles('**/*.cabal', '**/cabal.project', '**/cabal.project.freeze') }}
+          restore-keys: ${{ runner.os }}-ghc-${{ steps.setup.outputs.ghc-version }}-cabal-${{ steps.setup.outputs.cabal-version }}-
 
       - run: |
-          sed -i -e '/NAZUKI_WASM_BEGIN/,/NAZUKI_WASM_END/d' package.yaml
-          stack test
+          cabal test --test-show-detail=direct
