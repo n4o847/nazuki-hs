@@ -8,7 +8,6 @@
   },
   "workspaces": [
     "pkg",
-    "playground",
     "website"
   ]
 }
