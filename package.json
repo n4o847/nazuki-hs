@@ -1,10 +1,10 @@
 {
   "name": "nazuki",
   "scripts": {
-    "dev": "npm run dev --workspace=playground",
-    "build": "npm run build:wasm && npm run build:playground",
+    "dev": "npm start --workspace=website",
+    "build": "npm run build:wasm && npm run build:website",
     "build:wasm": "./build-ghc-wasm.sh --local",
-    "build:playground": "npm run build --workspace=playground"
+    "build:website": "npm run build --workspace=website"
   },
   "workspaces": [
     "pkg",
