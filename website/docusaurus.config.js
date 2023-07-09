@@ -1,5 +1,7 @@
 // @ts-check
 
+const path = require("node:path");
+
 const lightCodeTheme = require("prism-react-renderer/themes/github");
 const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 
@@ -63,6 +65,10 @@ const config = {
         darkTheme: darkCodeTheme,
       },
     }),
+
+  plugins: [
+    path.resolve(__dirname, "plugins/docusaurus-plugin-ignore-wasmer-wasm"),
+  ],
 };
 
 module.exports = config;
