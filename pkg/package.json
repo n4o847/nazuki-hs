@@ -4,5 +4,9 @@
   "main": "src/index.ts",
   "dependencies": {
     "@wasmer/wasi": "^1.2.2"
+  },
+  "devDependencies": {
+    "@tsconfig/strictest": "^2.0.1",
+    "typescript": "^5.1.6"
   }
 }
