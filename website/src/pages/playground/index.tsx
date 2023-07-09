@@ -9,7 +9,7 @@ export default function Playground() {
     <Layout>
       <BrowserOnly>
         {() => {
-          const { Playground } = require("../../components/Playground");
+          const { Playground } = require("@site/src/components/Playground");
           return <Playground />;
         }}
       </BrowserOnly>
