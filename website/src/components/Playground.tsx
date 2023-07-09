@@ -8,7 +8,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 import ToggleButton from "react-bootstrap/ToggleButton";
-import * as nazuki from "nazuki";
+import * as nazuki from "@nazuki-hs/pkg";
 
 const defaultScriptSource = `\
 a = scan()

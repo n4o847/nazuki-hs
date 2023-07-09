@@ -1,6 +1,7 @@
 {
-  "name": "nazuki",
+  "name": "@nazuki-hs/pkg",
   "version": "0.1.0",
+  "private": true,
   "main": "src/index.ts",
   "dependencies": {
     "@wasmer/wasi": "^1.2.2"

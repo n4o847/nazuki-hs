@@ -1,5 +1,5 @@
 {
-  "name": "nazuki",
+  "name": "nazuki-hs",
   "scripts": {
     "dev": "npm start --workspace=website",
     "build": "npm run build:wasm && npm run build:website",
