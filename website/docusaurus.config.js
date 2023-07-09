@@ -63,7 +63,7 @@ const config = {
       },
       footer: {
         style: "dark",
-        copyright: `Copyright © ${new Date().getFullYear()} n4o847. Built with Docusaurus.`,
+        copyright: `© ${new Date().getFullYear()} n4o847`,
       },
       prism: {
         theme: lightCodeTheme,
