@@ -20,6 +20,12 @@ function Header() {
           >
             Docs
           </Link>
+          <Link
+            className="button button--secondary button--lg"
+            to="/playground"
+          >
+            Playground
+          </Link>
         </div>
       </div>
     </header>

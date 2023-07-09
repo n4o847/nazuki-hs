@@ -50,6 +50,11 @@ const config = {
             label: "Docs",
           },
           {
+            to: "playground",
+            label: "Playground",
+            position: "left",
+          },
+          {
             href: "https://github.com/n4o847/nazuki-hs",
             label: "GitHub",
             position: "right",
