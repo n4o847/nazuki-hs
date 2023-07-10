@@ -1,28 +1,32 @@
-# nazuki-hs
+# Nazuki
 
 [![CI](https://github.com/n4o847/nazuki-hs/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/n4o847/nazuki-hs/actions/workflows/ci.yml)
 
-Nazuki は、Brainfuck をターゲットとするコンパイラおよびツール群です。Haskell で実装されています。
+Nazuki ("the brain" in Old Japanese) is a compiler toolchain for generating Brainfuck code. It is implemented in Haskell.
 
-## 各レイヤーの説明
+## Playground
+
+Try it out on your browser: https://n4o847.github.io/nazuki-hs/
+
+## Design overview
+
+Nazuki consists of three layers: NazukiScript, NazukiAssembly and NazukiVM.
 
 ![Architecture overview](website/docs/img/architecture-overview.drawio.svg)
 
-### NazukiScript (仮称)
+### NazukiScript
 
-Nazuki において最も高位のスクリプト言語です。Python のような記述をすることができます。
+NazukiScript is the most high-level script language that can be written like Python.
 
-```python
+```py
 a = scan()
 b = scan()
 print(a + b)
 ```
 
-コードはコンパイラによって後述のアセンブリに変換されます。
+### NazukiAssembly
 
-### NazukiAssembly (仮称)
-
-Nazuki において使える命令を並べて記述するアセンブリ言語です。スタックベースになっています。
+NazukiAssembly is the low-level assembly language that consists of a sequence of instructions and labels.
 
 ```
 scan
@@ -31,18 +35,14 @@ add
 print
 ```
 
-### NazukiVM (仮称)
+### NazukiVM
 
-上記のアセンブリをもとに、命令列を埋め込む部分とその命令列を解釈し実行する部分が Brainfuck のコードとして生成されます。
+The generated instruction sequence is embedded into Brainfuck code along with the virtual machine code that interprets and executes the instructions.
 
-現状は、プログラム領域とスタック領域からなる 32 ビットスタックマシンです。
+NazukiVM is (currently) a 32-bit stack machine with a text segment and a stack segment.
 
-## ブラウザ版
+![Memory layout of NazukiVM](website/docs/img/8a0bb357-f4e4-4a75-9022-7d69b3f638bb.drawio.svg)
 
-master ブランチでのコンパイラおよびアセンブラを以下の Web ページで動かすことができます。
-
-https://n4o847.github.io/nazuki-hs/
-
-## 資料
+## Resources
 
 - [Brainfuck にコンパイルされる言語 Nazuki の 2020 年の進捗状況 - 何か書く](https://n4o847.hatenablog.com/entry/2020/12/24/182051)
