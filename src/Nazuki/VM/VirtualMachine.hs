@@ -82,7 +82,7 @@ assemble ssize asmState = do
     let seeBit i bits = do
           if i >= 0
             then
-              ifElseMut
+              branchMut
                 (cmd i)
                 tmp
                 ( seeBit (i - 1) (Bits.setBit bits i)
