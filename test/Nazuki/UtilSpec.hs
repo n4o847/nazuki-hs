@@ -4,7 +4,7 @@
 module Nazuki.UtilSpec (spec) where
 
 import Control.Monad
-import qualified Data.Text as Text
+import Data.Text qualified as Text
 import Nazuki.Util
 import Test.Hspec
 

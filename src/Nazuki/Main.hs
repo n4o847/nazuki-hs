@@ -8,17 +8,17 @@ module Nazuki.Main
 where
 
 import Data.Text (Text)
-import qualified Nazuki.Assembler.Instruction as I
-import qualified Nazuki.Assembler.Label as L
-import qualified Nazuki.Assembler.Parser as P
-import qualified Nazuki.Compiler.CodeGen as Compiler
-import qualified Nazuki.Compiler.Parser as Compiler
-import qualified Nazuki.Runtime.Runner as R
+import Nazuki.Assembly.Instruction qualified as I
+import Nazuki.Assembly.Label qualified as L
+import Nazuki.Assembly.Parser qualified as P
+import Nazuki.Runtime.Runner qualified as R
+import Nazuki.Script.CodeGen qualified as Script
+import Nazuki.Script.Parser qualified as Script
 import Nazuki.Util (createBanner)
 
 compile :: Text -> Either Text Text
 compile source =
-  I.generate <$> (L.resolveLabels =<< Compiler.generate =<< Compiler.parse source)
+  I.generate <$> (L.resolveLabels =<< Script.generate =<< Script.parse source)
 
 assemble :: Text -> Either Text Text
 assemble source =

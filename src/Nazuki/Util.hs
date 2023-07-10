@@ -11,13 +11,13 @@ module Nazuki.Util
   )
 where
 
-import qualified Data.ByteString as ByteString
+import Data.ByteString qualified as ByteString
 import Data.Text (Text)
-import qualified Data.Text as Text
-import qualified Data.Text.Encoding as Text.Encoding
+import Data.Text qualified as Text
+import Data.Text.Encoding qualified as Text.Encoding
 import Data.Version (showVersion)
 import Data.Word (Word8)
-import Nazuki.Paths (version)
+import Paths_nazuki (version)
 
 -- wrap `text` into a ignorable brainfuck code
 getQuotations :: Text -> (Text, Text)

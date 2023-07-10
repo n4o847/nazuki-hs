@@ -5,7 +5,7 @@ module Main where
 
 import Data.Text as T
 import Data.Text.IO as TIO
-import qualified Nazuki.Main as Nazuki
+import Nazuki.Main qualified as Nazuki
 import System.Environment (getArgs)
 import System.IO (stderr)
 
