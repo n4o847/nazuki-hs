@@ -1,6 +1,7 @@
 # Nazuki
 
 [![CI](https://github.com/n4o847/nazuki-hs/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/n4o847/nazuki-hs/actions/workflows/ci.yml)
+[![GitHub Pages](https://github.com/n4o847/nazuki-hs/actions/workflows/gh-pages.yml/badge.svg?branch=main)](https://github.com/n4o847/nazuki-hs/actions/workflows/gh-pages.yml)
 
 Nazuki ("the brain" in Old Japanese) is a compiler toolchain for generating Brainfuck code. It is implemented in Haskell.
 
