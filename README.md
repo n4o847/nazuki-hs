@@ -6,6 +6,8 @@ Nazuki は、Brainfuck をターゲットとするコンパイラおよびツー
 
 ## 各レイヤーの説明
 
+![Architecture overview](website/docs/img/architecture-overview.drawio.svg)
+
 ### NazukiScript (仮称)
 
 Nazuki において最も高位のスクリプト言語です。Python のような記述をすることができます。
