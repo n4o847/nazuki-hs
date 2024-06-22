@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 
 wasm32-wasi-cabal build nazuki-wasm
 
