@@ -96,9 +96,15 @@ add p x =
       then replicateM_ x bfInc
       else replicateM_ (negate x) bfDec
 
+(+=) :: Ptr -> Int -> Oper
+(+=) = add
+
 sub :: Ptr -> Int -> Oper
 sub p x =
-  add p (negate x)
+  p += negate x
+
+(-=) :: Ptr -> Int -> Oper
+(-=) = sub
 
 getc :: Ptr -> Oper
 getc p =
@@ -116,9 +122,9 @@ while p block = do
 
 set :: Ptr -> Int -> Oper
 set p x = do
-  while p $
-    sub p 1
-  add p x
+  while p do
+    p -= 1
+  p += x
 
 -- | The version of the branch that does not change the position and does not consume the conditional value.
 --
@@ -142,13 +148,13 @@ branch :: Ptr -> Ptr -> Oper -> Oper -> Oper
 branch cond temp doCons doAlt = do
   while cond do
     doCons
-    sub temp 1
-    sub cond 1
-  add cond 1
-  add temp 1
+    temp -= 1
+    cond -= 1
+  cond += 1
+  temp += 1
   while temp do
-    sub temp 1
-    sub cond 1
+    temp -= 1
+    cond -= 1
     doAlt
 
 -- | The version of the branch that may change the position and does not consume the conditional value.
@@ -173,17 +179,17 @@ branchMut :: Ptr -> Ptr -> Oper -> Oper -> Oper
 branchMut cond temp doCons doAlt = do
   while cond do
     doCons
-    sub temp 1
+    temp -= 1
     while cond do
-      sub cond 1
-      sub temp 1
-  add cond 1
-  add temp 2
+      cond -= 1
+      temp -= 1
+  cond += 1
+  temp += 2
   while temp do
-    sub temp 1
-    sub cond 1
+    temp -= 1
+    cond -= 1
     while temp do
-      sub temp 1
+      temp -= 1
       doAlt
 
 -- | The version of the branch that may change the position and consumes the conditional value.
@@ -208,12 +214,12 @@ branchMut cond temp doCons doAlt = do
 branchOnce :: Ptr -> Ptr -> Oper -> Oper -> Oper
 branchOnce cond temp doCons doAlt = do
   while cond do
-    sub cond 1
+    cond -= 1
     doCons
-    sub temp 1
-  add temp 1
+    temp -= 1
+  temp += 1
   while temp do
-    sub temp 1
+    temp -= 1
     doAlt
 
 -- The value of `p - 1` must be 0.
@@ -221,7 +227,7 @@ branchOnce cond temp doCons doAlt = do
 -- with `p` as the LSB and increment the value by 1.
 incs :: Ptr -> Oper
 incs p =
-  at p $
+  at p do
     raw "[>]+<[-<]>"
 
 -- The value of `p - 1` must be 0.
@@ -229,12 +235,12 @@ incs p =
 -- with `p` as the LSB and decrement the value by 1.
 decs :: Ptr -> Oper
 decs p =
-  at p $
+  at p do
     raw "-[++>-]<[<]>"
 
 puts :: Ptr -> Text -> Oper
 puts p s =
   forM_ (encode s) \c -> do
-    add p (fromIntegral c)
+    p += fromIntegral c
     putc p
-    sub p (fromIntegral c)
+    p -= fromIntegral c
