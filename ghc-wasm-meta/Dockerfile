@@ -1,6 +1,6 @@
 FROM ubuntu:22.04
 
-RUN apt-get update && apt-get install -y build-essential curl git jq unzip
+RUN apt-get update && apt-get install -y build-essential curl git jq unzip zstd
 
 RUN git clone https://gitlab.haskell.org/ghc/ghc-wasm-meta.git
 
