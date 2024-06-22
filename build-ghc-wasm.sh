@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 
 case $1 in
   --docker)
