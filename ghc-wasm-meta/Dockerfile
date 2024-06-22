@@ -6,7 +6,7 @@ RUN git clone https://gitlab.haskell.org/ghc/ghc-wasm-meta.git
 
 WORKDIR /ghc-wasm-meta
 
-RUN FLAVOUR=9.6 ./setup.sh
+RUN FLAVOUR=9.8 ./setup.sh
 
 WORKDIR /
 
