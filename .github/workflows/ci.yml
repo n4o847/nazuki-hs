@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: haskell/actions/setup@v2
+      - uses: haskell-actions/setup@v2
         id: setup
         with:
           ghc-version: '9.8'
@@ -58,7 +58,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: haskell/actions/setup@v2
+      - uses: haskell-actions/setup@v2
         with:
           enable-stack: true
           stack-no-global: true
