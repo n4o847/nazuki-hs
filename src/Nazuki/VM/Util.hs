@@ -29,6 +29,7 @@ where
 
 import Control.Monad
 import Data.Char (ord)
+import Data.List.NonEmpty qualified as List.NonEmpty
 import Data.Text (Text)
 import Data.Text qualified as Text
 import Nazuki.Util
@@ -40,7 +41,7 @@ mem :: Int -> Ptr
 mem = Ptr
 
 mems :: [Int] -> Int -> Ptr
-mems s i = Ptr (head s + i)
+mems s i = Ptr (List.NonEmpty.head (List.NonEmpty.fromList s) + i)
 
 fromChar :: Char -> Oper
 fromChar = \case
