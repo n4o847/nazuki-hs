@@ -7,15 +7,16 @@ module Nazuki.Runtime.Runner
   )
 where
 
+import Control.Monad (when)
 import Control.Monad.Except
 import Control.Monad.State.Strict
-import qualified Data.ByteString as BS
+import Data.ByteString qualified as BS
 import Data.Functor ((<&>))
 import Data.Text (Text)
-import qualified Data.Text as T
-import qualified Data.Text.Encoding as TE
-import qualified Data.Text.Lazy as TL
-import qualified Data.Text.Lazy.Builder as TLB
+import Data.Text qualified as T
+import Data.Text.Encoding qualified as TE
+import Data.Text.Lazy qualified as TL
+import Data.Text.Lazy.Builder qualified as TLB
 import Data.Text.Lazy.Builder.Int (decimal)
 import Data.Word (Word8)
 import Nazuki.Runtime.Parser

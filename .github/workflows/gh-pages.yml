@@ -15,20 +15,26 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '18'
           cache: 'npm'
 
+      - name: Setup ghc-wasm-meta
+        run: |
+          git clone https://gitlab.haskell.org/ghc/ghc-wasm-meta.git
+          cd ghc-wasm-meta
+          FLAVOUR=9.8 ./setup.sh
+        working-directory: ghc-wasm-meta
+
       - name: Build WebAssembly
-        uses: docker://terrorjack/asterius:201023
-        with:
-          entrypoint: ./entrypoint.sh
+        run: |
+          ./build-ghc-wasm.sh --local
 
       - run: npm ci
-      - run: npm run build:playground
+      - run: npm run build:website
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         if: ${{ github.ref == 'refs/heads/main' }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: ./website/build

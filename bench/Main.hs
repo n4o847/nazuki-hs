@@ -1,7 +1,7 @@
 module Main where
 
 import Criterion.Main
-import qualified Nazuki.Assembler.Instruction as I
+import Nazuki.Assembly.Instruction qualified as I
 
 main :: IO ()
 main =
